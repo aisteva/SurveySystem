@@ -4,8 +4,88 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-   <f:view>
-      <h:outputLabel value="Hello, world"/>
-   </f:view>
+   <h:head>
+      <title>Apklausos</title>
+      <h:outputStylesheet name="css/style.css" />
+      <!--<h:outputStylesheet ="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">-->
+   </h:head>
+   <h:body>
+      <div class="title">
+         <h1>Apklausos pav.</h1>
+         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempor placerat sem, non euismod turpis ornare quis. Nullam sit amet ornare urna. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus tempus felis nec justo pulvinar iaculis. Sed id scelerisque velit, id bibendum est. Vestibulum vitae velit ipsum. In ac elit eget ante maximus tincidunt id in tortor. Fusce dignissim vehicula ex in porta. Curabitur leo enim, mattis eget tellus et, tempor porttitor massa. Curabitur tempus eros quis libero ultricies tincidunt.</p>
+      </div>
+      <h:form>
+         <div id="question1">
+            <div class="question">
+               <h3>1. Kiek jums metų?</h3>
+            </div>
+            <div class="answers">
+               <div>
+                  <input type="radio" name="radio" id="A1"/>
+                  <label for="A1"><span></span>0-19</label>
+               </div>
+               <div>
+                  <input type="radio" name="radio" id="A2"/>
+                  <label for="A2">0-19</label>
+               </div>
+               <div>
+                  <input type="radio" name="radio" id="A3"/>
+                  <label for="A3">0-19</label>
+               </div>
+               <div>
+                  <input type="radio" name="radio" id="A4"/>
+                  <label for="A4">0-19</label>
+               </div>
+            </div>
+         </div>
+         <div id="question2">
+            <div class="question">
+               <h3>2. Ką veiki?</h3>
+            </div>
+            <div class="answers">
+               <div>
+                  <input type="checkbox" name="checkbox" id="A5"/>
+                  <label for="A5"><span></span>0-19</label>
+               </div>
+               <div>
+                  <input type="checkbox" name="checkbox" id="A6"/>
+                  <label for="A6">0-19</label>
+               </div>
+               <div>
+                  <input type="checkbox" name="checkbox" id="A7"/>
+                  <label for="A7">0-19</label>
+               </div>
+               <div>
+                  <input type="checkbox" name="checkbox" id="A8"/>
+                  <label for="A8"><input type="text" name="text" placeholder="Kita"/></label>
+               </div>
+            </div>
+         </div>
+
+         <div id="question3">
+            <div class="question">
+               <h3>3. Kur būsi?</h3>
+            </div>
+            <div class="answers">
+               <div>
+                  <input type="text" name="text" placeholder="Namie ar pan."/>
+               </div>
+            </div>
+         </div>
+         <!--
+                     <div id="question4">
+                         <div class="question">
+                             <h3>3. Kiek butelių išgersi?</h3>
+                         </div>
+                         <div class="answers">
+                             <div>
+                                 <input type="number" name="number"/>
+                             </div>
+                         </div>
+                     </div>
+         -->
+      </h:form>
+   </h:body>
 </html>
