@@ -1,40 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
->
-<h:head>
-    <h:outputStylesheet name="css/styles.css" />
-    <title>Laboratory classes</title>
-</h:head>
-
-<h:body>
-    <h1>Laboratory classes for the 1st assignment</h1>
-    <dl>
-        <dt><b>Transactions</b></dt>
-        <dd><p>#{firstComp.sayHello()}</p></dd>
-
-        <dt><b>Request type use-case example:</b></dt>
-        <dd>
-            <p>
-                <h:link outcome="simple-usecase-jpa">Create new course and student (DAO with JPA)</h:link><br/>
-                <h:link outcome="simple-usecase-mybatis">Create new course and student (DAO with MyBatis)</h:link>
-            </p>
-        </dd>
-
-        <dt><b>Conversation type use-case example:</b></dt>
-        <dd>
-            <p>
-                <h:link outcome="conversation-cdi">Example with CDI - Jei naudojate TomEE, pridėkite Hibernate biblioteką (žr. aukščiau)</h:link><br/>
-                Papildoma medžiaga: <h:link outcome="conversation-ejb">Example with EJB</h:link>
-            </p>
-        </dd>
-
-        <dt>Papildoma medžiaga: <b>Asynchronous calls</b></dt>
-        <dd><p>#{compA.sayHello()}</p></dd>
-
-        <dt>Papildoma medžiaga: <b>Cache propagation</b></dt>
-        <dd><p>#{comp1.sayHello()}</p></dd>
-    </dl>
-</h:body>
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <f:view>
+      <h:outputLabel value="Hello, world"/>
+   </f:view>
 </html>

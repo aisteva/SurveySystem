@@ -1,5 +1,3 @@
-package lt.vu.usecases.cdi;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;

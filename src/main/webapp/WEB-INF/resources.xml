@@ -3,10 +3,10 @@
     <!-- see http://tomee.apache.org/containers-and-resources.html -->
     <!-- see http://tomee.apache.org/datasource-config.html -->
 
-    <!-- H2 Database -->
-    <Resource id="StudentsDataSource" type="DataSource">
-        JdbcDriver = org.h2.Driver
-        JdbcUrl = jdbc:h2:~/h2database/StudentsDB;AUTO_SERVER=TRUE;INIT=RUNSCRIPT FROM 'classpath:h2database/createdb.sql'
+    <!-- pasikeiskit savo db prisijungimus -->
+    <Resource id="SurveyDataSource" type="DataSource">
+        JdbcDriver = com.mysql.jdbc.Driver
+        JdbcUrl = jdbc:mysql://localhost:3306/SurveyDb
         UserName = sa
         Password = sa
         InitialSize = 1
@@ -24,26 +24,4 @@
         jmxEnabled = true
     </Resource>
 
-    <!-- PostgreSQL Database -->
-    <!--
-    <Resource id="StudentsDataSource" type="DataSource">
-        JdbcDriver = org.postgresql.Driver
-        JdbcUrl = jdbc:postgresql://localhost/studentsdb
-        UserName = postgres
-        Password = postgres
-        InitialSize = 1
-        MaxActive = 10
-        MaxWaitTime = 10 seconds
-        MaxIdle = 2
-        MinIdle = 1
-        ValidationQuery = SELECT 1
-        TestOnBorrow = true
-        TestWhileIdle = true
-        TimeBetweenEvictionRuns = 2 min
-        removeAbandoned = true
-        removeAbandonedTimeout = 600
-        logAbandoned = true
-        jmxEnabled = true
-    </Resource>
-    -->
 </tomee>
