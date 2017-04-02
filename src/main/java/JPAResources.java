@@ -14,7 +14,7 @@ public class JPAResources {
     private EntityManagerFactory emf;
 
     @Produces
-    @RequestScoped // Smalsiems: kodel ne @TransactionScoped? Kada @RequestScoped bus blogai o @TransactionScoped - gerai?
+    @RequestScoped
     private EntityManager createJTAEntityManager() {
         /*
          * From JavaDoc: Create a new JTA application-managed EntityManager...

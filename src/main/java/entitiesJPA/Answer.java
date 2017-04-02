@@ -5,13 +5,15 @@
  */
 package entitiesJPA;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- *
- * @author Aiste
- */
+
 @Entity
 @Table(name = "answer")
 @NamedQueries({
@@ -19,6 +21,10 @@ import java.io.Serializable;
     @NamedQuery(name = "Answer.findByAnswerID", query = "SELECT a FROM Answer a WHERE a.answerID = :answerID"),
     @NamedQuery(name = "Answer.findBySessionID", query = "SELECT a FROM Answer a WHERE a.sessionID = :sessionID"),
     @NamedQuery(name = "Answer.findByText", query = "SELECT a FROM Answer a WHERE a.text = :text")})
+@Getter
+@Setter
+@EqualsAndHashCode(of = "answerID")
+@ToString(of = "answerID")
 public class Answer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -34,74 +40,4 @@ public class Answer implements Serializable {
     @JoinColumn(name = "OfferedAnswerID", referencedColumnName = "OfferedAnswerID")
     @ManyToOne(optional = false)
     private Offeredanswer offeredAnswerID;
-
-    public Answer() {
-    }
-
-    public Answer(Long answerID) {
-        this.answerID = answerID;
-    }
-
-    public Answer(Long answerID, int sessionID) {
-        this.answerID = answerID;
-        this.sessionID = sessionID;
-    }
-
-    public Long getAnswerID() {
-        return answerID;
-    }
-
-    public void setAnswerID(Long answerID) {
-        this.answerID = answerID;
-    }
-
-    public int getSessionID() {
-        return sessionID;
-    }
-
-    public void setSessionID(int sessionID) {
-        this.sessionID = sessionID;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public Offeredanswer getOfferedAnswerID() {
-        return offeredAnswerID;
-    }
-
-    public void setOfferedAnswerID(Offeredanswer offeredAnswerID) {
-        this.offeredAnswerID = offeredAnswerID;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (answerID != null ? answerID.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Answer)) {
-            return false;
-        }
-        Answer other = (Answer) object;
-        if ((this.answerID == null && other.answerID != null) || (this.answerID != null && !this.answerID.equals(other.answerID))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "surveydbjpa.Answer[ answerID=" + answerID + " ]";
-    }
-    
 }

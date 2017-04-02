@@ -5,15 +5,16 @@
  */
 package entitiesJPA;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-/**
- *
- * @author Aiste
- */
 @Entity
 @Table(name = "person")
 @NamedQueries({
@@ -26,6 +27,10 @@ import java.util.List;
     @NamedQuery(name = "Person.findByUserType", query = "SELECT p FROM Person p WHERE p.userType = :userType"),
     @NamedQuery(name = "Person.findByInviteExpiration", query = "SELECT p FROM Person p WHERE p.inviteExpiration = :inviteExpiration"),
     @NamedQuery(name = "Person.findByIsBlocked", query = "SELECT p FROM Person p WHERE p.isBlocked = :isBlocked")})
+@Getter
+@Setter
+@EqualsAndHashCode(of = "personID")
+@ToString(of = "personID")
 public class Person implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -56,119 +61,4 @@ public class Person implements Serializable {
     private boolean isBlocked;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personID")
     private List<Survey> surveyList;
-
-    public Person() {
-    }
-
-    public Person(Long personID) {
-        this.personID = personID;
-    }
-
-    public Person(Long personID, String firstName, String lastName, String email, String userType, Date inviteExpiration, boolean isBlocked) {
-        this.personID = personID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.userType = userType;
-        this.inviteExpiration = inviteExpiration;
-        this.isBlocked = isBlocked;
-    }
-
-    public Long getPersonID() {
-        return personID;
-    }
-
-    public void setPersonID(Long personID) {
-        this.personID = personID;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getUserType() {
-        return userType;
-    }
-
-    public void setUserType(String userType) {
-        this.userType = userType;
-    }
-
-    public Date getInviteExpiration() {
-        return inviteExpiration;
-    }
-
-    public void setInviteExpiration(Date inviteExpiration) {
-        this.inviteExpiration = inviteExpiration;
-    }
-
-    public boolean getIsBlocked() {
-        return isBlocked;
-    }
-
-    public void setIsBlocked(boolean isBlocked) {
-        this.isBlocked = isBlocked;
-    }
-
-    public List<Survey> getSurveyList() {
-        return surveyList;
-    }
-
-    public void setSurveyList(List<Survey> surveyList) {
-        this.surveyList = surveyList;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (personID != null ? personID.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Person)) {
-            return false;
-        }
-        Person other = (Person) object;
-        if ((this.personID == null && other.personID != null) || (this.personID != null && !this.personID.equals(other.personID))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "surveydbjpa.Person[ personID=" + personID + " ]";
-    }
-    
 }
