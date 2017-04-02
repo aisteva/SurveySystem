@@ -5,6 +5,7 @@ import entitiesJPA.Person;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * Created by arturas on 2017-04-02.
@@ -22,8 +23,8 @@ public class PersonDAO
 
     public Person FindPersonByEmail(String email)
     {
-        Person person = (Person) entityManager.createQuery("SELECT person FROM person WHERE person.email = :emailValue").setParameter("emailValue", email).getSingleResult();
-        return person;
+        Query q = entityManager.createQuery("SELECT p FROM Person p WHERE p.email = :emailValue").setParameter("emailValue", email);
+        return (Person) q.getSingleResult();
     }
 
 }
