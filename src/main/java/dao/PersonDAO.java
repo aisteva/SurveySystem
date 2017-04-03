@@ -5,6 +5,8 @@ import entitiesJPA.Person;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
@@ -28,8 +30,10 @@ public class PersonDAO
 
     public Person FindPersonByEmail(String email)
     {
+
         Query q = entityManager.createQuery("SELECT p FROM Person p WHERE p.email = :emailValue").setParameter("emailValue", email);
         return (Person) q.getSingleResult();
+
     }
 
 }
