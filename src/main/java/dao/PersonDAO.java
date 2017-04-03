@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
 
 /**
  * Created by arturas on 2017-04-02.
@@ -16,10 +17,14 @@ public class PersonDAO
     @Inject
     private EntityManager entityManager;
 
+    @Transactional
     public void CreateUser(Person person)
     {
         entityManager.persist(person);
     }
+
+    @Transactional
+    public void UpdateUser(Person person) {entityManager.merge(person);}
 
     public Person FindPersonByEmail(String email)
     {
