@@ -26,9 +26,6 @@
            <p:column headerText="Email">
                <h:outputText value="#{person.email}" />
            </p:column>
-           <p:column headerText="Password">
-               <h:outputText value="#{person.password}" />
-           </p:column>
        </p:dataTable>
 
            <h:panelGrid columns="1">
@@ -36,7 +33,7 @@
                <p:inputText id="pass" value="#{completeUserRegistrationController.person.password}"/>
            </h:panelGrid>
            <p:commandButton value="Update Pass"
-                            actionListener="#{completeUserRegistrationController.finishRegistration()}"
+                            action="#{completeUserRegistrationController.finishRegistration()}"
                             ajax="false"/>
 
        </h:form>
