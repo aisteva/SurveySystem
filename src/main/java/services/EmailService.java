@@ -25,7 +25,7 @@ public class EmailService
     private String username = "surveysystem";
     private String password = "apklausa";
 
-    public void sendInvitation(String to, String link)
+    public void sendEmail(String to, String text)
     {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -59,7 +59,7 @@ public class EmailService
             message.setSubject("Registracijos i apklausu sistema uzbaigimas");
 
             // Now set the actual message
-            message.setText("Noredami prisiregistruoti, spauskite sia nuoroda: " + link);
+            message.setText(text);
 
             // Send message
             Transport.send(message);

@@ -18,6 +18,10 @@ import java.util.Date;
 @RequestScoped
 public class CreateNewUserController
 {
+
+    String text = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
+            " Noredami uzbaigti registracija spauskite sia nuoroda: http://localhost:8080/completeRegistration.html?id=%s";
+
     @Getter
     @Setter
     private Person person = new Person();
@@ -32,6 +36,6 @@ public class CreateNewUserController
     {
         person.setInviteExpiration(new Date());
         personDAO.CreateUser(person);
-        es.sendInvitation(person.getEmail(), "http://localhost:8080/completeRegistration.html?id="+person.getEmail());
+        es.sendEmail(person.getEmail(), String.format(text, person.getFirstName(), person.getLastName(), person.getEmail()));
     }
 }

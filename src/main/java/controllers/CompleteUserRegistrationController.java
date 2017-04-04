@@ -40,7 +40,6 @@ public class CompleteUserRegistrationController implements Serializable
 
     public void validate(FacesContext context, UIComponent component, Object object)
     {
-        //TODO: patikrinti, ar vartotojas tikrai dar neprisiregistravęs
         //TODO: patikrinti, ar nuoroda dar galioja
 
         //tikrinam, ar DB yra vartotojas su tokiu email
