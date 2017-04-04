@@ -1,8 +1,12 @@
+package services;
+
 import sun.net.smtp.SmtpClient;
 import sun.security.util.Password;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -12,8 +16,8 @@ import java.util.Properties;
 /**
  * Created by arturas on 2017-04-04.
  */
-@Stateless
-public class EmailSession
+@ApplicationScoped
+public class EmailService
 {
     private String port = "587";
     private String host = "mail.inbox.lt";
@@ -52,10 +56,10 @@ public class EmailSession
                     InternetAddress.parse(to));
 
             // Set Subject: header field
-            message.setSubject("Registracijos į apklausų sistemą užbaigimas");
+            message.setSubject("Registracijos i apklausu sistema uzbaigimas");
 
             // Now set the actual message
-            message.setText("Norėdami prisiregistruoti, spauskite šią nuorodą: " + link);
+            message.setText("Noredami prisiregistruoti, spauskite sia nuoroda: " + link);
 
             // Send message
             Transport.send(message);

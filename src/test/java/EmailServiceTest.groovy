@@ -1,9 +1,11 @@
+import services.EmailService
+
 /**
  * Created by arturas on 2017-04-04.
  */
-class EmailSessionTest extends GroovyTestCase {
+class EmailServiceTest extends GroovyTestCase {
     void testSendInvitation() {
-        EmailSession s = new EmailSession();
+        EmailService s = new EmailService();
         s.sendInvitation("arturasfio@gmail.com", "http://www.google.lt");
     }
 }
