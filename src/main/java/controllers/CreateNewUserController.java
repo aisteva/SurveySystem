@@ -46,7 +46,7 @@ public class CreateNewUserController
         try
         {
             personDAO.CreateUser(person);
-           // es.sendEmail(person.getEmail(), String.format(text, person.getFirstName(), person.getLastName(), person.getEmail()));
+            es.sendEmail(person.getEmail(), String.format(text, person.getEmail()));
         }
         catch(TransactionalException e)
         {
