@@ -1,5 +1,6 @@
 package controllers;
 
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import dao.PersonDAO;
 import entitiesJPA.Person;
 import lombok.Getter;
@@ -7,8 +8,12 @@ import lombok.Setter;
 import services.EmailService;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.PersistenceException;
+import javax.transaction.TransactionalException;
 import java.util.Date;
 
 /**
@@ -38,7 +43,16 @@ public class CreateNewUserController
         //TODO įdėti exception handling, jei nepaėjo email išsiųst
 
         person.setInviteExpiration(new Date());
-        personDAO.CreateUser(person);
-        es.sendEmail(person.getEmail(), String.format(text, person.getFirstName(), person.getLastName(), person.getEmail()));
+        try
+        {
+            personDAO.CreateUser(person);
+           // es.sendEmail(person.getEmail(), String.format(text, person.getFirstName(), person.getLastName(), person.getEmail()));
+        }
+        catch(TransactionalException e)
+        {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Vartotojas su tokiu email jau egzistuoja"));
+        }
+
+
     }
 }

@@ -4,22 +4,12 @@ import dao.PersonDAO;
 import entitiesJPA.Person;
 import lombok.Getter;
 import lombok.Setter;
-import org.omnifaces.util.Faces;
-import org.omnifaces.util.Messages;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.FacesValidator;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
-import java.io.Console;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
@@ -65,12 +55,13 @@ public class CompleteUserRegistrationController implements Serializable
     {
         Date currentDate = new Date();
         Date invitationDate = person.getInviteExpiration();
-        System.out.println(currentDate + " " + invitationDate);
 
+        //nustatom datą, nuo kurios registracijos pakvietimas dar galiotų
         Calendar cal = Calendar.getInstance();
         cal.setTime(currentDate);
-        cal.add(Calendar.DATE, -2); //minus number would decrement the days
+        cal.add(Calendar.DATE, -2);
 
+        //tikrinam, ar pakvietimo data yra po tos datos, nuo kurios pakvietimas dar galiotų
         if(invitationDate.after(cal.getTime()))
         {
             return true;
@@ -88,5 +79,4 @@ public class CompleteUserRegistrationController implements Serializable
         personDAO.UpdateUser(person);
         return "index";
     }
-
 }
