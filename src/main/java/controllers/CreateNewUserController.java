@@ -19,7 +19,7 @@ import java.util.Date;
 public class CreateNewUserController
 {
 
-    String text = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
+    private String text = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
             " Noredami uzbaigti registracija spauskite sia nuoroda: http://localhost:8080/completeRegistration.html?id=%s";
 
     @Getter
@@ -34,6 +34,9 @@ public class CreateNewUserController
 
     public void createNewUser()
     {
+        //TODO įdėti exception handling, jei toks email jau egzistuoja
+        //TODO įdėti exception handling, jei nepaėjo email išsiųst
+
         person.setInviteExpiration(new Date());
         personDAO.CreateUser(person);
         es.sendEmail(person.getEmail(), String.format(text, person.getFirstName(), person.getLastName(), person.getEmail()));

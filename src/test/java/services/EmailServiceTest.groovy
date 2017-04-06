@@ -1,3 +1,5 @@
+package services
+
 import services.EmailService
 
 /**
@@ -6,6 +8,6 @@ import services.EmailService
 class EmailServiceTest extends GroovyTestCase {
     void testSendInvitation() {
         EmailService s = new EmailService();
-        s.sendInvitation("arturasfio@gmail.com", "http://www.google.lt");
+        s.sendEmail("arturasfio@gmail.com", "http://www.google.lt");
     }
 }

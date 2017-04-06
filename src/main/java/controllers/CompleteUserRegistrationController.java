@@ -21,6 +21,7 @@ import javax.persistence.NoResultException;
 import java.io.Console;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -40,8 +41,6 @@ public class CompleteUserRegistrationController implements Serializable
 
     public void validate(FacesContext context, UIComponent component, Object object)
     {
-        //TODO: patikrinti, ar nuoroda dar galioja
-
         //tikrinam, ar DB yra vartotojas su tokiu email
         try
         {
@@ -54,10 +53,31 @@ public class CompleteUserRegistrationController implements Serializable
         }
 
         //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
-        if(person.getInviteExpiration() == null)
+        //tikrinam, ar pakvietimas dar galioja
+        if(person.getInviteExpiration() == null || !isDateValid())
         {
             context.getExternalContext().setResponseStatus(404);
             context.responseComplete();
+        }
+    }
+
+    private boolean isDateValid()
+    {
+        Date currentDate = new Date();
+        Date invitationDate = person.getInviteExpiration();
+        System.out.println(currentDate + " " + invitationDate);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(currentDate);
+        cal.add(Calendar.DATE, -2); //minus number would decrement the days
+
+        if(invitationDate.after(cal.getTime()))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
 
     }
