@@ -12,6 +12,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.mail.MessagingException;
 import javax.persistence.PersistenceException;
 import javax.transaction.TransactionalException;
 import java.util.Date;
@@ -39,20 +40,41 @@ public class CreateNewUserController
 
     public void createNewUser()
     {
-        //TODO įdėti exception handling, jei toks email jau egzistuoja
-        //TODO įdėti exception handling, jei nepaėjo email išsiųst
-
         person.setInviteExpiration(new Date());
         try
         {
             personDAO.CreateUser(person);
-            es.sendEmail(person.getEmail(), String.format(text, person.getEmail()));
+            sendConfirmationEmail();
         }
         catch(TransactionalException e)
         {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Vartotojas su tokiu email jau egzistuoja"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Vartotojas su tokiu el.pašto adresu jau egzistuoja"));
         }
+    }
 
+    private void sendConfirmationEmail()
+    {
+        try
+        {
+            es.sendEmail(person.getEmail(), String.format(text, person.getEmail()));
+        }
+        catch(RuntimeException re)
+        {
+            if (re.getCause() instanceof MessagingException)
+            {
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Nepavyko išsiųsti registracijos laiško"));
+            }
+            else
+            {
+                throw re;
+            }
 
+        }
+    }
+
+    public void resendConfirmationEmail()
+    {
+        person.setInviteExpiration(new Date());
+        sendConfirmationEmail();
     }
 }
