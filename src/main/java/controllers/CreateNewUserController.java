@@ -44,11 +44,19 @@ public class CreateNewUserController
         try
         {
             personDAO.CreateUser(person);
-            es.sendEmail(person.getEmail(), String.format(text, person.getEmail()));
+            sendConfirmationEmail();
         }
         catch(TransactionalException e)
         {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Vartotojas su tokiu email jau egzistuoja"));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Vartotojas su tokiu el.pašto adresu jau egzistuoja"));
+        }
+    }
+
+    private void sendConfirmationEmail()
+    {
+        try
+        {
+            es.sendEmail(person.getEmail(), String.format(text, person.getEmail()));
         }
         catch(RuntimeException re)
         {
@@ -62,5 +70,11 @@ public class CreateNewUserController
             }
 
         }
+    }
+
+    public void resendConfirmationEmail()
+    {
+        person.setInviteExpiration(new Date());
+        sendConfirmationEmail();
     }
 }
