@@ -1,0 +1,56 @@
+header {
+    height: 60px;
+    position: fixed;
+    width: 100%;
+    background: #a9a9a9;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    width: 25%;
+    margin-top: 15px;
+}
+
+header nav div:hover {
+
+}
+
+
+header .sliding-middle-out {
+    display: inline-block;
+    position: relative;
+    padding-bottom: 10px;
+}
+header .sliding-middle-out:after {
+    content: '';
+    display: block;
+    margin: 3px auto;
+    height: 1px;
+    width: 0px;
+    border-radius: 5px;
+    background: transparent;
+    transition: all .5s ease;
+}
+header .sliding-middle-out:hover {
+    transition:  all .5s ease;
+}
+header .sliding-middle-out:hover:after {
+    width: 100%;
+    background: #ff3b3f;
+}
+
+header .user-info {
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Apklausos</title>
+        <!--<h:outputStylesheet ="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">-->
+    </h:head>
+    <h:body>
+        <ui:include src="../header.xhtml"/>
+        <div class="container content">
+            <h:form>
+               <h:panelGrid columns="4">
+                   <p:outputLabel for="email" value="El.Paštas"/>
+                   <p:inputText id="email" value="#{signInController.person.email}"/>
+                   <p:outputLabel for="password" value="Slaptažodis"/>
+                   <p:inputText id="password" value="#{signInController.person.password}"/>
+               </h:panelGrid>
+
+               <p:commandButton value="Prisijungti"
+                                action="#{signInController.signIn()}"
+                                ajax="false"/>
+            </h:form>
+        </div>
+        <ui:include src="../footer.xhtml"/>
+    </h:body>
+</html>
