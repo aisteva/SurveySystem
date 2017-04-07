@@ -43,4 +43,10 @@ public class PersonDAO
 
     }
 
+    @Transactional
+    public void DeleteUser(Person person)
+    {
+        entityManager.remove(person);
+    }
+
 }
