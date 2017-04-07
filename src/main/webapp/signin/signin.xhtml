@@ -7,25 +7,27 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Apklausos</title>
-        <!--<h:outputStylesheet ="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">-->
+        <title>Prisijungimas</title>
+        <h:outputStylesheet name="/css/style.css"/>
     </h:head>
     <h:body>
-        <ui:include src="../header.xhtml"/>
         <div class="container content">
-            <h:form>
-               <h:panelGrid columns="4">
-                   <p:outputLabel for="email" value="El.Paštas"/>
-                   <p:inputText id="email" value="#{signInController.person.email}"/>
-                   <p:outputLabel for="password" value="Slaptažodis"/>
-                   <p:inputText id="password" value="#{signInController.person.password}"/>
-               </h:panelGrid>
+            <div class="signin">
+                <h:form id="signin-form">
+                   <h:panelGrid columns="1">
+                       <h:message for="password" style="color: #ff3b3f; font-weight: 500;"/>
+                       <p:inputText id="email" value="#{signInController.person.email}" placeholder="El. paštas"/>
+                       <p:password id="password" value="#{signInController.person.password}" placeholder="Slaptažodis"/>
 
-               <p:commandButton value="Prisijungti"
-                                action="#{signInController.signIn()}"
-                                ajax="false"/>
-            </h:form>
+                   </h:panelGrid>
+
+                   <p:commandButton value="Prisijungti"
+                                    action="#{signInController.signIn()}"
+                                    ajax="false"/>
+
+                    <h:link value="Registruotis" outcome="/signup/createNewUser.xtml"/>
+                </h:form>
+            </div>
         </div>
-        <ui:include src="../footer.xhtml"/>
     </h:body>
 </html>

@@ -27,6 +27,7 @@ import java.util.List;
     @NamedQuery(name = "Person.findByUserType", query = "SELECT p FROM Person p WHERE p.userType = :userType"),
     @NamedQuery(name = "Person.findByInviteExpiration", query = "SELECT p FROM Person p WHERE p.inviteExpiration = :inviteExpiration"),
     @NamedQuery(name = "Person.findByIsBlocked", query = "SELECT p FROM Person p WHERE p.isBlocked = :isBlocked")})
+    @NamedQuery(name = "Person.findByEmailAndPassword", query = "SELECT p FROM Person p WHERE (p.email = :email) AND (p.password = :password)")
 @Getter
 @Setter
 @EqualsAndHashCode(of = "personID")

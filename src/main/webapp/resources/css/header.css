@@ -22,10 +22,6 @@ header nav {
     margin-top: 15px;
 }
 
-header nav div:hover {
-
-}
-
 
 header .sliding-middle-out {
     display: inline-block;
@@ -53,4 +49,9 @@ header .sliding-middle-out:hover:after {
 header .user-info {
     display: flex;
     align-items: center;
+}
+header #logout {
+    height: 20px;
+    margin-left: 20px;
+    padding-top: 5px;
 }

@@ -36,9 +36,9 @@ public class PersonDAO
 
     public Person FindPersonByEmailAndPassword(String email, String password)
     {
-        Query q = entityManager.createQuery("SELECT p FROM Person p WHERE p.email = :emailValue AND p.password = :passwordValue")
-                .setParameter("emailValue", email)
-                .setParameter("passwordValue", password);
+        Query q = entityManager.createNamedQuery("Person.findByEmailAndPassword")
+                .setParameter("email", email)
+                .setParameter("password", password);
         return (Person) q.getSingleResult();
 
     }

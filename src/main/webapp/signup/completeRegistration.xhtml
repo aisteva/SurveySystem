@@ -7,15 +7,10 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
    <h:head>
-      <title>Užbaigti registraciją</title>
-      <!--<h:outputStylesheet ="https://fonts.googleapis.com/css?family=Roboto:100,300,400" rel="stylesheet">-->
+       <title>Užbaigti registraciją</title>
+       <h:outputStylesheet name="/css/style.css"/>
    </h:head>
-   <f:metadata>
-       <f:viewParam name="id" required="true" value="#{completeUserRegistrationController.person.email}"
-                    validator="#{completeUserRegistrationController.validate}"/>
-   </f:metadata>
    <h:body>
-       <ui:include src="../header.xhtml"/>
        <div class="container content">
            <h:form>
            <p:dataTable value="#{completeUserRegistrationController.person}" var="person" tableStyle="width:auto">
@@ -30,16 +25,15 @@
                </p:column>
            </p:dataTable>
 
-               <h:panelGrid columns="1">
-                   <p:outputLabel for="pass" value="New Password"/>
-                   <p:inputText id="pass" value="#{completeUserRegistrationController.person.password}"/>
-               </h:panelGrid>
-               <p:commandButton value="Update Pass"
-                                action="#{completeUserRegistrationController.finishRegistration()}"
-                                ajax="false"/>
+           <h:panelGrid columns="1">
+               <p:outputLabel for="pass" value="New Password"/>
+               <p:inputText id="pass" value="#{completeUserRegistrationController.person.password}"/>
+           </h:panelGrid>
+           <p:commandButton value="Update Pass"
+                            action="#{completeUserRegistrationController.finishRegistration()}"
+                            ajax="false"/>
 
            </h:form>
        </div>
-       <ui:include src="../footer.xhtml"/>
    </h:body>
 </html>
