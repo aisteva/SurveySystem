@@ -39,5 +39,5 @@ public class Answer implements Serializable {
     private String text;
     @JoinColumn(name = "OfferedAnswerID", referencedColumnName = "OfferedAnswerID")
     @ManyToOne(optional = false)
-    private Offeredanswer offeredAnswerID;
+    private OfferedAnswer offeredAnswerID;
 }

@@ -24,7 +24,7 @@ import java.util.List;
 @Setter
 @EqualsAndHashCode(of = "offeredAnswerID")
 @ToString(of = "offeredAnswerID")
-public class Offeredanswer implements Serializable {
+public class OfferedAnswer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,5 +40,5 @@ public class Offeredanswer implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
     private List<Answer> answerList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
-    private List<Answerconnection> answerconnectionList;
+    private List<AnswerConnection> answerConnectionList;
 }
