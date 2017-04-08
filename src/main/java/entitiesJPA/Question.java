@@ -56,4 +56,18 @@ public class Question implements Serializable {
     @JoinColumn(name = "SurveyID", referencedColumnName = "SurveyID")
     @ManyToOne(optional = false)
     private Survey surveyID;
+
+    public enum QUESTION_TYPE {
+        SINGLE,
+        MULTIPLE,
+        FREE_TEXT,
+        NUMBER
+    };
+
+    public QUESTION_TYPE[] getTypes(){
+        return Question.QUESTION_TYPE.values();
+    };
+
+    @Transient
+    private QUESTION_TYPE questionType;
 }

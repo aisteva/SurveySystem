@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +34,20 @@ import java.util.List;
 @EqualsAndHashCode(of = "personID")
 @ToString(of = "personID")
 public class Person implements Serializable {
+
+    public Person(){};
+
+    public Person(String firstName, String lastName, String email, String password, String userType, Date inviteExpiration) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.userType = userType;
+        this.inviteExpiration = inviteExpiration;
+        this.isBlocked = false;
+        this.surveyList = new ArrayList<>();
+    };
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

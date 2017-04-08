@@ -4,6 +4,7 @@ import CreateFormPackage.Dao.OfferedAnswerDao;
 import CreateFormPackage.Dao.QuestionDao;
 import CreateFormPackage.Dao.SurveyDao;
 import entitiesJPA.OfferedAnswer;
+import entitiesJPA.Person;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
 
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -66,6 +68,7 @@ public class CreateFormController implements Serializable {
 
     @Transactional
     public void createForm() {
+        Person person = new Person("a", "a", "a", "a", "a",new Date());
         Survey survey = new Survey();
         surveyDAO.create(survey);
         /*for (Question question : questionList) {
