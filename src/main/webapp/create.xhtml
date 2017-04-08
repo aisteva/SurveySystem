@@ -14,35 +14,35 @@
    <div class="container content">
       <h1>Create new form</h1>
       <h:form>
-         <h:dataTable id="tblFields" value="#{createFormController.getQuestions()}" var="field">
-            <h:column>
-               <h:inputText value="#{field.questionText}" />
+         <h:dataTable id="tblFields" value="#{createFormController.questionList}" var="question">
+            <h:column id="questionText">
+               <h:inputText value="#{question.questionText}" />
             </h:column>
             <h:column>
-               <h:selectBooleanCheckbox id="required" value="#{field.required}" />
+               <h:selectBooleanCheckbox id="required" value="#{question.required}" />
                <h:outputLabel value="Required" for="required" />
             </h:column>
 
-            <h:column>
-               <h:selectOneRadio value = "#{field.questionType}">
-                  <f:selectItems value = "#{field.types}"/>
+            <h:column id="questionTypes">
+               <h:selectOneRadio value = "#{question.questionType}">
+                  <f:selectItems value = "#{question.types}"/>
                </h:selectOneRadio>
             </h:column>
 
-            <h:column>
-               <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers()}">
+            <h:column id="answers">
+               <ui:repeat var="answer" value="#{question.offeredanswerList}">
                   <h:inputText value="#{answer.text}" />
                </ui:repeat>
             </h:column>
 
             <h:column>
                <h:commandButton value="Add answer">
-                  <f:ajax listener="#{createFormController.onButtonAddOfferedAnswerClick(field)}" immediate="true" render="@form" />
+                  <f:ajax listener="#{createFormController.onButtonAddOfferedAnswerClick(question)}" immediate="true" render="@form" />
                </h:commandButton>
             </h:column>
             <h:column>
                <h:commandButton value="Remove">
-                  <f:ajax listener="#{createFormController.onButtonRemoveQuestionClick(field)}" immediate="true" render="@form" />
+                  <f:ajax listener="#{createFormController.onButtonRemoveQuestionClick(question)}" immediate="true" render="@form" />
                </h:commandButton>
             </h:column>
          </h:dataTable>
@@ -52,7 +52,7 @@
          </h:commandButton>
 
          <p:commandButton value="Submit form"
-                          actionListener="#{createFormController.createForm()}"
+                          actionListener="#{createFormController.createForm}"
                           ajax="false"/>
 
          <p:messages globalOnly="true"/>

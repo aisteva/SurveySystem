@@ -6,6 +6,7 @@ import CreateFormPackage.Dao.QuestionDao;
 import CreateFormPackage.Dao.SurveyDao;
 import dao.PersonDAO;
 import entitiesJPA.*;
+import lombok.Getter;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -24,16 +25,8 @@ import java.util.List;
 //@Slf4j
 @ManagedBean
 @ViewScoped
+@Getter
 public class CreateFormController implements Serializable {
-
-    @Inject
-    private QuestionDao questionDAO;
-
-    @Inject
-    private SurveyDao surveyDAO;
-
-    @Inject
-    private OfferedAnswerDao offeredAnswerDao;
 
     @Inject
     private PersonDAO personDAO;
@@ -41,16 +34,6 @@ public class CreateFormController implements Serializable {
     private List<Question> questionList = new ArrayList<>();
 
     private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
-
-    public List<OfferedAnswer> getOfferedAnswers(){
-        return offeredAnswerList;
-    }
-
-    public CreateFormController() {};
-
-    public List<Question> getQuestions() {
-        return questionList;
-    }
 
     public void onButtonRemoveQuestionClick(final Question question) {
         questionList.remove(question);
@@ -85,10 +68,6 @@ public class CreateFormController implements Serializable {
                 conn.setQuestionID(question);
                 conn.setOfferedAnswerID(offAnsw);
             }
-        }
-
-        for (OfferedAnswer offeredAnswer : offeredAnswerList) {
-            offeredAnswer.setText("fds");
         }
 
         personDAO.UpdateUser(person);
