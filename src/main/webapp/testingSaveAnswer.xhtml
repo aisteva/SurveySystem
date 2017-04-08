@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+>
+
+
+<h:body>
+    <h:form>
+        <p:fieldset legend="Answers" toggleable="true" style="width: 50%">
+            <p:dataTable value="#{saveAnswersController.getAllAnswers()}" var="answer">
+                <p:column headerText="Answer">
+                    <h:outputText value="#{answer.answerID} #{answer.text}" />
+                </p:column>
+            </p:dataTable>
+        </p:fieldset>
+        <table>
+            <tr>
+                <td>
+                    <h:panelGrid columns="3">
+                        <p:outputLabel for="answerID" value="answerID"/>
+                        <p:inputText id="answerID" value="#{saveAnswersController.answer.answerID}"/>
+                        <p:message for="answerID"/>
+                        <p:outputLabel for="sessionID" value="sessionID"/>
+                        <p:inputText id="sessionID" value="#{saveAnswersController.answer.sessionID}"/>
+                        <p:message for="sessionID"/>
+                        <p:outputLabel for="text" value="text"/>
+                        <p:inputText id="text" value="#{saveAnswersController.answer.text}"/>
+                        <p:message for="text"/>
+                        <p:outputLabel for="offeredAnswerID" value="offeredAnswerID"/>
+                        <p:inputText id="offeredAnswerID" value="#{saveAnswersController.answer.offeredAnswerID}"/>
+                        <p:message for="offeredAnswerID"/>
+                    </h:panelGrid>
+                </td>
+
+            </tr>
+        </table>
+        <p:commandButton value="Save"
+                         actionListener="#{saveAnswersController.saveAnswer()}"
+                         ajax="false"/>
+        <p:messages globalOnly="true"/>
+
+
+    </h:form>
+
+</h:body>
+</html>

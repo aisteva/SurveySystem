@@ -17,9 +17,9 @@ import java.util.List;
 @Entity
 @Table(name = "offeredanswer")
 @NamedQueries({
-    @NamedQuery(name = "Offeredanswer.findAll", query = "SELECT o FROM Offeredanswer o"),
-    @NamedQuery(name = "Offeredanswer.findByOfferedAnswerID", query = "SELECT o FROM Offeredanswer o WHERE o.offeredAnswerID = :offeredAnswerID"),
-    @NamedQuery(name = "Offeredanswer.findByText", query = "SELECT o FROM Offeredanswer o WHERE o.text = :text")})
+    @NamedQuery(name = "OfferedAnswer.findAll", query = "SELECT o FROM OfferedAnswer o"),
+    @NamedQuery(name = "OfferedAnswer.findByOfferedAnswerID", query = "SELECT o FROM OfferedAnswer o WHERE o.offeredAnswerID = :offeredAnswerID"),
+    @NamedQuery(name = "OfferedAnswer.findByText", query = "SELECT o FROM OfferedAnswer o WHERE o.text = :text")})
 @Getter
 @Setter
 @EqualsAndHashCode(of = "offeredAnswerID")

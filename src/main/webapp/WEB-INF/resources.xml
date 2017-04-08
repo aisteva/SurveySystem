@@ -6,7 +6,7 @@
     <!-- pasikeiskit savo db prisijungimus -->
     <Resource id="SurveyDataSource" type="DataSource">
         JdbcDriver = com.mysql.jdbc.Driver
-        JdbcUrl = jdbc:mysql://localhost:3306/surveydb
+        JdbcUrl = jdbc:mysql://localhost:3306/apklausos
         UserName = root
         InitialSize = 1
         MaxActive = 10

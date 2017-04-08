@@ -16,8 +16,8 @@ import java.io.Serializable;
 @Entity
 @Table(name = "answerconnection")
 @NamedQueries({
-    @NamedQuery(name = "Answerconnection.findAll", query = "SELECT a FROM Answerconnection a"),
-    @NamedQuery(name = "Answerconnection.findByAnswerConnectionID", query = "SELECT a FROM Answerconnection a WHERE a.answerConnectionID = :answerConnectionID")})
+    @NamedQuery(name = "AnswerConnection.findAll", query = "SELECT a FROM AnswerConnection a"),
+    @NamedQuery(name = "AnswerConnection.findByAnswerConnectionID", query = "SELECT a FROM AnswerConnection a WHERE a.answerConnectionID = :answerConnectionID")})
 @Getter
 @Setter
 @EqualsAndHashCode(of = "answerConnectionID")
