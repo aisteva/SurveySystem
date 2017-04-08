@@ -45,7 +45,6 @@ public class Person implements Serializable {
         this.userType = userType;
         this.inviteExpiration = inviteExpiration;
         this.isBlocked = false;
-        this.surveyList = new ArrayList<>();
     };
 
     private static final long serialVersionUID = 1L;
@@ -76,5 +75,5 @@ public class Person implements Serializable {
     @Column(name = "isBlocked")
     private boolean isBlocked;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personID")
-    private List<Survey> surveyList;
+    private List<Survey> surveyList = new ArrayList<>();
 }

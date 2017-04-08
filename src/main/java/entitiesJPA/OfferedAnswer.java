@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -38,7 +39,7 @@ public class OfferedAnswer implements Serializable {
     @ManyToOne(optional = false)
     private Question questionID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
-    private List<Answer> answerList;
+    private List<Answer> answerList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
-    private List<AnswerConnection> answerConnectionList;
+    private List<AnswerConnection> answerconnectionList = new ArrayList<>();
 }

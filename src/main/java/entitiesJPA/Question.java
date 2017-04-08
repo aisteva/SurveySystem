@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,9 +51,9 @@ public class Question implements Serializable {
     @Column(name = "isRequired")
     private boolean isRequired;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
-    private List<OfferedAnswer> offeredAnswerList;
+    private List<OfferedAnswer> offeredanswerList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
-    private List<AnswerConnection> answerConnectionList;
+    private List<AnswerConnection> answerconnectionList = new ArrayList<>();
     @JoinColumn(name = "SurveyID", referencedColumnName = "SurveyID")
     @ManyToOne(optional = false)
     private Survey surveyID;

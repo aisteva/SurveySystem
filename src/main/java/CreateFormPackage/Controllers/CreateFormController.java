@@ -1,12 +1,11 @@
 package CreateFormPackage.Controllers;
 
+import CreateFormPackage.Dao.AnswerConnectionDao;
 import CreateFormPackage.Dao.OfferedAnswerDao;
 import CreateFormPackage.Dao.QuestionDao;
 import CreateFormPackage.Dao.SurveyDao;
-import entitiesJPA.OfferedAnswer;
-import entitiesJPA.Person;
-import entitiesJPA.Question;
-import entitiesJPA.Survey;
+import dao.PersonDAO;
+import entitiesJPA.*;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -36,6 +35,9 @@ public class CreateFormController implements Serializable {
     @Inject
     private OfferedAnswerDao offeredAnswerDao;
 
+    @Inject
+    private PersonDAO personDAO;
+
     private List<Question> questionList = new ArrayList<>();
 
     private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
@@ -44,9 +46,7 @@ public class CreateFormController implements Serializable {
         return offeredAnswerList;
     }
 
-    public CreateFormController() {
-
-    }
+    public CreateFormController() {};
 
     public List<Question> getQuestions() {
         return questionList;
@@ -63,21 +63,34 @@ public class CreateFormController implements Serializable {
     public void onButtonAddOfferedAnswerClick(final Question question) {
         OfferedAnswer answer = new OfferedAnswer();
         answer.setQuestionID(question);
-        offeredAnswerList.add(new OfferedAnswer());
+        question.getOfferedanswerList().add(answer);
+        offeredAnswerList.add(answer);
     }
 
     @Transactional
     public void createForm() {
-        Person person = new Person("a", "a", "a", "a", "a",new Date());
-        Survey survey = new Survey();
-        surveyDAO.create(survey);
-        /*for (Question question : questionList) {
+        Person person = personDAO.FindPersonByEmail("a");
+        if (person == null) person = new Person("a","a", "a", "a", "a", new Date());
+        Survey survey = new Survey("sf", new Date(), "fsfds564", true, true, false, person);
+        survey.setPersonID(person);
+        person.getSurveyList().add(survey);
+        for (Question question : questionList) {
             question.setSurveyID(survey);
-            questionDAO.create(question);
+            question.setType(question.getQuestionType().toString());
+            survey.getQuestionList().add(question);
+            for (OfferedAnswer offAnsw : question.getOfferedanswerList()){
+                AnswerConnection conn = new AnswerConnection();
+                question.getAnswerconnectionList().add(conn);
+                offAnsw.getAnswerconnectionList().add(conn);
+                conn.setQuestionID(question);
+                conn.setOfferedAnswerID(offAnsw);
+            }
         }
+
         for (OfferedAnswer offeredAnswer : offeredAnswerList) {
-            offeredAnswerDao.create(offeredAnswer);
+            offeredAnswer.setText("fds");
         }
-*/
+
+        personDAO.UpdateUser(person);
     }
 }

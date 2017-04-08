@@ -12,6 +12,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,20 @@ import java.util.List;
 @EqualsAndHashCode(of = "surveyID")
 @ToString(of = "surveyID")
 public class Survey implements Serializable {
+
+    public Survey(){};
+
+    public Survey(String description, Date startDate, String surveyURL, boolean isOpen, boolean isCreated, boolean isPrivate, Person personID) {
+        this.description = description;
+        this.startDate = startDate;
+        this.surveyURL = surveyURL;
+        this.isOpen = isOpen;
+        this.isCreated = isCreated;
+        this.isPrivate = isPrivate;
+        this.personID = personID;
+        this.questionList = new ArrayList<>();
+    }
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,5 +78,5 @@ public class Survey implements Serializable {
     @ManyToOne(optional = false)
     private Person personID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyID")
-    private List<Question> questionList;
+    private List<Question> questionList=new ArrayList<>();
 }
