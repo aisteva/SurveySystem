@@ -6,22 +6,58 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-   <h:head>
-      <title>Apklausos</title>
-   </h:head>
-   <f:metadata>
-      <f:viewParam name="person" value="#{signInController.person}" />
-      <f:viewAction action="#{signInController.isSigned}" />
-   </f:metadata>
-   <f:metadata>
-      <f:viewParam name="person" value="#{signInController.person}" />
-      <f:viewAction action="#{signInController.isSigned}" />
-   </f:metadata>
-   <h:body>
-      <ui:include src="/header.xhtml"/>
-      <div class="container content">
-         blablabla...
-      </div>
-      <ui:include src="/footer.xhtml"/>
-   </h:body>
+<h:head>
+   <title>Create new form</title>
+</h:head>
+<h:body>
+   <ui:include src="/header.xhtml"/>
+   <div class="container content">
+      <h1>Create new form</h1>
+      <h:form>
+         <h:dataTable id="tblFields" value="#{createFormController.getQuestions()}" var="field">
+            <h:column>
+               <h:inputText value="#{field.questionText}" />
+            </h:column>
+            <h:column>
+               <h:selectBooleanCheckbox id="required" value="#{field.required}" />
+               <h:outputLabel value="Required" for="required" />
+            </h:column>
+
+            <h:column>
+               <h:selectOneRadio value = "#{field.type}">
+                  <f:selectItems value = "#{field.types}"/>
+               </h:selectOneRadio>
+            </h:column>
+
+            <h:column>
+               <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers()}">
+                  <h:inputText value="#{answer.text}" />
+               </ui:repeat>
+            </h:column>
+
+            <h:column>
+               <h:commandButton value="Add answer">
+                  <f:ajax listener="#{createFormController.onButtonAddOfferedAnswerClick(field)}" immediate="true" render="@form" />
+               </h:commandButton>
+            </h:column>
+            <h:column>
+               <h:commandButton value="Remove">
+                  <f:ajax listener="#{createFormController.onButtonRemoveQuestionClick(field)}" immediate="true" render="@form" />
+               </h:commandButton>
+            </h:column>
+         </h:dataTable>
+
+         <h:commandButton value="Add">
+            <f:ajax listener="#{createFormController.onButtonAddQuestionClick}" execute="@form" render="tblFields" />
+         </h:commandButton>
+
+         <p:commandButton value="Submit form"
+                          actionListener="#{createFormController.createForm()}"
+                          ajax="false"/>
+
+         <p:messages globalOnly="true"/>
+      </h:form>
+   </div>
+   <ui:include src="/footer.xhtml"/>
+</h:body>
 </html>

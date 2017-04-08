@@ -22,7 +22,7 @@ import java.io.Serializable;
 @Setter
 @EqualsAndHashCode(of = "answerConnectionID")
 @ToString(of = "answerConnectionID")
-public class Answerconnection implements Serializable {
+public class AnswerConnection implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,5 +34,5 @@ public class Answerconnection implements Serializable {
     private Question questionID;
     @JoinColumn(name = "OfferedAnswerID", referencedColumnName = "OfferedAnswerID")
     @ManyToOne(optional = false)
-    private Offeredanswer offeredAnswerID;
+    private OfferedAnswer offeredAnswerID;
 }
