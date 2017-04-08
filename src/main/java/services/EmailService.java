@@ -20,7 +20,7 @@ import java.util.Properties;
 public class EmailService
 {
     private String port = "587";
-    private String host = "mail.inbodx.lt";
+    private String host = "mail.inbox.lt";
     private String from = "surveysystem@inbox.lt";
     private String username = "surveysystem";
     private String password = "apklausa";
