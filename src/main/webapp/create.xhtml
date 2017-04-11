@@ -5,54 +5,91 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
-   <title>Create new form</title>
+   <title>Nauja apklausa</title>
+   <h:outputStylesheet name="/css/create/style.css" />
 </h:head>
+<f:metadata>
+   <f:viewParam name="person" value="#{signInController.person}" />
+   <f:viewAction action="#{signInController.isSigned}" />
+</f:metadata>
 <h:body>
    <ui:include src="/header.xhtml"/>
+
    <div class="container content">
-      <h1>Create new form</h1>
+      <div class="surveyTitle">
+         <h:inputText value="" a:placeholder="Apklausos pavadinimas"/>
+      </div>
+
+      <div class="surveyDetails">
+         <div class="surveyDescription">
+            <h:inputTextarea value="#{createFormController.survey.description}" a:placeholder="Aprašymas "></h:inputTextarea>
+         </div>
+         <div>
+            <p:outputLabel for="startDate" value="Pradžios data*"/>
+            <p:calendar id="startDate" value="#{createFormController.survey.startDate}"/>
+         </div>
+         <div>
+            <p:outputLabel for="endDate" value="Pabaigos data"/>
+            <p:calendar id="endDate" value="#{createFormController.survey.endDate}"/>
+         </div>
+      </div>
       <h:form>
-         <h:dataTable id="tblFields" value="#{createFormController.questionList}" var="question">
-            <h:column id="questionText">
-               <h:inputText value="#{question.questionText}" />
-            </h:column>
-            <h:column>
-               <h:selectBooleanCheckbox id="required" value="#{question.required}" />
-               <h:outputLabel value="Required" for="required" />
-            </h:column>
+         <h:panelGroup id="survey" >
+         <ui:repeat  value="#{createFormController.getQuestions()}" var="question" varStatus="questionStatus">
+            <div class="one-question">
+               #{question.setQuestionNumber(questionStatus.index)}
+               <div class="question-text">
+                  <h:inputText value="#{question.questionText}" a:placeholder="Klausimas">
+                     <f:ajax render="@form"/>
+                  </h:inputText>
+               </div>
+               <div class="question-type">
+                  <h:selectOneMenu value="#{question.type}">
+                     <f:selectItems value = "#{question.types}"/>
+                     <f:ajax render="@form"/>
+                  </h:selectOneMenu>
+               </div>
+               <div class="answers">
+                  <h:panelGroup rendered="#{question.type == 'TEXT'}">
+                     <ui:include src="/create/text.xhtml"/>
+                  </h:panelGroup>
+                  <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                     <ui:include src="/create/checkbox.xhtml"/>
+                  </h:panelGroup>
+                  <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
+                     <ui:include src="/create/multiplechoice.xhtml"/>
+                  </h:panelGroup>
+                  <h:panelGroup rendered="#{question.type == 'SCALE'}">
+                     <ui:include src="/create/scale.xhtml"/>
+                  </h:panelGroup>
+               </div>
 
-            <h:column id="questionTypes">
-               <h:selectOneRadio value = "#{question.questionType}">
-                  <f:selectItems value = "#{question.types}"/>
-               </h:selectOneRadio>
-            </h:column>
+               <hr/>
+               <div class="actions-with-question">
+                  <div class="remove-question">
+                     <h:graphicImage value="resources/images/remove.png">
+                        <f:ajax event="click" listener="#{createFormController.onButtonRemoveQuestionClick(questionStatus.index)}" immediate="true" render="@form"  />
+                     </h:graphicImage>
+                  </div>
+                  <div class="required">
+                     <p:selectBooleanCheckbox value="#{question.required}" itemLabel="Privalomas"/>
+                  </div>
+               </div>
+            </div>
+         </ui:repeat>
 
-            <h:column id="answers">
-               <ui:repeat var="answer" value="#{question.offeredanswerList}">
-                  <h:inputText value="#{answer.text}" />
-               </ui:repeat>
-            </h:column>
+         </h:panelGroup>
 
-            <h:column>
-               <h:commandButton value="Add answer">
-                  <f:ajax listener="#{createFormController.onButtonAddOfferedAnswerClick(question)}" immediate="true" render="@form" />
-               </h:commandButton>
-            </h:column>
-            <h:column>
-               <h:commandButton value="Remove">
-                  <f:ajax listener="#{createFormController.onButtonRemoveQuestionClick(question)}" immediate="true" render="@form" />
-               </h:commandButton>
-            </h:column>
-         </h:dataTable>
 
-         <h:commandButton value="Add">
-            <f:ajax listener="#{createFormController.onButtonAddQuestionClick}" execute="@form" render="tblFields" />
-         </h:commandButton>
+         <h:graphicImage value="resources/images/add.png" styleClass="add-question">
+            <f:ajax event="click" listener="#{createFormController.onButtonAddQuestionClick()}" execute="@form" render="survey" />
+         </h:graphicImage>
 
          <p:commandButton value="Submit form"
-                          actionListener="#{createFormController.createForm}"
+                          actionListener="#{createFormController.createForm(signInController.person)}"
                           ajax="false"/>
 
          <p:messages globalOnly="true"/>

@@ -1,0 +1,30 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+   <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers(questionStatus.index)}" varStatus="answerStatus">
+      <div class="one-answer">
+         <div class="answer-logo">
+            <div class="square"/>
+         </div>
+         <div class="answer-text">
+            <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}">
+               <f:ajax render="@form" />
+            </h:inputText>
+         </div>
+         <div class="remove-answer">
+            <h:graphicImage value="resources/images/close.png">
+               <f:ajax event="click" listener="#{createFormController.onButtonRemoveAnswerClick(questionStatus.index, answerStatus.index)}" immediate="true" render="@form" />
+            </h:graphicImage>
+         </div>
+      </div>
+   </ui:repeat>
+   <div class="add-answer">
+      <h:graphicImage value="resources/images/add.png">
+         <f:ajax event="click" listener="#{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}" immediate="true" render="@form" />
+      </h:graphicImage>
+   </div>
+</ui:composition>

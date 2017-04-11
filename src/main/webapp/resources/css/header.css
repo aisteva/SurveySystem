@@ -19,7 +19,8 @@ header nav {
     display: flex;
     justify-content: space-between;
     width: 25%;
-    margin-top: 15px;
+    margin-top: 20px;
+    height: 40px;
 }
 
 
@@ -50,8 +51,37 @@ header .user-info {
     display: flex;
     align-items: center;
 }
-header #logout {
-    height: 20px;
-    margin-left: 20px;
-    padding-top: 5px;
+
+header .info .name {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 150px;
+    padding: 0px 10px;
+    text-align: left;
+}
+
+header .info:hover .sliding-bottom-menu {
+    visibility: visible;
+    margin-top: -1px;
+}
+
+header .sliding-bottom-menu {
+    margin-top: -78px;
+    visibility: hidden;
+}
+header .sliding-bottom-menu div {
+    width: 150px;
+    background: #ffffff;
+    padding: 10px 5px;
+    border-top: 1px solid #a9a9a9 !important;
+}
+
+header .sliding-bottom-menu a {
+    color: #292929 !important;
+}
+
+header .sliding-bottom-menu a:hover div {
+    background: #e7e7e7;
 }

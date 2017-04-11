@@ -1,0 +1,21 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div class="scale">
+        #{createFormController.removeAllOfferedAnswers(questionStatus.index)}
+        #{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}
+        #{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}
+        <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}" a:placeholder="Nuo" decimalPlaces="0" thousandSeparator="">
+            <!--<f:ajax render="@form"/>-->
+        </p:inputNumber>
+        <p>―</p>
+        <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(1).text}" a:placeholder="Iki" decimalPlaces="0" thousandSeparator="" minValue="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}">
+            <!--<f:ajax render="@form"/>-->
+        </p:inputNumber>
+    </div>
+</ui:composition>

@@ -21,22 +21,5 @@
     padding: 10px 0px;
 }
 
-.signin input {
-    padding: 10px;
-}
-.signin button {
-    border: none;
-    outline:none;
-    padding: 5px;
-    background: #a9a9a9;
-    width: 100%;
-    box-shadow: none;
-    color: #ffffff;
 
-    transition: .2s background ease;
-}
 
-.signin button:hover {
-    background: rgba(255, 59, 63, 0.4);
-    transition: .2s all ease;
-}

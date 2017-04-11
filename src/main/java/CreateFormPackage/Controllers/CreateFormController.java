@@ -28,6 +28,11 @@ import java.util.List;
 @Getter
 public class CreateFormController implements Serializable {
 
+    //Prano
+    @Setter
+    @Getter
+    private Survey survey = new Survey();
+
     @Inject
     private PersonDAO personDAO;
 
@@ -35,19 +40,38 @@ public class CreateFormController implements Serializable {
 
     private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
 
+    public List<OfferedAnswer> getOfferedAnswers(){
+        return offeredAnswerList;
+    }
+
+    public CreateFormController() {
+
+    }
+
+    public List<Question> getQuestions() {
+        return questionList;
+    }
+
     public void onButtonRemoveQuestionClick(final Question question) {
         questionList.remove(question);
     }
 
-    public void onButtonAddQuestionClick(AjaxBehaviorEvent p_oEvent) {
-        questionList.add(new Question());
+    public void onButtonAddQuestionClick() {
+        Question question = new Question();
+        survey.getQuestionList().add(question);
+        onButtonAddOfferedAnswerClick(survey.getQuestionList().size() - 1);
     }
 
-    public void onButtonAddOfferedAnswerClick(final Question question) {
-        OfferedAnswer answer = new OfferedAnswer();
-        answer.setQuestionID(question);
-        question.getOfferedanswerList().add(answer);
-        offeredAnswerList.add(answer);
+    public void onButtonRemoveAnswerClick(final int questionIndex, final int answerIndex){
+        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().remove(answerIndex);
+    }
+
+    public void onButtonAddOfferedAnswerClick(final int questionIndex) {
+        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().add(new OfferedAnswer());
+    }
+
+    public void removeAllOfferedAnswers(final int questionIndex) {
+        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().clear();
     }
 
     @Transactional

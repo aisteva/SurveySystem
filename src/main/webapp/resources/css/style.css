@@ -30,11 +30,34 @@ a {
     padding-top: 60px;
 }
 
+h1 {
+    font-size: 200%;
+    text-align: center;
+    padding: 30px;
+}
 input {
     box-shadow: none !important;
+    padding: 10px;
+    border: 0;
+    outline: none !important;
 }
 
+button, input[type=submit] {
+    border: none !important;
+    outline:none !important;
+    padding: 5px;
+    background: #a9a9a9 !important;
+    width: 100%;
+    box-shadow: none !important;
+    color: #ffffff !important;
+    transition: .2s background ease;
+}
 
+button:hover, input[type=submit]:hover {
+    background: rgba(255, 59, 63, 0.4) !important;
+    transition: .2s all ease;
+    cursor: pointer;
+}
 
 /*h1 {*/
     /*text-align: center;*/

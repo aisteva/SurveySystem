@@ -13,14 +13,20 @@
             <div class="sliding-middle-out"><a href="/create.html">Kurti apklausą</a></div>
             <div class="sliding-middle-out"><a href="/answer.html">Atsakyti į apklausą</a></div>
          </nav>
-         <div class="user-info">
-            <div class="name">#{signInController.getPersonFullName()}</div>
-            <div class="logout">
-               <h:link outcome="#{signInController.signOut()}">
-                  <h:graphicImage library="images" name="sing-out.png" id="logout"/>
-               </h:link>
+         <div class="info">
+            <div class="name">
+               <span>#{signInController.getPersonFullName()}</span>
+            </div>
+            <div class="sliding-bottom-menu">
+                  <h:link>
+                     <div>Paskyra</div>
+                  </h:link>
+                  <h:link outcome="#{signInController.signOut()}">
+                     <div>Atsijungti</div>
+                  </h:link>
             </div>
          </div>
+
       </div>
    </header>
 </ui:composition>

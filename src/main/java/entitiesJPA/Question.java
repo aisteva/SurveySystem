@@ -59,10 +59,10 @@ public class Question implements Serializable {
     private Survey surveyID;
 
     public enum QUESTION_TYPE {
-        SINGLE,
-        MULTIPLE,
-        FREE_TEXT,
-        NUMBER
+        TEXT,
+        CHECKBOX,
+        MULTIPLECHOICE,
+        SCALE
     };
 
     public QUESTION_TYPE[] getTypes(){

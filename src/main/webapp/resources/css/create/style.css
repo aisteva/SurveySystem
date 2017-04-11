@@ -1,0 +1,110 @@
+input[type=submit].new-question {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circle {
+    border-radius: 50%;
+    border: 1px solid #a9a9a9;
+    height: 15px;
+    width: 15px;
+}
+.square {
+    border-radius: 10%;
+    border: 1px solid #a9a9a9;
+    height: 15px;
+    width: 15px;
+}
+
+.scale {
+    display: flex;
+    align-items: center;
+}
+
+.scale input {
+    width: 120px;
+}
+input {
+    background: rgba(0, 0, 0, 0) !important;
+    padding-bottom: 5px !important;
+    border-bottom: 1.5px solid #e7e7e7 !important;
+    margin-bottom: 15px;
+    color:#292929 !important;
+}
+
+input[type=text] {
+    border-top: 0px !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-bottom: 1.5px solid #e7e7e7 !important;
+    font-weight: 300 !important;
+}
+
+input:focus {
+    border-bottom: 1.5px solid #ff3b3f !important;
+    transition: 0.5s border-bottom ease-out;
+}
+
+.surveyTitle {
+    display: flex;
+    justify-content: center;
+}
+
+.surveyTitle input {
+    font-size: 200%;
+    max-width: 400px;
+}
+.question-type select {
+    background: rgba(0, 0, 0, 0);
+    border: none;
+    font-size: 15px;
+}
+.question-text input {
+    width: 50%;
+    font-size: 20px;
+}
+
+.one-question {
+    padding: 20px;
+    margin: 30px 0px;
+    background: #f7f7f7;
+    position: relative;
+}
+.answers {
+    padding-bottom: 20px;
+}
+.answers .one-answer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.answer-text input {
+    width: 250px;
+    margin: 10px 15px;
+}
+
+.actions-with-question {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.remove-answer img, .add-answer img, img.add-question {
+    height: 30px;
+    cursor: pointer;
+}
+.remove-question {
+
+}
+.remove-question img{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}

@@ -78,5 +78,5 @@ public class Survey implements Serializable {
     @ManyToOne(optional = false)
     private Person personID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyID")
-    private List<Question> questionList=new ArrayList<>();
+    private List<Question> questionList = new ArrayList<>();
 }
