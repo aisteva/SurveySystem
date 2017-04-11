@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+        <script type="text/javascript">
+            window.setInterval (BlinkIt, 500);
+            var color = "#ffffff";
+            function BlinkIt () {
+                var blink = document.getElementById ("blink");
+                color = (color == "#ffffff")? "#FF0000" : "#ffffff";
+                blink.style.color = color;
+            }
+        </script>
+    <title>Congratulations</title>
+</h:head>
+<f:metadata>
+    <f:viewParam name="person" value="#{signInController.person}" />
+    <f:viewAction action="#{signInController.isSigned}" />
+</f:metadata>
+<h:body>
+    <ui:include src="/header.xhtml"/>
+    <div class="container content" align="center">
+        <h1 id="blink">Mldc. ką tik sukurei apklausą</h1>
+        <p><iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" frameborder="0"></iframe></p>
+    </div>
+    <ui:include src="/footer.xhtml"/>
+</h:body>
+</html>

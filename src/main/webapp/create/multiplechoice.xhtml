@@ -16,14 +16,14 @@
             </h:inputText>
          </div>
          <div class="remove-answer">
-            <h:graphicImage value="resources/images/close.png">
+            <h:graphicImage value="../resources/images/close.png">
                <f:ajax event="click" listener="#{createFormController.onButtonRemoveAnswerClick(questionStatus.index, answerStatus.index)}" immediate="true" render="@form" />
             </h:graphicImage>
          </div>
       </div>
    </ui:repeat>
    <div class="add-answer">
-      <h:graphicImage value="resources/images/add.png">
+      <h:graphicImage value="../resources/images/add.png">
          <f:ajax event="click" listener="#{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}" immediate="true" render="@form" />
       </h:graphicImage>
    </div>

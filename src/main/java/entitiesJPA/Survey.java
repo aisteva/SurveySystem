@@ -54,7 +54,7 @@ public class Survey implements Serializable {
     @Column(name = "SurveyID")
     private Long surveyID;
     @Column(name = "Description")
-    private String description;
+    private String description="";
     @Basic(optional = false)
     @Column(name = "StartDate")
     @Temporal(TemporalType.DATE)

@@ -38,7 +38,7 @@ public class Question implements Serializable {
     private Long questionID;
     @Basic(optional = false)
     @Column(name = "QuestionText")
-    private String questionText;
+    private String questionText="";
     @Basic(optional = false)
     @Column(name = "QuestionNumber")
     private int questionNumber;
@@ -51,9 +51,9 @@ public class Question implements Serializable {
     @Column(name = "isRequired")
     private boolean isRequired;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
-    private List<OfferedAnswer> offeredanswerList = new ArrayList<>();
+    private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
-    private List<AnswerConnection> answerconnectionList = new ArrayList<>();
+    private List<AnswerConnection> answerConnectionList = new ArrayList<>();
     @JoinColumn(name = "SurveyID", referencedColumnName = "SurveyID")
     @ManyToOne(optional = false)
     private Survey surveyID;
@@ -61,7 +61,7 @@ public class Question implements Serializable {
     public enum QUESTION_TYPE {
         TEXT,
         CHECKBOX,
-        MULTIPLECHOICE,
+        MULTIPLE_CHOICE,
         SCALE
     };
 

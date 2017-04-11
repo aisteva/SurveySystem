@@ -7,6 +7,7 @@ import CreateFormPackage.Dao.SurveyDao;
 import dao.PersonDAO;
 import entitiesJPA.*;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -17,6 +18,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -28,36 +30,26 @@ import java.util.List;
 @Getter
 public class CreateFormController implements Serializable {
 
-    //Prano
-    @Setter
-    @Getter
     private Survey survey = new Survey();
 
     @Inject
     private PersonDAO personDAO;
 
-    private List<Question> questionList = new ArrayList<>();
-
-    private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
-
-    public List<OfferedAnswer> getOfferedAnswers(){
-        return offeredAnswerList;
-    }
-
-    public CreateFormController() {
-
+    public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
+        return survey.getQuestionList().get(questionIndex).getOfferedAnswerList();
     }
 
     public List<Question> getQuestions() {
-        return questionList;
+        return survey.getQuestionList();
     }
 
-    public void onButtonRemoveQuestionClick(final Question question) {
-        questionList.remove(question);
+    public void onButtonRemoveQuestionClick(Question question) {
+        survey.getQuestionList().remove(question);
     }
 
     public void onButtonAddQuestionClick() {
         Question question = new Question();
+        question.setSurveyID(survey);
         survey.getQuestionList().add(question);
         onButtonAddOfferedAnswerClick(survey.getQuestionList().size() - 1);
     }
@@ -67,7 +59,17 @@ public class CreateFormController implements Serializable {
     }
 
     public void onButtonAddOfferedAnswerClick(final int questionIndex) {
-        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().add(new OfferedAnswer());
+        OfferedAnswer offeredAnswer = new OfferedAnswer();
+        Question question = survey.getQuestionList().get(questionIndex);
+
+        offeredAnswer.setQuestionID(question);
+        question.getOfferedAnswerList().add(offeredAnswer);
+
+        AnswerConnection answerConnection = new AnswerConnection();
+        question.getAnswerConnectionList().add(answerConnection);
+        offeredAnswer.getAnswerConnectionList().add(answerConnection);
+        answerConnection.setQuestionID(question);
+        answerConnection.setOfferedAnswerID(offeredAnswer);
     }
 
     public void removeAllOfferedAnswers(final int questionIndex) {
@@ -75,25 +77,25 @@ public class CreateFormController implements Serializable {
     }
 
     @Transactional
-    public void createForm() {
-        Person person = personDAO.FindPersonByEmail("a");
-        if (person == null) person = new Person("a","a", "a", "a", "a", new Date());
-        Survey survey = new Survey("sf", new Date(), "fsfds564", true, true, false, person);
+    public String createForm(final String personEmail) {
+        Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
+        survey.setSurveyURL(getSaltString());
         person.getSurveyList().add(survey);
-        for (Question question : questionList) {
-            question.setSurveyID(survey);
-            question.setType(question.getQuestionType().toString());
-            survey.getQuestionList().add(question);
-            for (OfferedAnswer offAnsw : question.getOfferedanswerList()){
-                AnswerConnection conn = new AnswerConnection();
-                question.getAnswerconnectionList().add(conn);
-                offAnsw.getAnswerconnectionList().add(conn);
-                conn.setQuestionID(question);
-                conn.setOfferedAnswerID(offAnsw);
-            }
-        }
-
         personDAO.UpdateUser(person);
+        return "/create/formCreated.xhtml"; //TODO: not sure if correct navigation
+    }
+
+    private String getSaltString() {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < 8) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+
     }
 }

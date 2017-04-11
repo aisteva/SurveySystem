@@ -34,12 +34,12 @@ public class OfferedAnswer implements Serializable {
     private Long offeredAnswerID;
     @Basic(optional = false)
     @Column(name = "Text")
-    private String text;
+    private String text=""; //TODO: it is required but in case
     @JoinColumn(name = "QuestionID", referencedColumnName = "QuestionID")
     @ManyToOne(optional = false)
     private Question questionID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
     private List<Answer> answerList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
-    private List<AnswerConnection> answerconnectionList = new ArrayList<>();
+    private List<AnswerConnection> answerConnectionList = new ArrayList<>();
 }

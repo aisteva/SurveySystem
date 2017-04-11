@@ -12,31 +12,32 @@
    <h:outputStylesheet name="/css/create/style.css" />
 </h:head>
 <f:metadata>
-   <f:viewParam name="person" value="#{signInController.person}" />
+   <f:viewParam name="person" value="#{signInController.person.personID}" />
    <f:viewAction action="#{signInController.isSigned}" />
 </f:metadata>
 <h:body>
-   <ui:include src="/header.xhtml"/>
+   <ui:include src="../header.xhtml"/>
 
    <div class="container content">
-      <div class="surveyTitle">
-         <h:inputText value="" a:placeholder="Apklausos pavadinimas"/>
-      </div>
 
-      <div class="surveyDetails">
-         <div class="surveyDescription">
-            <h:inputTextarea value="#{createFormController.survey.description}" a:placeholder="Aprašymas "></h:inputTextarea>
-         </div>
-         <div>
-            <p:outputLabel for="startDate" value="Pradžios data*"/>
-            <p:calendar id="startDate" value="#{createFormController.survey.startDate}"/>
-         </div>
-         <div>
-            <p:outputLabel for="endDate" value="Pabaigos data"/>
-            <p:calendar id="endDate" value="#{createFormController.survey.endDate}"/>
-         </div>
-      </div>
       <h:form>
+         <div class="surveyTitle">
+            <h:inputText value="" a:placeholder="Apklausos pavadinimas"/>
+         </div>
+
+         <div class="surveyDetails">
+            <div class="surveyDescription">
+               <h:inputTextarea value="#{createFormController.survey.description}" a:placeholder="Aprašymas "></h:inputTextarea>
+            </div>
+            <div>
+               <p:outputLabel for="startDate" value="Pradžios data*"/>
+               <p:calendar id="startDate" value="#{createFormController.survey.startDate}"/>
+            </div>
+            <div>
+               <p:outputLabel for="endDate" value="Pabaigos data"/>
+               <p:calendar id="endDate" value="#{createFormController.survey.endDate}"/>
+            </div>
+         </div>
          <h:panelGroup id="survey" >
          <ui:repeat  value="#{createFormController.getQuestions()}" var="question" varStatus="questionStatus">
             <div class="one-question">
@@ -54,24 +55,24 @@
                </div>
                <div class="answers">
                   <h:panelGroup rendered="#{question.type == 'TEXT'}">
-                     <ui:include src="/create/text.xhtml"/>
+                     <ui:include src="text.xhtml"/>
                   </h:panelGroup>
                   <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                     <ui:include src="/create/checkbox.xhtml"/>
+                     <ui:include src="checkbox.xhtml"/>
                   </h:panelGroup>
-                  <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
-                     <ui:include src="/create/multiplechoice.xhtml"/>
+                  <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
+                     <ui:include src="multiplechoice.xhtml"/>
                   </h:panelGroup>
                   <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                     <ui:include src="/create/scale.xhtml"/>
+                     <ui:include src="scale.xhtml"/>
                   </h:panelGroup>
                </div>
 
                <hr/>
                <div class="actions-with-question">
                   <div class="remove-question">
-                     <h:graphicImage value="resources/images/remove.png">
-                        <f:ajax event="click" listener="#{createFormController.onButtonRemoveQuestionClick(questionStatus.index)}" immediate="true" render="@form"  />
+                     <h:graphicImage value="../resources/images/remove.png">
+                        <f:ajax event="click" listener="#{createFormController.onButtonRemoveQuestionClick(question)}" immediate="true" render="@form"  />
                      </h:graphicImage>
                   </div>
                   <div class="required">
@@ -84,17 +85,17 @@
          </h:panelGroup>
 
 
-         <h:graphicImage value="resources/images/add.png" styleClass="add-question">
+         <h:graphicImage value="../resources/images/add.png" styleClass="add-question">
             <f:ajax event="click" listener="#{createFormController.onButtonAddQuestionClick()}" execute="@form" render="survey" />
          </h:graphicImage>
 
          <p:commandButton value="Submit form"
-                          actionListener="#{createFormController.createForm(signInController.person)}"
+                          action="#{createFormController.createForm(signInController.person.email)}"
                           ajax="false"/>
 
          <p:messages globalOnly="true"/>
       </h:form>
    </div>
-   <ui:include src="/footer.xhtml"/>
+   <ui:include src="../footer.xhtml"/>
 </h:body>
 </html>
