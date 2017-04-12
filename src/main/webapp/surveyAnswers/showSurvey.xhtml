@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+   <title>Apklausa #{showSurveyController.findBySurveyURL("ffff").surveyID}</title>
+   <h:outputStylesheet name="/css/create/style.css" />
+</h:head>
+<f:metadata>
+    <f:viewParam name="person" value="#{signInController.person.personID}" />
+    <f:viewAction action="#{signInController.isSigned}" />
+</f:metadata>
+<h:body>
+<ui:include src="../header.xhtml"/>
+
+<div class="container content">
+
+    <h1>Apklausa nr. #{showSurveyController.survey.surveyID}</h1>
+
+    <h:panelGroup id="surveyQuestions" >
+        <ui:repeat  value="#{showSurveyController.survey.questionList}" var="question" varStatus="questionStatus">
+            <div class="answers">
+                <h:panelGroup rendered="#{question.type == 'TEXT'}">
+                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
+                    <!--cia turi sietis su Aistes, kad issaugoti atsakyma-->
+                    <h:inputText></h:inputText>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
+                    <!--cia Aiste turi issaugoti atsakyma-->
+                        <p:selectOneRadio id="singleQestion" value="">
+                            <f:selectItems value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
+                        </p:selectOneRadio>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
+                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
+                    <h:panelGroup id="offeredAnswers2">
+                        <ui:repeat value="#{question.offeredAnswerList}" var="offered">
+                            <!--cia turi sietis su Aistes, kad issaugoti atsakyma https://www.primefaces.org/showcase/ui/input/booleanCheckbox.xhtml reikia evento-->
+                            <p:selectBooleanCheckbox value="#{offered.text}" />
+                            <h:outputText value="#{offered.text}"></h:outputText>
+                            <br/>
+                        </ui:repeat>
+                    </h:panelGroup>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.type == 'SCALE'}">
+                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
+                    <!-- Aistei reikia issaugoti value-->
+                    <p:spinner id="minMax" value="" min="0" max="100" />
+                </h:panelGroup>
+            </div>
+        </ui:repeat>
+
+    </h:panelGroup>
+
+
+
+    <p:commandButton value="Išsaugoti Apklausą"></p:commandButton>
+
+
+
+</div>
+<ui:include src="../footer.xhtml"/>
+</h:body>
+</html>
