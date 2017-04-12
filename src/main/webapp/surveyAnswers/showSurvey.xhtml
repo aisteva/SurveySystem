@@ -21,7 +21,7 @@
 <div class="container content">
 
     <h1>Apklausa nr. #{showSurveyController.survey.surveyID}</h1>
-
+    <h3>#{showSurveyController.survey.description}</h3>
     <h:panelGroup id="surveyQuestions" >
         <ui:repeat  value="#{showSurveyController.survey.questionList}" var="question" varStatus="questionStatus">
             <div class="answers">
