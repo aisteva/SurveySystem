@@ -78,5 +78,6 @@ public class Survey implements Serializable {
     @ManyToOne(optional = false)
     private Person personID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyID")
+    @OrderBy("QuestionNumber ASC")
     private List<Question> questionList = new ArrayList<>();
 }
