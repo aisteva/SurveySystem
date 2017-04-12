@@ -1,8 +1,10 @@
 package services;
 
+import javax.enterprise.context.ApplicationScoped;
 import java.io.Serializable;
 import java.util.Random;
 
+@ApplicationScoped
 public class SaltGenerator implements Serializable
 {
     public SaltGenerator()

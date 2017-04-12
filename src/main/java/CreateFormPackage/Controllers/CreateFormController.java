@@ -22,7 +22,9 @@ import java.util.List;
 @Getter
 public class CreateFormController implements Serializable {
 
-    private final SaltGenerator saltGenerator = new SaltGenerator();
+    @Inject
+    private SaltGenerator sg;
+
     private Survey survey = new Survey();
 
     @Inject
@@ -73,7 +75,7 @@ public class CreateFormController implements Serializable {
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
-        survey.setSurveyURL(saltGenerator.getSaltString());
+        survey.setSurveyURL(sg.getSaltString());
         person.getSurveyList().add(survey);
         personDAO.UpdateUser(person);
         return "/create/formCreated.xhtml"; //TODO: not sure if correct navigation

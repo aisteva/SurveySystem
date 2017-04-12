@@ -6,6 +6,7 @@ import entitiesJPA.Person;
 import lombok.Getter;
 import lombok.Setter;
 import services.EmailService;
+import services.SaltGenerator;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -26,7 +27,7 @@ public class CreateNewUserController
 {
 
     private String text = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
-            " Noredami uzbaigti registracija spauskite sia nuoroda: http://localhost:8080/completeRegistration.html?id=%s";
+            " Noredami uzbaigti registracija spauskite sia nuoroda: http://localhost:8080/signup/completeRegistration.html?id=%s";
 
     @Getter
     @Setter
@@ -38,9 +39,13 @@ public class CreateNewUserController
     @Inject
     private EmailService es;
 
+    @Inject
+    SaltGenerator sg;
+
     public void createNewUser()
     {
         person.setInviteExpiration(new Date());
+        person.setInviteUrl(sg.getSaltString());
         try
         {
             personDAO.CreateUser(person);
@@ -56,7 +61,7 @@ public class CreateNewUserController
     {
         try
         {
-            es.sendEmail(person.getEmail(), String.format(text, person.getEmail()));
+            es.sendEmail(person.getEmail(), String.format(text, person.getInviteUrl()));
         }
         catch(RuntimeException re)
         {

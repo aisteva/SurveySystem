@@ -31,10 +31,10 @@ public class CompleteUserRegistrationController implements Serializable
 
     public void validate(FacesContext context, UIComponent component, Object object)
     {
-        //tikrinam, ar DB yra vartotojas su tokiu email
+        //tikrinam, ar DB yra vartotojas su tokiu url
         try
         {
-            person = personDAO.FindPersonByEmail((String)object);
+            person = personDAO.FindPersonByInviteUrl((String)object);
         }
         catch (NoResultException nre)
         {
