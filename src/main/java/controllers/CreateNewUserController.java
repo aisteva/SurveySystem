@@ -1,6 +1,5 @@
 package controllers;
 
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import dao.PersonDAO;
 import entitiesJPA.Person;
 import lombok.Getter;
@@ -14,7 +13,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.MessagingException;
-import javax.persistence.PersistenceException;
 import javax.transaction.TransactionalException;
 import java.util.Date;
 
@@ -45,7 +43,7 @@ public class CreateNewUserController
     public void createNewUser()
     {
         person.setInviteExpiration(new Date());
-        person.setInviteUrl(sg.getSaltString(8));
+        person.setInviteUrl(sg.getRandomString(8));
         try
         {
             personDAO.CreateUser(person);

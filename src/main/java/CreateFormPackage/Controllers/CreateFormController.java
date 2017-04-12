@@ -75,7 +75,7 @@ public class CreateFormController implements Serializable {
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
-        survey.setSurveyURL(sg.getSaltString(8));
+        survey.setSurveyURL(sg.getRandomString(8));
         person.getSurveyList().add(survey);
         personDAO.UpdateUser(person);
         return "/create/formCreated.xhtml"; //TODO: not sure if correct navigation

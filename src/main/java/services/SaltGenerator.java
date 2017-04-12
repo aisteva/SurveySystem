@@ -2,6 +2,7 @@ package services;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.Serializable;
+import java.security.SecureRandom;
 import java.util.Random;
 
 @ApplicationScoped
@@ -12,7 +13,7 @@ public class SaltGenerator implements Serializable
 
     }
 
-    public String getSaltString(int length)
+    public String getRandomString(int length)
     {
         String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
         StringBuilder salt = new StringBuilder();
@@ -24,5 +25,13 @@ public class SaltGenerator implements Serializable
         }
         String saltStr = salt.toString();
         return saltStr;
+    }
+
+    public byte[] generateSalt(int byteNumber)
+    {
+        final Random r = new SecureRandom();
+        byte[] salt = new byte[32];
+        r.nextBytes(salt);
+        return salt;
     }
 }

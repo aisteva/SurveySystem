@@ -143,7 +143,9 @@ ALTER TABLE `offeredanswer`
 --
 ALTER TABLE `person`
   ADD PRIMARY KEY (`PersonID`),
-  ADD UNIQUE KEY `PersonID` (`PersonID`);
+  ADD UNIQUE KEY `PersonID` (`PersonID`),
+  ADD UNIQUE KEY `PersonInviteUrl` (`inviteURL`),
+  ADD UNIQUE KEY `PersonEmail` (`Email`);
 
 --
 -- Indexes for table `question`
