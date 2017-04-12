@@ -31,7 +31,7 @@
 
            <h:panelGrid columns="1">
                <p:outputLabel for="pass" value="New Password"/>
-               <p:inputText id="pass" value="#{completeUserRegistrationController.person.password}"/>
+               <p:inputText id="pass" value="#{completeUserRegistrationController.unhashedPassword}"/>
            </h:panelGrid>
            <p:commandButton value="Update Pass"
                             action="#{completeUserRegistrationController.finishRegistration()}"
