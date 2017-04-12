@@ -10,6 +10,10 @@
        <title>Užbaigti registraciją</title>
        <h:outputStylesheet name="/css/style.css"/>
    </h:head>
+   <f:metadata>
+       <f:viewParam name="id" required="true" value="#{completeUserRegistrationController.person.inviteUrl}"
+                    validator="#{completeUserRegistrationController.validate}"/>
+   </f:metadata>
    <h:body>
        <div class="container content">
            <h:form>
@@ -27,7 +31,7 @@
 
            <h:panelGrid columns="1">
                <p:outputLabel for="pass" value="New Password"/>
-               <p:inputText id="pass" value="#{completeUserRegistrationController.person.password}"/>
+               <p:inputText id="pass" value="#{completeUserRegistrationController.unhashedPassword}"/>
            </h:panelGrid>
            <p:commandButton value="Update Pass"
                             action="#{completeUserRegistrationController.finishRegistration()}"

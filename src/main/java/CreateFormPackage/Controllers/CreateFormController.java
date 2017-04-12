@@ -3,6 +3,7 @@ package CreateFormPackage.Controllers;
 import dao.PersonDAO;
 import entitiesJPA.*;
 import lombok.Getter;
+import services.SaltGenerator;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -10,7 +11,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -21,6 +21,9 @@ import java.util.Random;
 @ViewScoped
 @Getter
 public class CreateFormController implements Serializable {
+
+    @Inject
+    private SaltGenerator sg;
 
     private Survey survey = new Survey();
 
@@ -72,22 +75,9 @@ public class CreateFormController implements Serializable {
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
-        survey.setSurveyURL(getSaltString());
+        survey.setSurveyURL(sg.getRandomString(8));
         person.getSurveyList().add(survey);
         personDAO.UpdateUser(person);
         return "/create/formCreated.xhtml"; //TODO: not sure if correct navigation
-    }
-
-    private String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 8) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
     }
 }

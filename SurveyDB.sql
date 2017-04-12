@@ -68,10 +68,11 @@ CREATE TABLE `person` (
   `FirstName` varchar(255) CHARACTER SET utf8 NOT NULL,
   `LastName` varchar(255) CHARACTER SET utf8 NOT NULL,
   `Email` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `Password` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `Password` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `UserType` varchar(20) CHARACTER SET utf8 NOT NULL,
   `InviteExpiration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `isBlocked` tinyint(1) NOT NULL DEFAULT '0'
+  `isBlocked` tinyint(1) NOT NULL DEFAULT '0',
+  `inviteURL` varchar(8) CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -142,7 +143,9 @@ ALTER TABLE `offeredanswer`
 --
 ALTER TABLE `person`
   ADD PRIMARY KEY (`PersonID`),
-  ADD UNIQUE KEY `PersonID` (`PersonID`);
+  ADD UNIQUE KEY `PersonID` (`PersonID`),
+  ADD UNIQUE KEY `PersonInviteUrl` (`inviteURL`),
+  ADD UNIQUE KEY `PersonEmail` (`Email`);
 
 --
 -- Indexes for table `question`

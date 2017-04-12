@@ -4,7 +4,10 @@ import dao.PersonDAO;
 import entitiesJPA.Person;
 import lombok.Getter;
 import lombok.Setter;
+import services.PasswordHash;
+import services.SaltGenerator;
 
+import javax.el.ELException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -21,26 +24,26 @@ import java.util.Date;
 @javax.faces.view.ViewScoped
 public class CompleteUserRegistrationController implements Serializable
 {
-    @Inject
-    private PersonDAO personDAO;
-
-    @Getter
-    @Setter
-    Person person = new Person();
+    @Inject private PersonDAO personDAO;
+    @Getter @Setter Person person = new Person();
+    @Setter @Getter private String unhashedPassword = null;
+    @Inject PasswordHash ph;
+    @Inject SaltGenerator sg;
 
 
     public void validate(FacesContext context, UIComponent component, Object object)
     {
-        //tikrinam, ar DB yra vartotojas su tokiu email
+        //tikrinam, ar DB yra vartotojas su tokiu url
         try
         {
-            person = personDAO.FindPersonByEmail((String)object);
+            person = personDAO.FindPersonByInviteUrl((String)object);
         }
-        catch (NoResultException nre)
+        catch (Exception e)
         {
             context.getExternalContext().setResponseStatus(404);
             context.responseComplete();
         }
+
 
         //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
         //tikrinam, ar pakvietimas dar galioja
@@ -75,8 +78,28 @@ public class CompleteUserRegistrationController implements Serializable
 
     public String finishRegistration()
     {
+        person.setPassword(hashPassword());
         person.setInviteExpiration(null);
         personDAO.UpdateUser(person);
         return "index";
+    }
+
+    private String hashPassword()
+    {
+        byte[] salt = sg.generateSalt(32);
+        byte[] hashedPass = ph.generatePasswordHashWithSalt(unhashedPassword, salt);
+        String concatenatedSaltAndPass = ph.base64Encode(concat(salt, hashedPass));
+        System.out.println("Both: " + new String(concat(salt, hashedPass)) + "\nPass:" + new String(hashedPass) + "\nSalt:" + new String(salt));
+        return (concatenatedSaltAndPass);
+
+    }
+
+    public byte[] concat(byte[] a, byte[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        byte[] c= new byte[aLen+bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 }

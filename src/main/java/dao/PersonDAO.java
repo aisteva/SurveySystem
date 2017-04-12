@@ -47,6 +47,16 @@ public class PersonDAO
 
     }
 
+    public Person FindPersonByInviteUrl(String url)
+    {
+        Query q = entityManager.createNamedQuery("Person.findByInviteUrl").setParameter("inviteUrl", url);
+        try {
+            return (Person) q.getSingleResult();
+        }catch(Exception ex){
+            return null;
+        }
+    }
+
     @Transactional
     public void DeleteUser(Person person)
     {

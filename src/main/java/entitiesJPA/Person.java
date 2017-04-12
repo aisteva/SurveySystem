@@ -20,6 +20,7 @@ import java.util.List;
 @Table(name = "person")
 @NamedQueries({
     @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
+    @NamedQuery(name = "Person.findByInviteUrl", query = "SELECT p FROM Person p WHERE p.inviteUrl = :inviteUrl"),
     @NamedQuery(name = "Person.findByPersonID", query = "SELECT p FROM Person p WHERE p.personID = :personID"),
     @NamedQuery(name = "Person.findByFirstName", query = "SELECT p FROM Person p WHERE p.firstName = :firstName"),
     @NamedQuery(name = "Person.findByLastName", query = "SELECT p FROM Person p WHERE p.lastName = :lastName"),
@@ -74,6 +75,9 @@ public class Person implements Serializable {
     @Basic(optional = false)
     @Column(name = "isBlocked")
     private boolean isBlocked;
+    @Basic(optional = false)
+    @Column(name = "inviteURL")
+    private String inviteUrl;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personID")
     private List<Survey> surveyList = new ArrayList<>();
 }
