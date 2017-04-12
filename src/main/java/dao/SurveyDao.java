@@ -1,14 +1,16 @@
-package CreateFormPackage.Dao;
+package dao;
 
 /**
  * Created by vdeiv on 2017-04-07.
  */
 
+import entitiesJPA.Person;
 import entitiesJPA.Survey;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -25,5 +27,15 @@ public class SurveyDao {
 
     public List<Survey> getAllQuestions() {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
+    }
+
+    public Survey getSurveyByUrl(String surveyURL){
+
+        Query q = em.createNamedQuery("Survey.findBySurveyURL").setParameter("surveyURL", surveyURL);
+        try {
+            return (Survey) q.getSingleResult();
+        }catch(Exception ex){
+            return null;
+        }
     }
 }

@@ -1,22 +1,14 @@
 package CreateFormPackage.Controllers;
 
-import CreateFormPackage.Dao.AnswerConnectionDao;
-import CreateFormPackage.Dao.OfferedAnswerDao;
-import CreateFormPackage.Dao.QuestionDao;
-import CreateFormPackage.Dao.SurveyDao;
 import dao.PersonDAO;
 import entitiesJPA.*;
 import lombok.Getter;
-import lombok.Setter;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
