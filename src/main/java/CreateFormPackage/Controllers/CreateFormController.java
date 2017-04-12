@@ -1,24 +1,16 @@
 package CreateFormPackage.Controllers;
 
-import CreateFormPackage.Dao.AnswerConnectionDao;
-import CreateFormPackage.Dao.OfferedAnswerDao;
-import CreateFormPackage.Dao.QuestionDao;
-import CreateFormPackage.Dao.SurveyDao;
 import dao.PersonDAO;
 import entitiesJPA.*;
 import lombok.Getter;
-import lombok.Setter;
+import services.SaltGenerator;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -30,6 +22,7 @@ import java.util.Random;
 @Getter
 public class CreateFormController implements Serializable {
 
+    private final SaltGenerator saltGenerator = new SaltGenerator();
     private Survey survey = new Survey();
 
     @Inject
@@ -80,22 +73,9 @@ public class CreateFormController implements Serializable {
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
-        survey.setSurveyURL(getSaltString());
+        survey.setSurveyURL(saltGenerator.getSaltString());
         person.getSurveyList().add(survey);
         personDAO.UpdateUser(person);
         return "/create/formCreated.xhtml"; //TODO: not sure if correct navigation
-    }
-
-    private String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 8) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
     }
 }
