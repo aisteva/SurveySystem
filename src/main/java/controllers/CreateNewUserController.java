@@ -45,7 +45,7 @@ public class CreateNewUserController
     public void createNewUser()
     {
         person.setInviteExpiration(new Date());
-        person.setInviteUrl(sg.getSaltString());
+        person.setInviteUrl(sg.getSaltString(8));
         try
         {
             personDAO.CreateUser(person);
