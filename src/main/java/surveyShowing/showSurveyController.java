@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import java.util.List;
 
@@ -22,10 +24,6 @@ import java.util.List;
 public class showSurveyController {
 
     private Survey survey = new Survey();
-
-
-    @Getter
-    private String kuku = "aaa";
 
     @Inject
     private SurveyDao surveyDao;
@@ -41,6 +39,16 @@ public class showSurveyController {
     public Survey findBySurveyURL(String surveyURL){
         survey = surveyDao.getSurveyByUrl(surveyURL);
         return survey;
+    }
+
+    public void validate(FacesContext context, UIComponent component, Object object) {
+        //surandam apklausą pagal url
+        try {
+            survey = surveyDao.getSurveyByUrl((String) object);
+        } catch (Exception e) {
+            context.getExternalContext().setResponseStatus(404);
+            context.responseComplete();
+        }
     }
 
 

@@ -8,12 +8,14 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
-   <title>Apklausa #{showSurveyController.findBySurveyURL("ffff").surveyID}</title>
    <h:outputStylesheet name="/css/create/style.css" />
 </h:head>
+
 <f:metadata>
     <f:viewParam name="person" value="#{signInController.person.personID}" />
     <f:viewAction action="#{signInController.isSigned}" />
+    <f:viewParam name="id" required="true" value="#{showSurveyController.survey.surveyURL}"
+                 validator="#{showSurveyController.validate}"/>
 </f:metadata>
 <h:body>
 <ui:include src="../header.xhtml"/>
