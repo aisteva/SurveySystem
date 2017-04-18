@@ -1,25 +1,102 @@
-.signin a {
-    color: #292929;
-    display:flex;
-    justify-content: center;
-    margin-top: 20px;
-    transition: .2s color ease;
+.loginmodal-container {
+    padding: 30px;
+    background-color: #F7F7F7;
+    border-radius: 2px;
+    overflow: hidden;
 }
-
-.signin a:hover {
-    color: #ff3b3f;
-    transition: .2s all ease;
+@media (min-width: 768px) {
+    .loginmodal-container {
+        max-width: 350px;
+        width: 100% !important;
+        margin: 20vh auto;
+    }
 }
-
-.signin {
-    display: flex;
-    justify-content: center;
-    margin-top: 20%;
+@media (max-width: 767px) {
+    .loginmodal-container {
+        width: 100%;
+        height: calc(100vh - 20px);
+    }
 }
-
-.signin td {
-    padding: 10px 0px;
+.loginmodal-container h1 {
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: 300;
+    padding-bottom: 20px;
 }
-
-
-
+.loginmodal-container input[type=text], input[type=password] {
+    height: 44px;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 10px;
+    -webkit-appearance: none;
+    background: #fff;
+    border: 1px solid #d9d9d9;
+    padding: 0 8px;
+}
+.loginmodal-container input[type=text]:hover,
+.loginmodal-container input[type=password]:hover,
+.loginmodal-container input[type=text]:active,
+.loginmodal-container input[type=password]:active,
+.loginmodal-container input[type=text]:focus,
+.loginmodal-container input[type=password]:focus{
+    border: 1px solid #b9b9b9;
+    border-top: 1px solid #a0a0a0;
+    outline: 0;
+    box-shadow: none;
+}
+.loginmodal {
+    text-align: center;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+    font-weight: 700;
+    height: 36px;
+    padding: 0 8px;
+}
+.loginmodal-container button {
+    width: 100%;
+    display: block;
+    margin-bottom: 10px;
+    position: relative;
+    border: 0px;
+    color: #fff;
+    font-weight: 300;
+    background: #0083BB;
+    padding: 7px 0px;
+    font-size: 15px;
+    box-shadow: none;
+    text-shadow: none;
+}
+.loginmodal-container button:hover {
+    background: #0075a8;
+    box-shadow: none;
+}
+.login-help {
+    font-size: 12px;
+    text-align: center;
+}
+.icon-size {
+    font-size: 87px;
+}
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /*margin-top: 20vh;*/
+    z-index: -1;
+    height: 100vh;
+    background: linear-gradient(#29bf89, #0083BB);
+}
+.background div {
+    margin-top: 30vh;
+    color: #ffffff;
+    text-align: center;
+}
+.background div h3 {
+    font-size: 90px;
+    font-weight: 300;
+    padding: 40px 0;
+}
+.background div p {
+    font-size: 25px;
+}
