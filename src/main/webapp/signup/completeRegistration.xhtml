@@ -18,22 +18,18 @@
        <div class="container content">
            <h:form>
            <p:dataTable value="#{completeUserRegistrationController.person}" var="person" tableStyle="width:auto">
-               <p:column headerText="First name">
-                   <h:outputText value="#{person.firstName}" />
-               </p:column>
-               <p:column headerText="Last name">
-                   <h:outputText value="#{person.lastName}" />
-               </p:column>
                <p:column headerText="Email">
                    <h:outputText value="#{person.email}" />
                </p:column>
            </p:dataTable>
 
-           <h:panelGrid columns="1">
-               <p:outputLabel for="pass" value="New Password"/>
-               <p:inputText id="pass" value="#{completeUserRegistrationController.unhashedPassword}"/>
-           </h:panelGrid>
-           <p:commandButton value="Update Pass"
+           <p:outputLabel for="firstname" value="Vardas"/>
+           <p:inputText id="firstname" value="#{completeUserRegistrationController.person.firstName}" required="true"/>
+           <p:outputLabel for="lastname" value="Pavardė"/>
+           <p:inputText id="lastname" value="#{completeUserRegistrationController.person.lastName}" required="true"/>
+           <p:outputLabel for="pass" value="Slaptažodis"/>
+           <p:inputText id="pass" value="#{completeUserRegistrationController.unhashedPassword}"/>
+           <p:commandButton value="Baigti registraciją"
                             action="#{completeUserRegistrationController.finishRegistration()}"
                             ajax="false"/>
 

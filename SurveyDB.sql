@@ -65,14 +65,14 @@ CREATE TABLE `offeredanswer` (
 
 CREATE TABLE `person` (
   `PersonID` bigint(20) UNSIGNED NOT NULL,
-  `FirstName` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `LastName` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `FirstName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `LastName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `Email` varchar(255) CHARACTER SET utf8 NOT NULL,
   `Password` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `UserType` varchar(20) CHARACTER SET utf8 NOT NULL,
   `InviteExpiration` timestamp DEFAULT CURRENT_TIMESTAMP,
   `isBlocked` tinyint(1) NOT NULL DEFAULT '0',
-  `inviteURL` varchar(8) CHARACTER SET utf8 NOT NULL
+  `inviteURL` varchar(8) CHARACTER SET utf8 DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------

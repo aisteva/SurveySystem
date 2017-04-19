@@ -21,7 +21,7 @@ import java.util.Date;
  */
 @Named
 @RequestScoped
-public class CreateNewUserController
+public class SendInvitationLinkController
 {
 
     private String text = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
@@ -40,19 +40,21 @@ public class CreateNewUserController
     @Inject
     SaltGenerator sg;
 
-    public void createNewUser()
+    public void checkEmailInAllowedList()
     {
-        person.setInviteExpiration(new Date());
-        person.setInviteUrl(sg.getRandomString(8));
-        try
+        person = personDAO.FindPersonByEmail(person.getEmail());
+        if( person == null)
         {
-            personDAO.CreateUser(person);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Šio el. pašto adreso nėra leistinų adresų sąraše"));
+        }
+        else
+        {
+            person.setInviteExpiration(new Date());
+            person.setInviteUrl(sg.getRandomString(8));
+            personDAO.UpdateUser(person);
             sendConfirmationEmail();
         }
-        catch(TransactionalException e)
-        {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Vartotojas su tokiu el.pašto adresu jau egzistuoja"));
-        }
+
     }
 
     private void sendConfirmationEmail()
