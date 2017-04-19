@@ -70,7 +70,7 @@ CREATE TABLE `person` (
   `Email` varchar(255) CHARACTER SET utf8 NOT NULL,
   `Password` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `UserType` varchar(20) CHARACTER SET utf8 NOT NULL,
-  `InviteExpiration` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `InviteExpiration` timestamp DEFAULT CURRENT_TIMESTAMP,
   `isBlocked` tinyint(1) NOT NULL DEFAULT '0',
   `inviteURL` varchar(8) CHARACTER SET utf8 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;

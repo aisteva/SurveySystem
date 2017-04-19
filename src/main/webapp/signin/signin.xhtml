@@ -8,26 +8,49 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>Prisijungimas</title>
-        <h:outputStylesheet name="/css/style.css"/>
+        <!--<h:outputStylesheet name="/css/style.css"/>-->
         <h:outputStylesheet name="/css/signin/style.css"/>
+        <h:outputStylesheet name="/css/bootstrap.css"/>
+        <h:outputScript name="/js/jquery-3.2.1.min.js"/>
+        <h:outputScript name="/js/bootstrap.min.js"/>
     </h:head>
     <h:body>
-        <div class="container content">
-            <div class="signin">
-                <h:form id="signin-form">
-                   <h:panelGrid columns="1">
-                       <h:message for="password" style="color: #ff3b3f; font-weight: 500;"/>
-                       <p:inputText id="email" value="#{signInController.person.email}" placeholder="El. paštas"/>
-                       <p:password id="password" value="#{signInController.expectedPassword}" placeholder="Slaptažodis"/>
+        <nav class="navbar navbar-default" role="navigation">
+            <div class="container">
+                <a class="navbar-brand" href="#">SurveySystem</a>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#login-modal">Prisijungti</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+            <div class="modal-dialog">
+                <div class="loginmodal-container">
+                    <h1>Prisijunkite</h1>
+                    <h:form>
+                        <p:inputText id="email" value="#{signInController.person.email}" placeholder="El. paštas"/>
+                        <p:password id="password" value="#{signInController.expectedPassword}" placeholder="Slaptažodis"/>
+                        <!--<input type="text" name="user" placeholder="Username"/>-->
 
-                   </h:panelGrid>
-
-                   <p:commandButton value="Prisijungti"
-                                    action="#{signInController.signIn()}"
-                                    ajax="false"/>
-
-                    <h:link value="Registruotis" outcome="/signup/createNewUser.xtml"/>
-                </h:form>
+                        <!--<input type="password" name="pass" placeholder="Password"/>-->
+                        <p:commandButton value="Prisijungti"
+                        action="#{signInController.signIn()}"
+                        ajax="false"/>
+                    </h:form>
+                    <div class="login-help">
+                        <h:link styleClass="text-primary" value="Registruotis" outcome="/signup/createNewUser.xtml"/>
+                        <!-- - -->
+                        <!--<h:link styleClass="text-primary" value="Pamiršau slaptažodį" outcome="#"/>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="background">
+            <div>
+                <h3>SurveySystem</h3>
+                <p><i>Tai, kur svajonės tampa realybe<br/>Ir darbai vyksta savaime</i></p>
             </div>
         </div>
     </h:body>
