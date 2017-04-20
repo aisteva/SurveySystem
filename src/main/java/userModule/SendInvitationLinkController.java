@@ -1,4 +1,4 @@
-package controllers;
+package userModule;
 
 import dao.PersonDAO;
 import entitiesJPA.Person;
@@ -43,9 +43,17 @@ public class SendInvitationLinkController
     public void checkEmailInAllowedList()
     {
         person = personDAO.FindPersonByEmail(person.getEmail());
+        //jei nerandam vartotojo pagal email, vadinasi jo nera leistinu sarase
         if( person == null)
         {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Šio el. pašto adreso nėra leistinų adresų sąraše"));
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Šio el. pašto nėra leistinų sąraše"));
+        }
+        //jei vartotojas tokiu emailu jau turi nustatyta slaptazodi, reiskia jis jau prisiregistraves
+        else if (person.getPassword() != null)
+        {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Vartotojas su tokiu el. pašto adresu jau registruotas"));
         }
         else
         {

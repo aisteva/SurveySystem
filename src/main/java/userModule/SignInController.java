@@ -1,4 +1,4 @@
-package controllers;
+package userModule;
 
 import dao.PersonDAO;
 import entitiesJPA.Person;
