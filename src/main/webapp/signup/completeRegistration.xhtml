@@ -5,14 +5,19 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui">
+
    <h:head>
        <title>Užbaigti registraciją</title>
        <h:outputStylesheet name="/css/style.css"/>
    </h:head>
    <f:metadata>
-       <f:viewParam name="id" required="true" value="#{completeUserRegistrationController.person.inviteUrl}"
-                    validator="#{completeUserRegistrationController.validateInvitationLink}"/>
+       <o:viewParam name="id" value="#{completeUserRegistrationController.person.inviteUrl}"
+                    validator="#{completeUserRegistrationController.validateInvitationLink}"
+                    required="true">
+           <o:viewParamValidationFailed sendError="400" message="Neteisingas URL" />
+       </o:viewParam>
    </f:metadata>
    <h:body>
        <div class="container content">

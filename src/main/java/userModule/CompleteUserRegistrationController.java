@@ -116,7 +116,7 @@ public class CompleteUserRegistrationController implements Serializable
     {
         try
         {
-            context.getExternalContext().responseSendError(404, message);
+            context.getExternalContext().responseSendError(400, message);
         } catch (IOException e)
         {
             e.printStackTrace();
