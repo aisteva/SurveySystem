@@ -51,7 +51,15 @@ public class SignInController implements Serializable {
 
             if(ph.checkPasswordHashWithSalt(expectedPassword,byteHashedSalt,byteHashedPassword))
             {
-                return "../index.xhtml?faces-redirect=true";
+                if(person.isBlocked())
+                {
+                    FacesContext.getCurrentInstance().addMessage("signin-form:password", new FacesMessage("Vartotojas užblokuotas"));
+                    return null;
+                }
+                else
+                {
+                    return "../index.xhtml?faces-redirect=true";
+                }
             }
             else
             {
