@@ -13,7 +13,7 @@ public class EmailServiceTest
     public void sendEmail() throws Exception
     {
         EmailService s = new EmailService();
-        s.sendEmail("arturasfio@gmail.com", "http://www.google.lt");
+        s.sendEmail("test@example.com", "This is a test");
     }
 
 }

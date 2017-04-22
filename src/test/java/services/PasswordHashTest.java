@@ -1,25 +1,29 @@
-package services
+package services;
 
-import org.junit.Before
+import org.junit.Before;
+import org.junit.Test;
 
-import javax.inject.Inject
+import java.io.IOException;
+
+import static org.junit.Assert.*;
 
 /**
- * Created by arturas on 2017-04-13.
+ * Created by arturas on 2017-04-22.
  */
-class PasswordHashTest extends GroovyTestCase {
-
+public class PasswordHashTest
+{
     PasswordHash ph;
     SaltGenerator sg;
 
     @Before
-    void setUp()
+    public void setUp() throws Exception
     {
         ph = new PasswordHash();
         sg = new SaltGenerator();
     }
 
-    void testPasswordHashing() {
+    @Test
+    public void testPasswordHashing() throws Exception{
         byte[] salt = sg.generateSalt(12);
         String password = "password";
         byte[] hashedPassword = ph.generatePasswordHashWithSalt(password, salt);
@@ -27,12 +31,19 @@ class PasswordHashTest extends GroovyTestCase {
 
     }
 
-    void testBase64EncodingAndDecoding() {
+    @Test
+    public void testBase64EncodingAndDecoding() throws Exception{
         byte[] salt = sg.generateSalt(12);
         String password = "password";
         byte[] hashedPassword = ph.generatePasswordHashWithSalt(password, salt);
         String encoded = ph.base64Encode(hashedPassword);
-        assertEquals(hashedPassword, ph.base64Decode(encoded));
+        try
+        {
+            assertArrayEquals(hashedPassword, ph.base64Decode(encoded));
+        } catch (IOException e)
+        {
+            throw e;
+        }
     }
 
 }
