@@ -13,12 +13,14 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.NoResultException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by arturas on 2017-04-02.
+ * Vartotojo registracijos užbaigimo controlleris
  */
 @Named
 @javax.faces.view.ViewScoped
@@ -34,28 +36,32 @@ public class CompleteUserRegistrationController implements Serializable
     public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {
         //tikrinam, ar DB yra vartotojas su tokiu url
-        try
+        Person personByInviteUrl = personDAO.FindPersonByInviteUrl((String)object);
+        //tikrinam, ar toks vartotojas is viso yra sarase
+        if(personByInviteUrl != null)
         {
-            person = personDAO.FindPersonByInviteUrl((String)object);
-            //tikrinam, ar toks vartotojas is viso yra sarase
-            if(person != null)
+            person = personByInviteUrl;
+            //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
+            //tikrinam, ar pakvietimas dar galioja
+            if(person.getInviteExpiration() == null)
             {
-                //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
-                //tikrinam, ar pakvietimas dar galioja
-                if(person.getInviteExpiration() == null || !isDateValid())
-                {
-                    set404(context);
-                }
+                set404(context, "Vartotojas jau užsiregistravo");
             }
-            else
+            if(!isDateValid())
             {
-                set404(context);
+                set404(context, "Registracijos nuoroda nebegalioja");
             }
+
         }
-        catch (Exception e)
+        else
         {
-            set404(context);
+            set404(context, "Neteisingas URL");
         }
+    }
+
+    public void onLoad()
+    {
+
     }
 
     private boolean isDateValid()
@@ -91,13 +97,13 @@ public class CompleteUserRegistrationController implements Serializable
     private String hashPassword()
     {
         byte[] salt = sg.generateSalt(32);
-        byte[] hashedPass = ph.generatePasswordHashWithSalt(unhashedPassword, salt);
-        String concatenatedSaltAndPass = ph.base64Encode(concat(salt, hashedPass));
-        return (concatenatedSaltAndPass);
+        byte[] hashedPass;
+        hashedPass = ph.generatePasswordHashWithSalt(unhashedPassword, salt);
+        return (ph.base64Encode(concat(salt, hashedPass)));
 
     }
 
-    public byte[] concat(byte[] a, byte[] b) {
+    private byte[] concat(byte[] a, byte[] b) {
         int aLen = a.length;
         int bLen = b.length;
         byte[] c= new byte[aLen+bLen];
@@ -106,9 +112,15 @@ public class CompleteUserRegistrationController implements Serializable
         return c;
     }
 
-    private void set404(FacesContext context)
+    private void set404(FacesContext context, String message)
     {
-        context.getExternalContext().setResponseStatus(404);
+        try
+        {
+            context.getExternalContext().responseSendError(404, message);
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
         context.responseComplete();
     }
 }

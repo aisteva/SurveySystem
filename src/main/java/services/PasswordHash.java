@@ -13,6 +13,7 @@ import sun.misc.BASE64Encoder;
 
 /**
  * Created by arturas on 2017-04-12.
+ * Slaptažodžių hash + salt kūrimo klasė
  */
 @ApplicationScoped
 public class PasswordHash
@@ -48,12 +49,12 @@ public class PasswordHash
         return true;
     }
 
-    public static String base64Encode(byte[] bytes)
+    public String base64Encode(byte[] bytes)
     {
         return new BASE64Encoder().encode(bytes);
     }
 
-    public static byte[] base64Decode(String s) throws IOException
+    public byte[] base64Decode(String s) throws IOException
     {
         return new BASE64Decoder().decodeBuffer(s);
     }
