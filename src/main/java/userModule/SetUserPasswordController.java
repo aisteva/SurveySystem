@@ -7,12 +7,10 @@ import lombok.Setter;
 import services.PasswordHash;
 import services.SaltGenerator;
 
-import javax.el.ELException;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -20,11 +18,11 @@ import java.util.Date;
 
 /**
  * Created by arturas on 2017-04-02.
- * Vartotojo registracijos užbaigimo controlleris
+ *
  */
 @Named
 @javax.faces.view.ViewScoped
-public class CompleteUserRegistrationController implements Serializable
+public class SetUserPasswordController implements Serializable
 {
     @Inject private PersonDAO personDAO;
     @Getter @Setter Person person = new Person();
@@ -35,39 +33,73 @@ public class CompleteUserRegistrationController implements Serializable
 
     public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {
-        //tikrinam, ar DB yra vartotojas su tokiu url
-        Person personByInviteUrl = personDAO.FindPersonByInviteUrl((String)object);
-        //tikrinam, ar toks vartotojas is viso yra sarase
-        if(personByInviteUrl != null)
+        String url = (String) object;
+
+        //Tikrinam, ar toks URL yra duomenų bazėje
+        if(isUrlInDatabase(url))
         {
-            person = personByInviteUrl;
             //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
-            //tikrinam, ar pakvietimas dar galioja
-            if(person.getInviteExpiration() == null)
+            if(person.getPassword() != null)
             {
-                set404(context, "Vartotojas jau užsiregistravo");
+                set400(context, "Vartotojas jau užsiregistravo");
             }
+            //tikrinam, ar yra invite expiration data ir kiek galioja
             if(!isDateValid())
             {
-                set404(context, "Registracijos nuoroda nebegalioja");
+                set400(context, "Nuoroda nebegalioja");
             }
 
         }
         else
         {
-            set404(context, "Neteisingas URL");
+            set400(context, "Neteisingas URL");
         }
     }
 
-    public void onLoad()
-    {
 
+    public void validatePasswordResetLink(FacesContext context, UIComponent component, Object object)
+    {
+        String url = (String) object;
+        //Tikrinam, ar toks URL yra duomenų bazėje
+        if(isUrlInDatabase(url))
+        {
+            //tikrinam, ar vartotojas yra prisiregistraves
+            if(person.getPassword() == null)
+            {
+                set400(context, "Vartotojas dar neužsiregistravo");
+            }
+            //tikrinam, ar yra invite expiration data ir kiek galioja
+            if(!isDateValid())
+            {
+                set400(context, "Nuoroda nebegalioja");
+            }
+
+        }
+        else
+        {
+            set400(context, "Neteisingas URL");
+        }
+    }
+
+    private boolean isUrlInDatabase(String url)
+    {
+        Person p = personDAO.FindPersonByInviteUrl(url);
+        if(p == null)
+        {
+            return false;
+        }
+        else
+        {
+            this.person = p;
+            return true;
+        }
     }
 
     private boolean isDateValid()
     {
         Date currentDate = new Date();
         Date invitationDate = person.getInviteExpiration();
+        if(invitationDate == null) return false;
 
         //nustatom datą, nuo kurios registracijos pakvietimas dar galiotų
         Calendar cal = Calendar.getInstance();
@@ -112,7 +144,8 @@ public class CompleteUserRegistrationController implements Serializable
         return c;
     }
 
-    private void set404(FacesContext context, String message)
+    //Funkcija HTTP 400 Error kvietimui
+    private void set400(FacesContext context, String message)
     {
         try
         {

@@ -15,11 +15,11 @@
             <h:form>
                <h:panelGrid columns="1">
                    <p:outputLabel for="email" value="El.Paštas"/>
-                   <p:inputText id="email" value="#{sendInvitationLinkController.person.email}" required="true"/>
+                   <p:inputText id="email" value="#{linkSenderController.person.email}" required="true"/>
                </h:panelGrid>
 
                <p:commandButton value="Registruotis"
-                                action="#{sendInvitationLinkController.checkEmailInAllowedList()}"
+                                action="#{linkSenderController.checkEmailForNewRegistration()}"
                                 ajax="false"/>
 
             </h:form>

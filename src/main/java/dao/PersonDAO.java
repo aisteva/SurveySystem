@@ -42,15 +42,6 @@ public class PersonDAO
         }
     }
 
-    public Person FindPersonByEmailAndPassword(String email, String password)
-    {
-        Query q = entityManager.createNamedQuery("Person.findByEmailAndPassword")
-                .setParameter("email", email)
-                .setParameter("password", password);
-        return (Person) q.getSingleResult();
-
-    }
-
     public Person FindPersonByInviteUrl(String url)
     {
         Query q = entityManager.createNamedQuery("Person.findByInviteUrl").setParameter("inviteUrl", url);

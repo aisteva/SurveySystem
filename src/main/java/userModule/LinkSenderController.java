@@ -13,7 +13,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.MessagingException;
-import javax.transaction.TransactionalException;
 import java.util.Date;
 
 /**
@@ -21,11 +20,14 @@ import java.util.Date;
  */
 @Named
 @RequestScoped
-public class SendInvitationLinkController
+public class LinkSenderController
 {
 
-    private String text = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
+    private final String registrationText = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
             " Noredami uzbaigti registracija spauskite sia nuoroda: http://localhost:8080/signup/completeRegistration.html?id=%s";
+
+    private final String passwordResetText = " Noredami pasikeisti slaptazodi, spauskite sia nuoroda: http://localhost:8080/signin/resetPassword.html?id=%s";
+
 
     @Getter
     @Setter
@@ -40,7 +42,7 @@ public class SendInvitationLinkController
     @Inject
     SaltGenerator sg;
 
-    public void checkEmailInAllowedList()
+    public void checkEmailForNewRegistration()
     {
         person = personDAO.FindPersonByEmail(person.getEmail());
         //jei nerandam vartotojo pagal email, vadinasi jo nera leistinu sarase
@@ -60,22 +62,47 @@ public class SendInvitationLinkController
             person.setInviteExpiration(new Date());
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
-            sendConfirmationEmail();
+            sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
         }
 
     }
 
-    private void sendConfirmationEmail()
+    public void ResetPassword()
+    {
+        person = personDAO.FindPersonByEmail(person.getEmail());
+        if (person != null)
+        {
+            if(person.getPassword() == null)
+            {
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage("Šis vartotojas nėra užsiregistravęs"));
+            }
+            else
+            {
+                person.setInviteUrl(sg.getRandomString(8));
+                person.setInviteExpiration(new Date());
+                personDAO.UpdateUser(person);
+                sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
+            }
+        }
+        else
+        {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage("Šis vartotojas nėra užsiregistravęs"));
+        }
+    }
+
+    private void sendEmailWithText(String text)
     {
         try
         {
-            es.sendEmail(person.getEmail(), String.format(text, person.getInviteUrl()));
+            es.sendEmail(person.getEmail(), text);
         }
         catch(RuntimeException re)
         {
             if (re.getCause() instanceof MessagingException)
             {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Nepavyko išsiųsti registracijos laiško"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Nepavyko išsiųsti laiško"));
             }
             else
             {
@@ -85,9 +112,4 @@ public class SendInvitationLinkController
         }
     }
 
-    public void resendConfirmationEmail()
-    {
-        person.setInviteExpiration(new Date());
-        sendConfirmationEmail();
-    }
 }
