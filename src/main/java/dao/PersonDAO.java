@@ -26,7 +26,11 @@ public class PersonDAO
     }
 
     @Transactional
-    public void UpdateUser(Person person) {entityManager.merge(person);}
+    public void UpdateUser(Person person)
+    {
+        entityManager.merge(person);
+        entityManager.flush();
+    }
 
     public Person FindPersonByEmail(String email)
     {

@@ -12,7 +12,7 @@
    </h:head>
    <f:metadata>
        <f:viewParam name="id" required="true" value="#{completeUserRegistrationController.person.inviteUrl}"
-                    validator="#{completeUserRegistrationController.validate}"/>
+                    validator="#{completeUserRegistrationController.validateInvitationLink}"/>
    </f:metadata>
    <h:body>
        <div class="container content">
@@ -24,16 +24,27 @@
            </p:dataTable>
 
            <p:outputLabel for="firstname" value="Vardas"/>
-           <p:inputText id="firstname" value="#{completeUserRegistrationController.person.firstName}" required="true"/>
+           <h:inputText id="firstname" value="#{completeUserRegistrationController.person.firstName}" required="true"/>
+           <h:message for="firstname"/>
+               <br/>
            <p:outputLabel for="lastname" value="Pavardė"/>
-           <p:inputText id="lastname" value="#{completeUserRegistrationController.person.lastName}" required="true"/>
+           <h:inputText id="lastname" value="#{completeUserRegistrationController.person.lastName}" required="true" />
+           <h:message for="lastname"/>
+               <br/>
            <p:outputLabel for="pass" value="Slaptažodis"/>
-           <p:inputText id="pass" value="#{completeUserRegistrationController.unhashedPassword}"/>
+           <h:inputSecret id="pass" value="#{completeUserRegistrationController.unhashedPassword}"
+                        validatorMessage="Slaptažodyje turi būti bent 6 simboliai, bent viena mažoji raidė,
+                        didžioji raidė, skaičius ">
+               <f:validateRegex pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,})"/>
+           </h:inputSecret>
+           <h:message for="pass" style="color:red"/>
+
            <p:commandButton value="Baigti registraciją"
                             action="#{completeUserRegistrationController.finishRegistration()}"
                             ajax="false"/>
 
            </h:form>
+
        </div>
    </h:body>
 </html>

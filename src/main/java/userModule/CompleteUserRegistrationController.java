@@ -31,26 +31,30 @@ public class CompleteUserRegistrationController implements Serializable
     @Inject SaltGenerator sg;
 
 
-    public void validate(FacesContext context, UIComponent component, Object object)
+    public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {
         //tikrinam, ar DB yra vartotojas su tokiu url
         try
         {
             person = personDAO.FindPersonByInviteUrl((String)object);
+            //tikrinam, ar toks vartotojas is viso yra sarase
+            if(person != null)
+            {
+                //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
+                //tikrinam, ar pakvietimas dar galioja
+                if(person.getInviteExpiration() == null || !isDateValid())
+                {
+                    set404(context);
+                }
+            }
+            else
+            {
+                set404(context);
+            }
         }
         catch (Exception e)
         {
-            context.getExternalContext().setResponseStatus(404);
-            context.responseComplete();
-        }
-
-
-        //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
-        //tikrinam, ar pakvietimas dar galioja
-        if(person.getInviteExpiration() == null || !isDateValid())
-        {
-            context.getExternalContext().setResponseStatus(404);
-            context.responseComplete();
+            set404(context);
         }
     }
 
@@ -81,7 +85,7 @@ public class CompleteUserRegistrationController implements Serializable
         person.setPassword(hashPassword());
         person.setInviteExpiration(null);
         personDAO.UpdateUser(person);
-        return "index";
+        return "/signin/signin.xhtml?faces-redirect=true";
     }
 
     private String hashPassword()
@@ -89,7 +93,6 @@ public class CompleteUserRegistrationController implements Serializable
         byte[] salt = sg.generateSalt(32);
         byte[] hashedPass = ph.generatePasswordHashWithSalt(unhashedPassword, salt);
         String concatenatedSaltAndPass = ph.base64Encode(concat(salt, hashedPass));
-        System.out.println("Both: " + new String(concat(salt, hashedPass)) + "\nPass:" + new String(hashedPass) + "\nSalt:" + new String(salt));
         return (concatenatedSaltAndPass);
 
     }
@@ -101,5 +104,11 @@ public class CompleteUserRegistrationController implements Serializable
         System.arraycopy(a, 0, c, 0, aLen);
         System.arraycopy(b, 0, c, aLen, bLen);
         return c;
+    }
+
+    private void set404(FacesContext context)
+    {
+        context.getExternalContext().setResponseStatus(404);
+        context.responseComplete();
     }
 }
