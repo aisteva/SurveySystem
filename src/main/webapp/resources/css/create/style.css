@@ -31,24 +31,24 @@ input[type=submit].new-question {
     width: 120px;
 }
 input {
-    background: rgba(0, 0, 0, 0) !important;
-    padding-bottom: 5px !important;
-    border-bottom: 1.5px solid #e7e7e7 !important;
-    margin-bottom: 15px;
-    color:#292929 !important;
+    /*background: rgba(0, 0, 0, 0) !important;*/
+    /*padding-bottom: 5px !important;*/
+    /*border-bottom: 1.5px solid #e7e7e7 !important;*/
+    /*margin-bottom: 15px;*/
+    /*color:#292929 !important;*/
 }
 
 input[type=text] {
-    border-top: 0px !important;
-    border-left: 0px !important;
-    border-right: 0px !important;
-    border-bottom: 1.5px solid #e7e7e7 !important;
-    font-weight: 300 !important;
+    /*border-top: 0px !important;*/
+    /*border-left: 0px !important;*/
+    /*border-right: 0px !important;*/
+    /*border-bottom: 1.5px solid #e7e7e7 !important;*/
+    /*font-weight: 300 !important;*/
 }
 
 input:focus {
-    border-bottom: 1.5px solid #ff3b3f !important;
-    transition: 0.5s border-bottom ease-out;
+    /*border-bottom: 1.5px solid #0083bb !important;*/
+    /*transition: 0.5s border-bottom ease-out;*/
 }
 
 .surveyTitle {
