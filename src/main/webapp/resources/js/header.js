@@ -7,6 +7,4 @@ $(document).ready(function() {
     $('#nav-icon').click(function(){
         $(this).toggleClass('collapsed');
     });
-    $('#datetimepicker').datetimepicker();
-
 });
