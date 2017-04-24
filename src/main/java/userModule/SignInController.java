@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class SignInController implements Serializable {
     @Getter
     @Setter
-    private Person loggedInPerson =  new Person();
+    private Person loggedInPerson =  null;
 
     @Getter @Setter String expectedEmail = null;
     @Getter @Setter String expectedPassword = null;
@@ -40,6 +40,7 @@ public class SignInController implements Serializable {
         if (expectedEmail == "" || expectedPassword == "") {
             FacesContext.getCurrentInstance().addMessage("signin-form:password",
                     new FacesMessage("Įveskite el. paštą ir slaptažodį"));
+            loggedInPerson = null;
             return null;
         }
         //tikrinam, ar toks email yra duomenų bazėj ir ar teisingas password
@@ -47,6 +48,7 @@ public class SignInController implements Serializable {
         {
             FacesContext.getCurrentInstance().addMessage("signin-form:password",
                     new FacesMessage("Neteisingas el.paštas arba slaptažodis"));
+            loggedInPerson = null;
             return null;
         }
         //tikrinam, ar vartotojas nėra užblokuotas
@@ -54,6 +56,7 @@ public class SignInController implements Serializable {
         {
             FacesContext.getCurrentInstance().addMessage("signin-form:password",
                     new FacesMessage("Vartotojas užblokuotas"));
+            loggedInPerson = null;
             return null;
         }
         //jei viskas ok, išvalom laukus ir parodom index.html
@@ -97,11 +100,13 @@ public class SignInController implements Serializable {
         }
         else
         {
+            loggedInPerson = null;
             return false;
         }
     }
 
     public String signOut() {
+        loggedInPerson = null;
         return "/signin/signin.xhtml";
     }
 
@@ -111,7 +116,7 @@ public class SignInController implements Serializable {
     }
 
     public String isSigned() {
-        if (loggedInPerson.getPersonID() == null)
+        if (loggedInPerson == null)
             return "/signin/signin.xhtml";
         return null;
     }
