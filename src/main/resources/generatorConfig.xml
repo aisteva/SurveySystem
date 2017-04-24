@@ -21,7 +21,7 @@
         <javaClientGenerator type="XMLMAPPER" targetPackage="lt.vu.usecases.mybatis.dao" targetProject="MAVEN" />
 
         
-        <table schema="public" tableName="person">
+        <table schema="public" tableName="loggedInPerson">
             <generatedKey column="personid" identity="true" sqlStatement="JDBC" />
         </table>
     </context>

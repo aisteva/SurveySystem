@@ -12,7 +12,7 @@
 </h:head>
 
 <f:metadata>
-    <f:viewParam name="person" value="#{signInController.person.personID}" />
+    <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
     <f:viewAction action="#{signInController.isSigned}" />
     <f:viewParam name="id" required="true" value="#{showSurveyController.survey.surveyURL}"
                  validator="#{showSurveyController.validate}"/>

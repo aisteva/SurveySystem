@@ -4,17 +4,14 @@ import dao.PersonDAO;
 import entitiesJPA.Person;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.component.log.Log;
 import services.PasswordHash;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -27,8 +24,9 @@ import java.util.Arrays;
 public class SignInController implements Serializable {
     @Getter
     @Setter
-    private Person person=  new Person();
+    private Person loggedInPerson =  new Person();
 
+    @Getter @Setter String expectedEmail = null;
     @Getter @Setter String expectedPassword = null;
 
     @Inject
@@ -38,44 +36,69 @@ public class SignInController implements Serializable {
     PasswordHash ph;
 
     public String signIn(){
-        if (person.getEmail() == "null" || expectedPassword == null) {
-            FacesContext.getCurrentInstance().addMessage("signin-form:password", new FacesMessage("Blogas el.paštas arba slaptažodis"));
+        //tikrinam, ar į abu laukus kas nors įrašyta
+        if (expectedEmail == "" || expectedPassword == "") {
+            FacesContext.getCurrentInstance().addMessage("signin-form:password",
+                    new FacesMessage("Įveskite el. paštą ir slaptažodį"));
             return null;
         }
-        try {
-
-            person = personDAO.FindPersonByEmail(person.getEmail());
-            byte[] byteHashedPasswordAndSalt = ph.base64Decode(person.getPassword());
-            byte[] byteHashedSalt = Arrays.copyOfRange(byteHashedPasswordAndSalt,0, 32);
-            byte[] byteHashedPassword = Arrays.copyOfRange(byteHashedPasswordAndSalt, 32, byteHashedPasswordAndSalt.length);
-
-            if(ph.checkPasswordHashWithSalt(expectedPassword,byteHashedSalt,byteHashedPassword))
-            {
-                if(person.isBlocked())
-                {
-                    FacesContext.getCurrentInstance().addMessage("signin-form:password", new FacesMessage("Vartotojas užblokuotas"));
-                    return null;
-                }
-                else
-                {
-                    return "../index.xhtml?faces-redirect=true";
-                }
-            }
-            else
-            {
-                FacesContext.getCurrentInstance().addMessage("signin-form:password", new FacesMessage("Blogas el.paštas arba slaptažodis"));
-                return null;
-            }
-
-        }
-        catch (NoResultException nre) {
-            FacesContext.getCurrentInstance().addMessage("signin-form:password", new FacesMessage("Blogas el.paštas arba slaptažodis"));
+        //tikrinam, ar toks email yra duomenų bazėj ir ar teisingas password
+        else if (!isEmailInDatabase() || !isPasswordCorrect())
+        {
+            FacesContext.getCurrentInstance().addMessage("signin-form:password",
+                    new FacesMessage("Neteisingas el.paštas arba slaptažodis"));
             return null;
+        }
+        //tikrinam, ar vartotojas nėra užblokuotas
+        else if (loggedInPerson.isBlocked())
+        {
+            FacesContext.getCurrentInstance().addMessage("signin-form:password",
+                    new FacesMessage("Vartotojas užblokuotas"));
+            return null;
+        }
+        //jei viskas ok, išvalom laukus ir parodom index.html
+        else
+        {
+            expectedEmail = null;
+            expectedPassword = null;
+            return "../index.xhtml?faces-redirect=true";
+        }
+    }
+
+    private boolean isEmailInDatabase()
+    {
+        Person p = personDAO.FindPersonByEmail(expectedEmail);
+        if(p == null)
+        {
+            return false;
+        }
+        else
+        {
+            loggedInPerson = p;
+            return true;
+        }
+    }
+
+    private boolean isPasswordCorrect()
+    {
+        byte[] byteHashedPasswordAndSalt = new byte[0];
+        try
+        {
+            byteHashedPasswordAndSalt = ph.base64Decode(loggedInPerson.getPassword());
         } catch (IOException e)
         {
             e.printStackTrace();
         }
-        return null;
+        byte[] byteHashedSalt = Arrays.copyOfRange(byteHashedPasswordAndSalt,0, 32);
+        byte[] byteHashedPassword = Arrays.copyOfRange(byteHashedPasswordAndSalt, 32, byteHashedPasswordAndSalt.length);
+        if(ph.checkPasswordHashWithSalt(expectedPassword,byteHashedSalt,byteHashedPassword))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public String signOut() {
@@ -84,16 +107,16 @@ public class SignInController implements Serializable {
 
 
     public String getPersonFullName(){
-        return person.getFirstName() + " " + person.getLastName();
+        return loggedInPerson.getFirstName() + " " + loggedInPerson.getLastName();
     }
 
     public String isSigned() {
-        if (person.getPersonID() == null)
+        if (loggedInPerson.getPersonID() == null)
             return "/signin/signin.xhtml";
         return null;
     }
     public void validate(FacesContext context, UIComponent component, Object object) {
-        if(person.getFirstName() != "null" )
+        if(loggedInPerson.getFirstName() != "null" )
         {
             context.responseComplete();
         }
