@@ -56,15 +56,13 @@ public class EmailService
                     InternetAddress.parse(to));
 
             // Set Subject: header field
-            message.setSubject("Registracijos i apklausu sistema uzbaigimas");
+            message.setSubject("SurveySystem");
 
             // Now set the actual message
             message.setText(text);
 
             // Send message
             Transport.send(message);
-
-            System.out.println("Sent message successfully....");
 
         } catch (MessagingException e)
         {

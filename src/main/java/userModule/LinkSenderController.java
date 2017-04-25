@@ -4,6 +4,7 @@ import dao.PersonDAO;
 import entitiesJPA.Person;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import services.EmailService;
 import services.SaltGenerator;
 
@@ -24,9 +25,11 @@ public class LinkSenderController
 {
 
     private final String registrationText = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
-            " Noredami uzbaigti registracija spauskite sia nuoroda: http://localhost:8080/signup/completeRegistration.html?id=%s";
+            " Noredami uzbaigti registracija spauskite sia nuoroda: " +
+            "http://localhost:8080/signup/completeRegistration.html?id=%s";
 
-    private final String passwordResetText = " Noredami pasikeisti slaptazodi, spauskite sia nuoroda: http://localhost:8080/signin/resetPassword.html?id=%s";
+    private final String passwordResetText = " Noredami pasikeisti slaptazodi, spauskite sia nuoroda: " +
+            "http://localhost:8080/signin/resetPassword.html?id=%s";
 
 
     @Getter
@@ -102,7 +105,8 @@ public class LinkSenderController
         {
             if (re.getCause() instanceof MessagingException)
             {
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Nepavyko išsiųsti laiško"));
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage("Nepavyko išsiųsti laiško"));
             }
             else
             {

@@ -7,10 +7,13 @@ import lombok.Setter;
 import services.PasswordHash;
 import services.SaltGenerator;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.bind.ValidationException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -26,7 +29,10 @@ public class SetUserPasswordController implements Serializable
 {
     @Inject private PersonDAO personDAO;
     @Getter @Setter Person person = new Person();
+
     @Setter @Getter private String unhashedPassword = null;
+    @Getter @Setter private String confirmPassword = null;
+
     @Inject PasswordHash ph;
     @Inject SaltGenerator sg;
 
@@ -34,7 +40,6 @@ public class SetUserPasswordController implements Serializable
     public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {
         String url = (String) object;
-
         //Tikrinam, ar toks URL yra duomenų bazėje
         if(isUrlInDatabase(url))
         {
@@ -80,6 +85,7 @@ public class SetUserPasswordController implements Serializable
             set400(context, "Neteisingas URL");
         }
     }
+
 
     private boolean isUrlInDatabase(String url)
     {

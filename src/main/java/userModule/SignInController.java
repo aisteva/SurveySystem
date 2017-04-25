@@ -93,7 +93,8 @@ public class SignInController implements Serializable {
             e.printStackTrace();
         }
         byte[] byteHashedSalt = Arrays.copyOfRange(byteHashedPasswordAndSalt,0, 32);
-        byte[] byteHashedPassword = Arrays.copyOfRange(byteHashedPasswordAndSalt, 32, byteHashedPasswordAndSalt.length);
+        byte[] byteHashedPassword = Arrays.copyOfRange(byteHashedPasswordAndSalt,
+                32, byteHashedPasswordAndSalt.length);
         if(ph.checkPasswordHashWithSalt(expectedPassword,byteHashedSalt,byteHashedPassword))
         {
             return true;
