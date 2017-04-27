@@ -61,8 +61,9 @@ public class Question implements Serializable {
     public enum QUESTION_TYPE {
         TEXT,
         CHECKBOX,
-        MULTIPLE_CHOICE,
+        MULTIPLECHOICE,
         SCALE
+
     };
 
     public QUESTION_TYPE[] getTypes(){
