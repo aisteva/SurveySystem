@@ -1,6 +1,6 @@
 package surveyShowing;
 
-import dao.SurveyDao;
+import dao.SurveyDAO;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
@@ -26,7 +26,7 @@ public class showSurveyController {
     private Survey survey = new Survey();
 
     @Inject
-    private SurveyDao surveyDao;
+    private SurveyDAO surveyDAO;
 
 //    public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
 //        return survey.getQuestionList().get(questionIndex).getOfferedAnswerList();
@@ -37,14 +37,14 @@ public class showSurveyController {
 //    }
 //
     public Survey findBySurveyURL(String surveyURL){
-        survey = surveyDao.getSurveyByUrl(surveyURL);
+        survey = surveyDAO.getSurveyByUrl(surveyURL);
         return survey;
     }
 
     public void validate(FacesContext context, UIComponent component, Object object) {
         //surandam apklausą pagal url
         try {
-            survey = surveyDao.getSurveyByUrl((String) object);
+            survey = surveyDAO.getSurveyByUrl((String) object);
         } catch (Exception e) {
             context.getExternalContext().setResponseStatus(404);
             context.responseComplete();

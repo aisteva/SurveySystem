@@ -1,0 +1,108 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form id="form">
+        <p:fieldset id="list" style="width: 50%">
+            <f:facet name="legend">
+                Registruoti vartotojai
+            </f:facet>
+
+            <p:dataTable value="#{adminController.registeredPersons}" var="person" tableStyle="table-layout: auto">
+                <p:column headerText="Person">
+                    #{person.firstName} #{person.lastName}, <br/><b>Reg. nr.</b>: #{person.personID}
+                </p:column>
+                <p:column headerText="Naudotojo tipas">
+                    #{person.userType}
+                </p:column>
+                <p:column headerText="Užblokuotas">
+                    #{person.blocked}
+                </p:column>
+                <p:column>
+                    <p:commandButton value="Edit" icon="ui-icon-pencil"
+                                     actionListener="#{adminController.prepareForEditing(person)}"
+                                     update=":form:personDetail"
+                                     oncomplete="PF('personDialog').show()" />
+                </p:column>
+            </p:dataTable>
+        </p:fieldset>
+        <p:dialog header="Edit Person" widgetVar="personDialog" modal="true" closable="true" resizable="false" closeOnEscape="true">
+            <p:outputPanel id="personDetail">
+                <h:outputText value="No person was selected... Weird..." rendered="#{empty adminController.selectedPerson}" />
+                <p:panelGrid  columns="2" rendered="#{not empty adminController.selectedPerson}"
+                              columnClasses="value" styleClass="ui-noborder">
+                    <h:outputText value="First name:"/>
+                    <h:outputText value="#{adminController.selectedPerson.firstName}"/>
+
+                    <h:outputText value="Last name:"/>
+                    <h:outputText value="#{adminController.selectedPerson.lastName}"/>
+
+                    <div id="userType0" class="user-type">
+                        <h:selectOneMenu id="user-type-input0" value="#{adminController.selectedPerson.userType}" required="true">
+                            <f:selectItems value = "#{adminController.selectedPerson.getUserTypesEnum()}"/>
+                        </h:selectOneMenu>
+                    </div>
+                    <p:message for="user-type-input0"/>
+
+                    <p:outputLabel for="blocked" value="Užblokuotas"/>
+                    <p:selectBooleanCheckbox  id="blocked" value="#{adminController.selectedPerson.blocked}"/>
+                    <p:message for="blocked"/>
+
+                    <h:outputText value="Apklausos:"/>
+                    <p:selectCheckboxMenu id="survey" value="#{adminController.selectedPerson.surveyList}"
+                                          converter="omnifaces.SelectItemsIndexConverter"
+                                          label="Select surveys:" updateLabel="true"
+                                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
+                        <f:attribute name="collectionType" value="java.util.ArrayList" />
+                        <f:selectItems value="#{adminController.allSurveys}" var="survey"
+                                       itemLabel="#{survey.description}" itemValue="#{survey}" />
+                    </p:selectCheckboxMenu>
+                    <p:message for="survey"/>
+
+                    <p:commandButton value="Update" actionListener="#{adminController.updateSelectedPerson}"
+                                     rendered="#{empty adminController.conflictingPerson}"
+                                     icon="ui-icon-check" style="margin-top: 1em"
+                                     update=":form:personDetail :form:list"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
+                    <p:commandButton value="Delete" action="#{adminController.deleteSelectedPerson}"
+                                     rendered="#{empty adminController.conflictingPerson}"
+                                     icon="ui-icon-check" style="margin-top: 1em"
+                                     update=":form2:pendingPersonDetail :form2:list2"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()"/>
+
+                    <p:panelGrid  columns="2" rendered="#{not empty adminController.conflictingPerson}"
+                                  columnClasses="label,value" styleClass="ui-noborder" style="margin-top: 1em">
+                        <f:facet name="header">Conflicting person</f:facet>
+
+                        <h:outputText value="First name:"/>
+                        <h:outputText value="#{adminController.conflictingPerson.firstName}"/>
+
+                        <h:outputText value="Last name:"/>
+                        <h:outputText value="#{adminController.conflictingPerson.lastName}"/>
+
+                        <h:outputText value="Id.:"/>
+                        <h:outputText value="#{adminController.conflictingPerson.personID}"/>
+
+
+                        <h:outputText value="Surveys:"/>
+                        <ui:repeat var="course" value="#{adminController.conflictingPerson.surveyList}" varStatus="courseStatus">
+                            #{course.description}<h:outputText value=", " rendered="#{not courseStatus.last}"/>
+                        </ui:repeat>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Overwrite" actionListener="#{adminController.overwritePerson}"
+                                     rendered="#{not empty adminController.conflictingPerson}"
+                                     icon="ui-icon-notice" style="margin-top: 1em"
+                                     update=":form:personDetail :form:list"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
+
+                </p:panelGrid>
+
+            </p:outputPanel>
+        </p:dialog>
+        <p:messages globalOnly="true"/>
+    </h:form>
+</ui:composition>

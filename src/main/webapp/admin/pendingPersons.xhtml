@@ -1,0 +1,90 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:form id="form2">
+        <p:fieldset id="list2" style="width: 50%">
+            <f:facet name="legend">
+                Pending persons
+            </f:facet>
+
+            <p:dataTable value="#{adminController.pendingPersons}" var="person2" tableStyle="table-layout: auto">
+                <p:column headerText="El. paštas">
+                    #{person2.email}, <br/><b>Reg. nr.</b>: #{person.personID}
+                </p:column>
+                <p:column headerText="Naudotojo tipas">
+                    #{person2.userType}
+                </p:column>
+                <p:column headerText="Edit">
+                    <p:commandButton value="Edit" icon="ui-icon-pencil"
+                                     actionListener="#{adminController.prepareForEditing(person2)}"
+                                     update=":form2:pendingPersonDetail"
+                                     oncomplete="PF('pendingPersonDialog').show()" />
+                </p:column>
+            </p:dataTable>
+        </p:fieldset>
+        <p:dialog header="Edit pending person" widgetVar="pendingPersonDialog" modal="true" closable="true" resizable="false" closeOnEscape="true">
+            <p:outputPanel id="pendingPersonDetail">
+                <h:outputText value="No person was selected... Weird..." rendered="#{empty adminController.selectedPerson}" />
+                <p:panelGrid  columns="3" rendered="#{not empty adminController.selectedPerson}"
+                              columnClasses="value" styleClass="ui-noborder">
+
+                    <p:outputLabel for="email2" value="Email:"/>
+                    <p:inputText id="email2" value="#{adminController.selectedPerson.email}"/>
+                    <p:message for="email2"/>
+
+
+                    <p:outputLabel for="user-type-input" value="Vartotojo tipas:"/>
+                        <h:selectOneMenu id="user-type-input" value="#{adminController.selectedPerson.userType}" required="true">
+                            <f:selectItems value = "#{adminController.selectedPerson.getUserTypesEnum()}"/>
+                        </h:selectOneMenu>
+                    <p:message for="user-type-input"/>
+
+                    <p:commandButton value="Update" actionListener="#{adminController.updateSelectedPerson}"
+                                     rendered="#{empty adminController.conflictingPerson}"
+                                     icon="ui-icon-check" style="margin-top: 1em"
+                                     update=":form2:pendingPersonDetail :form2:list2"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('pendingPersonDialog').hide()" />
+
+                    <p:commandButton value="Delete" action="#{adminController.deleteSelectedPerson}"
+                                     rendered="#{empty adminController.conflictingPerson}"
+                                     icon="ui-icon-check" style="margin-top: 1em"
+                                     update=":form2:pendingPersonDetail :form2:list2"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('pendingPersonDialog').hide()"/>
+
+                    <p:panelGrid  columns="2" rendered="#{not empty adminController.conflictingPerson}"
+                                  columnClasses="label,value" styleClass="ui-noborder" style="margin-top: 1em">
+                        <f:facet name="header">Conflicting person</f:facet>
+
+                        <h:outputText value="Email:"/>
+                        <h:outputText value="#{adminController.conflictingPerson.email}"/>
+
+                        <h:outputText value="Tipas:"/>
+                        <h:outputText value="#{adminController.conflictingPerson.userType}"/>
+
+                    </p:panelGrid>
+
+                    <p:commandButton value="Overwrite" actionListener="#{adminController.overwritePerson}"
+                                     rendered="#{not empty adminController.conflictingPerson}"
+                                     icon="ui-icon-notice" style="margin-top: 1em"
+                                     update=":form2:pendingPersonDetail :form2:list2"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('pendingPersonDialog').hide()" />
+
+                </p:panelGrid>
+
+            </p:outputPanel>
+        </p:dialog>
+        <p:messages globalOnly="true"/>
+        <p:outputLabel for="email" value="Email:"/>
+        <p:inputText id = "email" value = "#{adminController.newPendingPerson.email}" />
+        <p:outputLabel for="userType3" value="Vartotojo tipas"/>
+            <h:selectOneMenu id ="userType3" value="#{adminController.newPendingPerson.userType}" required="true">
+                <f:selectItems value = "#{adminController.newPendingPerson.getUserTypesEnum()}"/>
+            </h:selectOneMenu>
+        <div>
+            <p:commandButton value="Pridėti naują vartotoją" update=":form2:list2" action="#{adminController.addNewPendingPerson}"/>
+        </div>
+    </h:form>
+</ui:composition>

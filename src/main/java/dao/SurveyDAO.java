@@ -17,7 +17,7 @@ import java.util.List;
  * Created by vdeiv on 2017-04-07.
  */
 @ApplicationScoped
-public class SurveyDao {
+public class SurveyDAO {
     @Inject
     private EntityManager em;
 
@@ -25,7 +25,7 @@ public class SurveyDao {
         em.persist(survey);
     }
 
-    public List<Survey> getAllQuestions() {
+    public List<Survey> getAllSurveys() {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
     }
 

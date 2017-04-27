@@ -28,15 +28,19 @@ import java.util.List;
     @NamedQuery(name = "Person.findByPassword", query = "SELECT p FROM Person p WHERE p.password = :password"),
     @NamedQuery(name = "Person.findByUserType", query = "SELECT p FROM Person p WHERE p.userType = :userType"),
     @NamedQuery(name = "Person.findByInviteExpiration", query = "SELECT p FROM Person p WHERE p.inviteExpiration = :inviteExpiration"),
-    @NamedQuery(name = "Person.findByIsBlocked", query = "SELECT p FROM Person p WHERE p.isBlocked = :isBlocked")})
-    @NamedQuery(name = "Person.findByEmailAndPassword", query = "SELECT p FROM Person p WHERE (p.email = :email) AND (p.password = :password)")
+    @NamedQuery(name = "Person.findByIsBlocked", query = "SELECT p FROM Person p WHERE p.isBlocked = :isBlocked"),
+    @NamedQuery(name = "Person.findByEmailAndPassword", query = "SELECT p FROM Person p WHERE (p.email = :email) AND (p.password = :password)"),
+    @NamedQuery(name = "Person.findPendingPersons", query = "SELECT p FROM Person p WHERE (p.firstName <> :PENDING) AND (p.lastName <> :PENDING)")})
 @Getter
 @Setter
 @EqualsAndHashCode(of = "personID")
 @ToString(of = "personID")
 public class Person implements Serializable {
 
-    public Person(){};
+    public Person(){
+        this.userType = "USER";
+        this.isBlocked = false;
+    };
 
     public Person(String firstName, String lastName, String email, String password, String userType, Date inviteExpiration) {
         this.firstName = firstName;
@@ -80,4 +84,14 @@ public class Person implements Serializable {
     private String inviteUrl;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "personID")
     private List<Survey> surveyList = new ArrayList<>();
+
+    public enum USER_TYPE {
+        ADMIN,
+        USER
+    };
+
+    public USER_TYPE[] getUserTypesEnum(){
+        return USER_TYPE.values();
+    };
+
 }
