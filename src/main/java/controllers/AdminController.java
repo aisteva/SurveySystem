@@ -27,7 +27,8 @@ import java.util.List;
 @Slf4j
 public class AdminController implements Serializable {
 
-    @Inject PersonDAO personDao;
+    @Inject
+    PersonDAO personDao;
     @Inject
     SurveyDAO surveyDAO;
 
@@ -75,9 +76,9 @@ public class AdminController implements Serializable {
             selectedPerson = null;
             reloadAll();
         } catch (OptimisticLockException ole) {
-            //conflictingStudent = studentDAO.findById(selectedStudent.getId());
+            conflictingPerson = personDao.findById(selectedPerson.getPersonID());
             // Pavyzdys, kaip inicializuoti LAZY ryšį, jei jo reikia HTML puslapyje:
-            //Hibernate.initialize(conflictingStudent.getCourseList());
+            Hibernate.initialize(conflictingPerson.getSurveyList());
             // Pranešam PrimeFaces dialogui, kad užsidaryti dar negalima:
             RequestContext.getCurrentInstance().addCallbackParam("validationFailed", true);
         }
@@ -86,12 +87,15 @@ public class AdminController implements Serializable {
     @Transactional
     public void deleteSelectedPerson(){
         try {
+            if (selectedPerson.getOptLockVersion() < personDao.findById(selectedPerson.getPersonID()).getOptLockVersion())
+                throw new OptimisticLockException();
             personDao.DeleteUser(selectedPerson);
+            selectedPerson = null;
             reloadAll();
         } catch (OptimisticLockException ole) {
-            //conflictingStudent = studentDAO.findById(selectedStudent.getId());
+            conflictingPerson = personDao.findById(selectedPerson.getPersonID());
             // Pavyzdys, kaip inicializuoti LAZY ryšį, jei jo reikia HTML puslapyje:
-            //Hibernate.initialize(conflictingStudent.getCourseList());
+            Hibernate.initialize(conflictingPerson.getSurveyList());
             // Pranešam PrimeFaces dialogui, kad užsidaryti dar negalima:
             RequestContext.getCurrentInstance().addCallbackParam("validationFailed", true);
         }
@@ -99,8 +103,15 @@ public class AdminController implements Serializable {
 
     @Transactional
     public void overwritePerson() {
-        //selectedPerson.setOptLockVersion(conflictingPerson.getOptLockVersion());
+        selectedPerson.setOptLockVersion(conflictingPerson.getOptLockVersion());
         updateSelectedPerson();
+    }
+
+    @Transactional
+    public void overDeletePerson() {
+        selectedPerson = null;
+        personDao.DeleteUser(conflictingPerson);
+        reloadAll();
     }
 
     @Transactional

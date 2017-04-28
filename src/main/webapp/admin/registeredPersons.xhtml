@@ -50,6 +50,9 @@
                     <p:selectBooleanCheckbox  id="blocked" value="#{adminController.selectedPerson.blocked}"/>
                     <p:message for="blocked"/>
 
+                    <h:outputText value="Versija:" />
+                    <h:outputText value="#{adminController.selectedPerson.optLockVersion}" style="font-weight: bold"/>
+
                     <h:outputText value="Apklausos:"/>
                     <p:selectCheckboxMenu id="survey" value="#{adminController.selectedPerson.surveyList}"
                                           converter="omnifaces.SelectItemsIndexConverter"
@@ -85,6 +88,8 @@
                         <h:outputText value="Id.:"/>
                         <h:outputText value="#{adminController.conflictingPerson.personID}"/>
 
+                        <h:outputText value="Versija:" />
+                        <h:outputText value="#{adminController.selectedPerson.optLockVersion}" style="font-weight: bold"/>
 
                         <h:outputText value="Surveys:"/>
                         <ui:repeat var="course" value="#{adminController.conflictingPerson.surveyList}" varStatus="courseStatus">
@@ -98,7 +103,11 @@
                                      icon="ui-icon-notice" style="margin-top: 1em"
                                      update=":form:personDetail :form:list"
                                      oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
-
+                    <p:commandButton value="Delete" actionListener="#{adminController.overDeletePerson}"
+                                     rendered="#{not empty adminController.conflictingPerson}"
+                                     icon="ui-icon-notice" style="margin-top: 1em"
+                                     update=":form:personDetail :form:list"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
                 </p:panelGrid>
 
             </p:outputPanel>

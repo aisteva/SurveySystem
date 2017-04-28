@@ -58,6 +58,9 @@ public class Person implements Serializable {
     @Basic(optional = false)
     @Column(name = "PersonID")
     private Long personID;
+    @Version
+    @Column(name = "OPT_LOCK_VERSION")
+    private Integer optLockVersion;
     @Basic(optional = false)
     @Column(name = "FirstName")
     private String firstName;

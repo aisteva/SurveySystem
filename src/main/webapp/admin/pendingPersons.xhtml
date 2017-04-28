@@ -28,7 +28,7 @@
         <p:dialog header="Edit pending person" widgetVar="pendingPersonDialog" modal="true" closable="true" resizable="false" closeOnEscape="true">
             <p:outputPanel id="pendingPersonDetail">
                 <h:outputText value="No person was selected... Weird..." rendered="#{empty adminController.selectedPerson}" />
-                <p:panelGrid  columns="3" rendered="#{not empty adminController.selectedPerson}"
+                <p:panelGrid  columns="2" rendered="#{not empty adminController.selectedPerson}"
                               columnClasses="value" styleClass="ui-noborder">
 
                     <p:outputLabel for="email2" value="Email:"/>
@@ -41,6 +41,9 @@
                             <f:selectItems value = "#{adminController.selectedPerson.getUserTypesEnum()}"/>
                         </h:selectOneMenu>
                     <p:message for="user-type-input"/>
+
+                    <h:outputText value="Versija:" />
+                    <h:outputText value="#{adminController.selectedPerson.optLockVersion}" style="font-weight: bold"/>
 
                     <p:commandButton value="Update" actionListener="#{adminController.updateSelectedPerson}"
                                      rendered="#{empty adminController.conflictingPerson}"
@@ -55,7 +58,7 @@
                                      oncomplete="if (args &amp;&amp; !args.validationFailed) PF('pendingPersonDialog').hide()"/>
 
                     <p:panelGrid  columns="2" rendered="#{not empty adminController.conflictingPerson}"
-                                  columnClasses="label,value" styleClass="ui-noborder" style="margin-top: 1em">
+                                  columnClasses="value" styleClass="ui-noborder" style="margin-top: 1em">
                         <f:facet name="header">Conflicting person</f:facet>
 
                         <h:outputText value="Email:"/>
@@ -64,6 +67,9 @@
                         <h:outputText value="Tipas:"/>
                         <h:outputText value="#{adminController.conflictingPerson.userType}"/>
 
+                        <h:outputText value="Versija:" />
+                        <h:outputText value="#{adminController.conflictingPerson.optLockVersion}" style="font-weight: bold"/>
+
                     </p:panelGrid>
 
                     <p:commandButton value="Overwrite" actionListener="#{adminController.overwritePerson}"
@@ -71,7 +77,11 @@
                                      icon="ui-icon-notice" style="margin-top: 1em"
                                      update=":form2:pendingPersonDetail :form2:list2"
                                      oncomplete="if (args &amp;&amp; !args.validationFailed) PF('pendingPersonDialog').hide()" />
-
+                    <p:commandButton value="Delete" actionListener="#{adminController.overDeletePerson}"
+                                     rendered="#{not empty adminController.conflictingPerson}"
+                                     icon="ui-icon-notice" style="margin-top: 1em"
+                                     update=":form2:pendingPersonDetail :form2:list2"
+                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('pendingPersonDialog').hide()" />
                 </p:panelGrid>
 
             </p:outputPanel>

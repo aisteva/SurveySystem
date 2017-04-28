@@ -65,6 +65,7 @@ CREATE TABLE `offeredanswer` (
 
 CREATE TABLE `person` (
   `PersonID` bigint(20) UNSIGNED NOT NULL,
+  `opt_lock_version` int(11) NOT NULL,
   `FirstName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `LastName` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
   `Email` varchar(255) CHARACTER SET utf8 NOT NULL,

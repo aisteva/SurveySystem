@@ -33,6 +33,16 @@ public class PersonDAO
         entityManager.flush();
     }
 
+    public Person findById(Long id)
+    {
+        Query q = entityManager.createNamedQuery("Person.findByPersonID").setParameter("personID", id);
+        try {
+            return (Person) q.getSingleResult();
+        }catch(Exception ex){
+            return null;
+        }
+    }
+
     public Person FindPersonByEmail(String email)
     {
         Query q = entityManager.createNamedQuery("Person.findByEmail").setParameter("email", email);
