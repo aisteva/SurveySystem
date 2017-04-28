@@ -12,7 +12,6 @@
    <h:outputStylesheet name="/css/create/style.css" />
 </h:head>
 <f:metadata>
-   <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
    <f:viewAction action="#{signInController.isSigned}" />
 </f:metadata>
 <h:body>
@@ -22,7 +21,7 @@
 
       <h:form>
          <div class="surveyTitle">
-            <h:inputText value="" a:placeholder="Apklausos pavadinimas"/>
+            <h:inputText value="#{createFormController.survey.title}" a:placeholder="Apklausos pavadinimas"/>
          </div>
 
          <div class="surveyDetails">

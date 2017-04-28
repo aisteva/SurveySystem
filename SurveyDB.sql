@@ -100,6 +100,7 @@ CREATE TABLE `question` (
 
 CREATE TABLE `survey` (
   `SurveyID` bigint(20) UNSIGNED NOT NULL,
+  `Title` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `PersonID` bigint(20) UNSIGNED NOT NULL,
   `Description` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `StartDate` date NOT NULL,

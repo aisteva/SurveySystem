@@ -53,6 +53,8 @@ public class Survey implements Serializable {
     @Basic(optional = false)
     @Column(name = "SurveyID")
     private Long surveyID;
+    @Column(name = "Title")
+    private String title="";
     @Column(name = "Description")
     private String description="";
     @Basic(optional = false)
