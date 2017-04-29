@@ -8,6 +8,7 @@
         xmlns:c="http://java.sun.com/jsp/jstl/core">
     <div class="scale">
         #{createFormController.removeAllOfferedAnswers(questionStatus.index)}
+        #{createFormController.removeAllAnswerConnections(questionStatus.index)}
         #{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}
         #{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}
         <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}" a:placeholder="Nuo" decimalPlaces="0" thousandSeparator="">

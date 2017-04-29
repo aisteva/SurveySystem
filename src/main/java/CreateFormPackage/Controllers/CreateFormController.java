@@ -71,6 +71,10 @@ public class CreateFormController implements Serializable {
         survey.getQuestionList().get(questionIndex).getOfferedAnswerList().clear();
     }
 
+    public void removeAllAnswerConnections(final int questionIndex){
+        survey.getQuestionList().get(questionIndex).getAnswerConnectionList().clear();
+    }
+
     @Transactional
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);
