@@ -26,6 +26,15 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = "answerID")
 @ToString(of = "answerID")
 public class Answer implements Serializable {
+
+    public Answer(){}
+
+    public Answer(Long id, int sessionID, String text, OfferedAnswer offeredAnswerID) {
+        this.answerID = id;
+        this.sessionID = sessionID;
+        this.text = text;
+        this.offeredAnswerID = offeredAnswerID;
+    }
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

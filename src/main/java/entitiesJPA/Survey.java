@@ -45,6 +45,7 @@ public class Survey implements Serializable {
         this.isPrivate = isPrivate;
         this.personID = personID;
         this.questionList = new ArrayList<>();
+        this.submits = 0l;
     }
 
     private static final long serialVersionUID = 1L;
@@ -53,6 +54,9 @@ public class Survey implements Serializable {
     @Basic(optional = false)
     @Column(name = "SurveyID")
     private Long surveyID;
+    @Version
+    @Column(name = "OPT_LOCK_VERSION")
+    private Integer optLockVersion;
     @Column(name = "Title")
     private String title="";
     @Column(name = "Description")
@@ -76,6 +80,8 @@ public class Survey implements Serializable {
     @Basic(optional = false)
     @Column(name = "isPrivate")
     private boolean isPrivate;
+    @Column(name = "submits")
+    private Long submits=0l;
     @JoinColumn(name = "PersonID", referencedColumnName = "PersonID")
     @ManyToOne(optional = false)
     private Person personID;

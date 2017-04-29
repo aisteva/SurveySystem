@@ -29,9 +29,22 @@ public class SurveyDAO {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
     }
 
+    public List<Survey> getAllPublicSurveys(){
+        return em.createNamedQuery("Survey.findByIsPrivate").setParameter("isPrivate", false).getResultList();
+    }
     public Survey getSurveyByUrl(String surveyURL){
 
         Query q = em.createNamedQuery("Survey.findBySurveyURL").setParameter("surveyURL", surveyURL);
+        try {
+            return (Survey) q.getSingleResult();
+        }catch(Exception ex){
+            return null;
+        }
+    }
+
+    public Survey getSurveyById(Long id){
+
+        Query q = em.createNamedQuery("Survey.findBySurveyID").setParameter("surveyID", id);
         try {
             return (Survey) q.getSingleResult();
         }catch(Exception ex){

@@ -100,6 +100,7 @@ CREATE TABLE `question` (
 
 CREATE TABLE `survey` (
   `SurveyID` bigint(20) UNSIGNED NOT NULL,
+  `opt_lock_version` int(11) NOT NULL,
   `Title` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
   `PersonID` bigint(20) UNSIGNED NOT NULL,
   `Description` varchar(1000) CHARACTER SET utf8 DEFAULT NULL,
@@ -108,7 +109,8 @@ CREATE TABLE `survey` (
   `SurveyURL` varchar(8) CHARACTER SET utf8 NOT NULL,
   `isOpen` tinyint(1) NOT NULL,
   `isCreated` tinyint(1) NOT NULL,
-  `isPrivate` tinyint(1) NOT NULL
+  `isPrivate` tinyint(1) NOT NULL,
+  `submits` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
