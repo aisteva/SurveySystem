@@ -28,7 +28,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "questionID")
-@ToString(of = "questionID")
+@ToString(of = {"questionID", "questionNumber", "questionText", "type", "offeredAnswerList"})
 public class Question implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -72,4 +72,5 @@ public class Question implements Serializable {
 
     @Transient
     private QUESTION_TYPE questionType;
+
 }

@@ -2,6 +2,9 @@ package services.excel;
 
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+
 import static org.junit.Assert.*;
 
 /**
@@ -13,7 +16,7 @@ public class ExcelSurveyImportTest
     public void importSurvey() throws Exception
     {
         ExcelSurveyImport esi = new ExcelSurveyImport();
-        esi.importSurvey();
+        esi.importSurvey(new File("D:\\Documents\\Programos\\SurveySystem\\src\\test\\java\\services\\excel\\Importo_formatas.xlsx"));
     }
 
 }
