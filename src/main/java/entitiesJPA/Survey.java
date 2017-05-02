@@ -27,7 +27,7 @@ import java.util.List;
     @NamedQuery(name = "Survey.findBySurveyURL", query = "SELECT s FROM Survey s WHERE s.surveyURL = :surveyURL"),
     @NamedQuery(name = "Survey.findByIsOpen", query = "SELECT s FROM Survey s WHERE s.isOpen = :isOpen"),
     @NamedQuery(name = "Survey.findByIsCreated", query = "SELECT s FROM Survey s WHERE s.isCreated = :isCreated"),
-    @NamedQuery(name = "Survey.findByIsPrivate", query = "SELECT s FROM Survey s WHERE s.isPrivate = :isPrivate")})
+    @NamedQuery(name = "Survey.findByIsPrivate", query = "SELECT s FROM Survey s WHERE s.isSurveyPrivate = :isPrivate")})
 @Getter
 @Setter
 @EqualsAndHashCode(of = "surveyID")
@@ -42,7 +42,7 @@ public class Survey implements Serializable {
         this.surveyURL = surveyURL;
         this.isOpen = isOpen;
         this.isCreated = isCreated;
-        this.isPrivate = isPrivate;
+        this.isSurveyPrivate = isPrivate;
         this.personID = personID;
         this.questionList = new ArrayList<>();
         this.submits = 0l;
@@ -79,7 +79,7 @@ public class Survey implements Serializable {
     private boolean isCreated;
     @Basic(optional = false)
     @Column(name = "isPrivate")
-    private boolean isPrivate;
+    private boolean isSurveyPrivate;
     @Column(name = "submits")
     private Long submits=0l;
     @JoinColumn(name = "PersonID", referencedColumnName = "PersonID")

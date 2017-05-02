@@ -278,8 +278,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('../fonts/glyphicons-halflings-regular.eot');
-  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('/resources/fonts/glyphicons-halflings-regular.eot');
+  src: url('/resources/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/resources/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('/resources/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/resources/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
@@ -1096,13 +1096,19 @@ html {
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+.ui-widget, .ui-inputfield{
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font-weight: 300;
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
   background-color: #fff;
   margin-bottom: 60px;
+  margin-top: 60px;
 }
 input,
 button,
@@ -1200,7 +1206,7 @@ h6,
 .h5,
 .h6 {
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.1;
   color: inherit;
 }
@@ -2525,7 +2531,7 @@ label {
   display: inline-block;
   max-width: 100%;
   margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 300;
 }
 input[type="search"] {
   -webkit-box-sizing: border-box;
@@ -4519,7 +4525,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-default .navbar-nav > li > a {
   color: #7e8d85;
-  font-weight: 500;
+  font-weight: 300;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {

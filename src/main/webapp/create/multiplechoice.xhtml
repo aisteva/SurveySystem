@@ -5,26 +5,35 @@
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://primefaces.org/ui"
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
-   <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers(questionStatus.index)}" varStatus="answerStatus">
-      <div class="one-answer">
-         <div class="answer-logo">
-            <div class="circle"/>
+   <div class="row">
+      <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers(questionStatus.index)}" varStatus="answerStatus">
+         <div class="row">
+            <div class="answer-text col-lg-12 col-md-12 col-sm-12 col-xs-12">
+               <div class="logo-with-text col-lg-11 col-md-11 col-sm-11 col-xs-10">
+                  <div class="circle"/>
+                  <div class="answer-input">
+                     <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}" styleClass="onlyBottomBorder">
+                        <f:ajax render="@form" />
+                     </h:inputText>
+                  </div>
+               </div>
+               <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+                  <h:commandLink action="#{createFormController.removeAnswer(questionStatus.index, answerStatus.index)}">
+                     <div class="glyphicon glyphicon-remove action-icon"></div>
+                  </h:commandLink>
+               </div>
+            </div>
          </div>
-         <div class="answer-text">
-            <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}">
-               <f:ajax render="@form"/>
-            </h:inputText>
-         </div>
-         <div class="remove-answer">
-            <h:graphicImage value="../resources/images/close.png">
-               <f:ajax event="click" listener="#{createFormController.onButtonRemoveAnswerClick(questionStatus.index, answerStatus.index)}" immediate="true" render="@form" />
-            </h:graphicImage>
+      </ui:repeat>
+      <div class="answer-text col-lg-12 col-md-12 col-sm-12 col-xs-12">
+         <div class="row">
+            <div class="logo-with-text col-lg-11 col-md-11 col-sm-11 col-xs-11">
+               <div class="circle"/>
+               <h:commandLink value="Pridėti atsakymą" action="#{createFormController.addOfferedAnswer(questionStatus.index)}"/>
+               arba
+               <h:commandLink value="Pridėti 'Kita' NEVEIKIA" action="#{createFormController.addOfferedAnswer(questionStatus.index)}"/>
+            </div>
          </div>
       </div>
-   </ui:repeat>
-   <div class="add-answer">
-      <h:graphicImage value="../resources/images/add.png">
-         <f:ajax event="click" listener="#{createFormController.onButtonAddOfferedAnswerClick(questionStatus.index)}" immediate="true" render="@form" />
-      </h:graphicImage>
    </div>
 </ui:composition>
