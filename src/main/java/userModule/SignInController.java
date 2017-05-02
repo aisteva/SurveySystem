@@ -64,7 +64,7 @@ public class SignInController implements Serializable {
         {
             expectedEmail = null;
             expectedPassword = null;
-            return "../index.xhtml?faces-redirect=true";
+            return "/index.xhtml?faces-redirect=true";
         }
     }
 
