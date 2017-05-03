@@ -8,6 +8,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
    <h:head>
       <title>Apklausos</title>
+      <h:outputStylesheet name="/css/style.css"/>
    </h:head>
    <f:metadata>
       <f:viewParam name="person" value="#{signInController.loggedInPerson}" />
@@ -15,24 +16,39 @@
    </f:metadata>
    <h:body>
       <ui:include src="/header.xhtml"/>
-      <div class="container content">
-         <p:fieldset id="list" style="width: 50%">
-            <f:facet name="legend">
-               Viešos apklausos
-            </f:facet>
+      <div class="container">
+         <h1 class="text-center">Viešos apklausos</h1>
+         <div class="row margin-top-md">
+            <ui:repeat value="#{indexController.allSurveys}" var="survey">
+               <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 survey-box">
+                  <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 survey-box-inside">
+                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                        <h3 class="text-center">#{survey.title}</h3>
 
-            <p:dataTable value="#{indexController.allSurveys}" var="survey" tableStyle="table-layout: auto">
-               <p:column headerText="Title">
-                  #{survey.title} <br/><b>Reg. nr.</b>: #{survey.surveyID}
-               </p:column>
-               <p:column headerText="Atsakymų sk.">
-                  #{survey.submits}
-               </p:column>
-               <p:column> <!-- TODO: maybe there's a better way to navigate -->
-                  <h:link outcome="/surveyInfo/SurveyInfo.xhtml?survey=#{survey.surveyID}">Info</h:link>
-               </p:column>
-            </p:dataTable>
-         </p:fieldset>
+                        <p class="text-center">#{survey.description}</p>
+
+                     </div>
+                     <div class="description-fade">
+                     </div>
+
+                     <div class="row">
+                     </div>
+                     <div class="action-with-survey">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                           <h:link value="Atsakinėti"
+                                   styleClass="btn btn-primary btn-lg"
+                                   outcome="/surveyAnswers/showSurvey.xhtml?id=#{survey.surveyURL}"/>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                           <h:link value="Žiūrėti atsakymus"
+                                            styleClass="btn btn-success btn-lg"
+                                            outcome="/surveyInfo/SurveyInfo.xhtml?survey=#{survey.surveyID}"/>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </ui:repeat>
+         </div>
       </div>
       <ui:include src="/footer.xhtml"/>
    </h:body>
