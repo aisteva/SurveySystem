@@ -13,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -39,9 +40,9 @@ public class CreateFormController implements Serializable {
     }
 
     public List<Question> getQuestions() {
-        if (survey.getQuestionList().size() == 0)
+        if (survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList()).size() == 0)
             addQuestion(-1);
-        return survey.getQuestionList();
+        return survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList());
     }
     public void nextPage(){
         page += 1;
