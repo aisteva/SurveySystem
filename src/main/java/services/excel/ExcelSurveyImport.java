@@ -5,14 +5,12 @@ import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
@@ -25,22 +23,13 @@ import java.util.List;
  * Created by arturas on 2017-04-27.
  */
 @Named
-@ApplicationScoped
+@RequestScoped
 public class ExcelSurveyImport
 {
-
-    @Inject
-    private SurveyDao surveyDao;
 
     private XSSFSheet surveySheet = null;
     private XSSFSheet answerSheet = null;
 
-    public Survey importSurveyIntoDb(File excelFile) throws IOException, InvalidFormatException
-    {
-        Survey survey = this.importSurveyIntoEntity(excelFile);
-        surveyDao.create(survey);
-        return survey;
-    }
 
     public Survey importSurveyIntoEntity(File excelFile) throws IOException, InvalidFormatException
     {
@@ -52,6 +41,7 @@ public class ExcelSurveyImport
 
         //Atsidaromi abu lapai faile
         this.surveySheet = (XSSFSheet) wb.getSheet("Survey");
+        //TODO ar būtina?
         this.answerSheet = (XSSFSheet) wb.getSheet("Answer");
 
         if(surveySheet == null || answerSheet == null)
@@ -73,7 +63,7 @@ public class ExcelSurveyImport
         }
         else
         {
-            throw new InvalidFormatException("Survey import error: first row should contain " +
+            throw new InvalidFormatException("Import error: First row must contain " +
                     "$questionNumber, $question, $questionType, $optionsList columns");
         }
 
@@ -83,58 +73,84 @@ public class ExcelSurveyImport
         //iteruojam per eilutes, kol sutinkam tuščią (pagal reikalavimus)
         while(!isRowEmpty(currentRow))
         {
-            Question q = new Question();
-            //pirmame stulpelyje turi but klausimo nr, tad tikrinam, ar numeric value
-            q.setQuestionNumber(getQuestionNumberFromCell(currentRow.getCell(0)));
-            //antrame stulpelyje klausimo tekstas, ieskom string value
-            q.setQuestionText(getQuestionTextFromText(currentRow.getCell(1)));
-            //treciame stulpelyje klausimo tipas, tikrinam ar sutampa su galimais klausimu tipais
+            Question question = new Question();
+            question.setQuestionNumber(getQuestionNumberFromCell(currentRow.getCell(0)));
+            question.setQuestionText(getQuestionTextFromText(currentRow.getCell(1)));
             Question.QUESTION_TYPE questionType = getQuestionTypeFromCell(currentRow.getCell(2));
-            q.setType(questionType.name());
+
+            question.setType(questionType.name());
 
             //pasiruosiam offered answer sarasa, i kuri desim visus galimus atsakymus apklausai
             List<OfferedAnswer> offeredAnswers = new ArrayList<>();
-            OfferedAnswer oa;
+            OfferedAnswer offeredAnswer;
+
+            int currentCellNumber = 3;
             switch(questionType)
             {
-                //kuriam tuscia offeredanswer (pagal db dizaina)
                 case TEXT:
-                    oa = new OfferedAnswer();
-                    oa.setQuestionID(q);
-                    oa.setText("Text answer");
-                    offeredAnswers.add(oa);
-                    q.setOfferedAnswerList(offeredAnswers);
+                    if(!isCellEmpty(currentRow.getCell(currentCellNumber)))
+                    {
+                        throw new InvalidFormatException("Import error in row " + currentRow.getRowNum() +
+                                ": TEXT type question should have empty cell in $optionsList column");
+                    }
+                    else
+                    {
+                        offeredAnswer = new OfferedAnswer();
+                        offeredAnswer.setQuestionID(question);
+                        offeredAnswer.setText("Text answer");
+                        offeredAnswers.add(offeredAnswer);
+                        question.setOfferedAnswerList(offeredAnswers);
+                    }
+
                     break;
                 //iteruojam per stulpelius, kol randam pirma tuscia, galimus atsakymus dedam i sarasa
+                //TODO: jei tolimesnės celės tuščios, mest exception
                 case CHECKBOX: case MULTIPLECHOICE:
-                int currentCellNumber = 3;
-                Cell currentCell = currentRow.getCell(currentCellNumber);
-                while(currentCell != null)
-                {
-                    oa = new OfferedAnswer();
-                    oa.setQuestionID(q);
-                    oa.setText(getStringOrNumericValueFromCell(currentCell));
-                    offeredAnswers.add(oa);
-                    q.setOfferedAnswerList(offeredAnswers);
 
-                    currentCell = currentRow.getCell(++currentCellNumber);
+                Cell currentCell = currentRow.getCell(currentCellNumber);
+                if(isCellEmpty(currentCell))
+                {
+                    throw new InvalidFormatException("Import error in row " + currentRow.getRowNum() +
+                            ": " + questionType.name() + " type question should not have an empty cell in $optionsList column");
+                }
+                else
+                {
+                    while(currentCell != null)
+                    {
+                        offeredAnswer = new OfferedAnswer();
+                        offeredAnswer.setQuestionID(question);
+                        offeredAnswer.setText(getStringOrNumericValueFromCell(currentCell));
+                        offeredAnswers.add(offeredAnswer);
+                        question.setOfferedAnswerList(offeredAnswers);
+
+                        currentCell = currentRow.getCell(++currentCellNumber);
+                    }
                 }
                 break;
                 //pagal sutarta formata dedam min ir max reiksmes i viena offeredanswer
                 case SCALE:
-                    oa = new OfferedAnswer();
+                    Cell cellMin = currentRow.getCell(3);
+                    Cell cellMax = currentRow.getCell(4);
+                    offeredAnswer = new OfferedAnswer();
+                    if(cellMin.getCellTypeEnum() == CellType.BLANK ||
+                            cellMax.getCellTypeEnum() == CellType.BLANK)
+                    {
+                        throw new InvalidFormatException("Import error in row " + currentRow.getRowNum() +
+                                ": SCALE type question should have min and max values " +
+                                "in cells " + cellMin.getAddress() + " and " + cellMax.getAddress());
+                    }
                     String scale = (int)currentRow.getCell(3).getNumericCellValue() + ";" +
                             (int)currentRow.getCell(4).getNumericCellValue();
-                    oa.setQuestionID(q);
-                    oa.setText(scale);
-                    offeredAnswers.add(oa);
-                    q.setOfferedAnswerList(offeredAnswers);
+                    offeredAnswer.setQuestionID(question);
+                    offeredAnswer.setText(scale);
+                    offeredAnswers.add(offeredAnswer);
+                    question.setOfferedAnswerList(offeredAnswers);
                     break;
 
             }
             //pabaigiam sujungti esybes rysiais
-            q.setSurveyID(survey);
-            questionList.add(q);
+            question.setSurveyID(survey);
+            questionList.add(question);
 
             currentRow = surveySheet.getRow(++currentRowNumber);
         }
@@ -144,8 +160,21 @@ public class ExcelSurveyImport
         return survey;
     }
 
+
+    private boolean isCellEmpty(Cell cell)
+    {
+        if (cell != null)
+        {
+            if(cell.getCellTypeEnum() != CellType.BLANK)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     //Funkcija tikrina, ar eilutė tuščia
-    public static boolean isRowEmpty(Row row) {
+    public boolean isRowEmpty(Row row) {
         for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
             Cell cell = row.getCell(c);
             if (cell != null && cell.getCellTypeEnum() != CellType.BLANK)
@@ -228,10 +257,19 @@ public class ExcelSurveyImport
     //tikrina pirma eilute, ar teisingai suvardinti stulpeliai
     private void checkFirstRowFormat(Cell cell, String text) throws InvalidFormatException
     {
-        if(!cell.getStringCellValue().equals(text))
+        if(cell != null)
         {
-            throw new InvalidFormatException("Survey import error: Cell " +
-                    cell.getAddress().toString() + " should contain " + text);
+            if(!cell.getStringCellValue().equals(text))
+            {
+                throw new InvalidFormatException("Survey import error: Cell " +
+                        cell.getAddress().toString() + " must contain " + text);
+            }
         }
+        else
+        {
+            throw new InvalidFormatException("Survey import error: First row must contain " + text);
+        }
+
+
     }
 }
