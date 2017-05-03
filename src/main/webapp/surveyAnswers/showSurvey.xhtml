@@ -7,66 +7,84 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
-<h:head>
-   <h:outputStylesheet name="/css/create/style.css" />
-</h:head>
+    <h:head>
+       <h:outputStylesheet name="/css/create/style.css"/>
+    </h:head>
 
-<f:metadata>
-    <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
-    <f:viewAction action="#{signInController.isSigned}" />
-    <f:viewParam name="id" required="true" value="#{showSurveyController.survey.surveyURL}"
-                 validator="#{showSurveyController.validate}"/>
-</f:metadata>
-<h:body>
-<ui:include src="../header.xhtml"/>
+    <f:metadata>
+        <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
+        <f:viewAction action="#{signInController.isSigned}" />
+        <f:viewParam name="id"
+                     required="true"
+                     value="#{showSurveyController.survey.surveyURL}"
+                     validator="#{showSurveyController.validate}"/>
+    </f:metadata>
+    <h:body>
+        <ui:include src="/header.xhtml"/>
 
-<div class="container content">
+        <div class="container">
+            <div class="col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
+                <h1 class="text-center">#{showSurveyController.survey.title}</h1>
+                <h4 align="justify" class="title">#{showSurveyController.survey.description}</h4>
 
-    <h1>Apklausa nr. #{showSurveyController.survey.surveyID}</h1>
-    <h3>#{showSurveyController.survey.description}</h3>
-    <h:panelGroup id="surveyQuestions" >
-        <ui:repeat  value="#{showSurveyController.survey.questionList}" var="question" varStatus="questionStatus">
-            <div class="answers">
-                <h:panelGroup rendered="#{question.type == 'TEXT'}">
-                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
-                    <!--cia turi sietis su Aistes, kad issaugoti atsakyma-->
-                    <h:inputText></h:inputText>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
-                    <!--cia Aiste turi issaugoti atsakyma-->
-                        <p:selectOneRadio id="singleQestion" value="">
-                            <f:selectItems value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
-                        </p:selectOneRadio>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
-                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
-                    <h:panelGroup id="offeredAnswers2">
-                        <ui:repeat value="#{question.offeredAnswerList}" var="offered">
-                            <!--cia turi sietis su Aistes, kad issaugoti atsakyma https://www.primefaces.org/showcase/ui/input/booleanCheckbox.xhtml reikia evento-->
-                            <p:selectBooleanCheckbox value="#{offered.text}" />
-                            <h:outputText value="#{offered.text}"></h:outputText>
-                            <br/>
-                        </ui:repeat>
-                    </h:panelGroup>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                    <h2>#{question.questionNumber}. #{question.questionText}</h2>
-                    <!-- Aistei reikia issaugoti value-->
-                    <p:spinner id="minMax" value="" min="0" max="100" />
-                </h:panelGroup>
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <span class="required">* - Privaloma</span>
+                    </div>
+                    <ui:repeat  value="#{showSurveyController.survey.questionList}" var="question" varStatus="questionStatus">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
+                            <h2>#{question.questionNumber}. #{question.questionText}
+                                <h:panelGroup rendered="#{question.required}">
+                                    <span class="required">*</span>
+                                </h:panelGroup>
+                            </h2>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h:panelGroup rendered="#{question.type == 'TEXT'}">
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
+                                        <h:inputText styleClass="onlyBottomBorder" a:placeholder="Atsakymas"/>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                                <h:selectManyCheckbox layout="pageDirection">
+                                    <f:selectItems value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
+                                </h:selectManyCheckbox>
+                                <!--TODO KITA-->
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
+                                <h:selectOneRadio layout="pageDirection">
+                                    <f:selectItems  styleClass="radio" value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
+                                </h:selectOneRadio>
+                                <!--TODO KITA-->
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'SCALE'}">
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                                                <p:inputText id="slider6" value="#{showSurveyController.getScaleMinValue(questionStatus.index)}" styleClass="onlyBottomBorder"/>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
+                                                <p:slider for="slider6" minValue="#{showSurveyController.getScaleMinValue(questionStatus.index)}" maxValue="#{showSurveyController.getScaleMaxValue(questionStatus.index)}"/>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </ui:repeat>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
+                            <p:commandButton value="Siųsti atsakymą" styleClass="btn btn-primary btn-md text-center"></p:commandButton>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </ui:repeat>
-
-    </h:panelGroup>
-
-
-
-    <p:commandButton value="Išsaugoti Apklausą"></p:commandButton>
-
-
-
-</div>
-<ui:include src="../footer.xhtml"/>
-</h:body>
+        </div>
+        <ui:include src="/footer.xhtml"/>
+    </h:body>
 </html>

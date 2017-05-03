@@ -4,6 +4,7 @@ import dao.SurveyDAO;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
+import javafx.beans.binding.IntegerBinding;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,7 +25,6 @@ import java.util.List;
 public class showSurveyController {
 
     private Survey survey = new Survey();
-
     @Inject
     private SurveyDAO surveyDAO;
 
@@ -36,6 +36,22 @@ public class showSurveyController {
 //        return survey.getQuestionList();
 //    }
 //
+    public int getScaleMinValue(final int questionIndex) {
+        List<OfferedAnswer> answers = survey.getQuestionList().get(questionIndex).getOfferedAnswerList();
+        if (answers.size() != 2)
+            return -100000;
+        int a = Integer.parseInt(answers.get(0).getText());
+        int b = Integer.parseInt(answers.get(1).getText());
+        return a > b ? b : a;
+    }
+    public int getScaleMaxValue(final int questionIndex) {
+        List<OfferedAnswer> answers = survey.getQuestionList().get(questionIndex).getOfferedAnswerList();
+        if (answers.size() != 2)
+            return 100000;
+        int a = Integer.parseInt(answers.get(0).getText());
+        int b = Integer.parseInt(answers.get(1).getText());
+        return a > b ? a : b;
+    }
     public Survey findBySurveyURL(String surveyURL){
         survey = surveyDAO.getSurveyByUrl(surveyURL);
         return survey;
