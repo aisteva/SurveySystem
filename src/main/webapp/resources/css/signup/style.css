@@ -1,3 +1,18 @@
-body {
-    background: #000000;
+input, .ui-inputfield {
+    width: 100%;
+    padding: 10px !important;
+    border-radius: 4px;
+    box-shadow: none !important;
+    background: none;
+    border: 1px solid #bdbdbe;
+    font-weight: 300 !important;
+    margin-bottom: 30px !important;
+}
+
+.error-message {
+    color: #F74356;
+}
+
+input[readonly="readonly"] {
+    background: #efefef;
 }
