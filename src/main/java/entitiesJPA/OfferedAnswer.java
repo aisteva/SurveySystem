@@ -24,7 +24,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "offeredAnswerID")
-@ToString(of = {"offeredAnswerID", "text"})
+@ToString(of = {"offeredAnswerID", "text", "answerList"})
 public class OfferedAnswer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id

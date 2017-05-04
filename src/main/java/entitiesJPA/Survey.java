@@ -31,7 +31,7 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "surveyID")
-@ToString(of = "surveyID")
+@ToString(of = {"surveyID", "questionList"})
 public class Survey implements Serializable {
 
     public Survey(){};
