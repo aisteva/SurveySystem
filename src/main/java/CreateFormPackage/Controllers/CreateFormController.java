@@ -10,7 +10,10 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -27,6 +30,8 @@ public class CreateFormController implements Serializable {
 
     private Survey survey = new Survey();
 
+    private int page = 1;
+
     @Inject
     private PersonDAO personDAO;
 
@@ -35,25 +40,34 @@ public class CreateFormController implements Serializable {
     }
 
     public List<Question> getQuestions() {
-        return survey.getQuestionList();
+        if (survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList()).size() == 0)
+            addQuestion(-1);
+        return survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList());
+    }
+    public void nextPage(){
+        page += 1;
+    }
+    public void prevPage(){
+        page -= 1;
+    }
+    public void removeQuestion(final int questionIndex) {
+        survey.getQuestionList().remove(questionIndex);
     }
 
-    public void onButtonRemoveQuestionClick(Question question) {
-        survey.getQuestionList().remove(question);
-    }
-
-    public void onButtonAddQuestionClick() {
+    public void addQuestion(final int questionIndex) {
         Question question = new Question();
         question.setSurveyID(survey);
-        survey.getQuestionList().add(question);
-        onButtonAddOfferedAnswerClick(survey.getQuestionList().size() - 1);
+        question.setQuestionNumber(questionIndex + 2);    // current (clicked) question index + next question (1) + 1
+        question.setPage(page);
+        survey.getQuestionList().add(questionIndex + 1, question);
+        addOfferedAnswer(questionIndex + 1);
     }
 
-    public void onButtonRemoveAnswerClick(final int questionIndex, final int answerIndex){
+    public void removeAnswer(int questionIndex, final int answerIndex){
         survey.getQuestionList().get(questionIndex).getOfferedAnswerList().remove(answerIndex);
     }
 
-    public void onButtonAddOfferedAnswerClick(final int questionIndex) {
+    public void addOfferedAnswer(final int questionIndex) {
         OfferedAnswer offeredAnswer = new OfferedAnswer();
         Question question = survey.getQuestionList().get(questionIndex);
 
@@ -71,6 +85,26 @@ public class CreateFormController implements Serializable {
         survey.getQuestionList().get(questionIndex).getOfferedAnswerList().clear();
     }
 
+    public void removeAllAnswerConnections(final int questionIndex){
+        survey.getQuestionList().get(questionIndex).getAnswerConnectionList().clear();
+    }
+
+    public void moveQuestionUp(final int questionIndex) {
+        if (questionIndex != 0) {
+            survey.getQuestionList().get(questionIndex).setQuestionNumber(questionIndex - 1);
+            survey.getQuestionList().get(questionIndex - 1).setQuestionNumber(questionIndex);
+            Collections.swap(survey.getQuestionList(), questionIndex, questionIndex - 1);
+        }
+    }
+    public void moveQuestionDown(final int questionIndex) {
+        if (questionIndex != survey.getQuestionList().size()-1){
+            survey.getQuestionList().get(questionIndex).setQuestionNumber(questionIndex + 1);
+            survey.getQuestionList().get(questionIndex + 1).setQuestionNumber(questionIndex);
+            Collections.swap(survey.getQuestionList(), questionIndex, questionIndex+1);
+        }
+
+
+    }
     @Transactional
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);

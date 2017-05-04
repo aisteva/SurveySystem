@@ -9,6 +9,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Created by arturas on 2017-04-02.
@@ -30,6 +31,16 @@ public class PersonDAO
     {
         entityManager.merge(person);
         entityManager.flush();
+    }
+
+    public Person findById(Long id)
+    {
+        Query q = entityManager.createNamedQuery("Person.findByPersonID").setParameter("personID", id);
+        try {
+            return (Person) q.getSingleResult();
+        }catch(Exception ex){
+            return null;
+        }
     }
 
     public Person FindPersonByEmail(String email)
@@ -55,7 +66,17 @@ public class PersonDAO
     @Transactional
     public void DeleteUser(Person person)
     {
-        entityManager.remove(person);
+        Person per = entityManager.merge(person); //TODO: Managed entity vs unmanaged Maybe's needed to change
+        entityManager.remove(per);
+    }
+
+    public List<Person> findPersons(){
+        return entityManager.createNamedQuery("Person.findAll").getResultList();
+    }
+
+    public void updateAndFlush(Person person) {
+        entityManager.merge(person);
+        entityManager.flush();
     }
 
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+    <title>pavadinimas</title>
+</h:head>
+<f:metadata>
+    <f:viewParam name="survey" value="#{surveyInfoController.surveyId}" />
+    <f:viewAction action="#{surveyInfoController.load}" />
+</f:metadata> <!--TODO: kažkaip parametrą gražiau galima būtų perduoti.-->
+<h:body>
+    <ui:include src="/header.xhtml"/>
+    <div class="container content">
+        Pavadinimas: #{surveyInfoController.survey.title} <br></br>
+        Klausimų skaičius: #{surveyInfoController.survey.getQuestionList().size()} <br></br>
+        Atsakiusių žmonių sk.: #{surveyInfoController.survey.submits}
+
+        <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
+            <p:fieldset legend="#{question.questionText}" style="margin-bottom:20px">
+                <h:panelGroup rendered="#{question.type == 'TEXT'}">
+                    <ui:include src="dataTable.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                    <ui:include src="chartTable.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
+                    <ui:include src="chartTable.xhtml"/>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{question.type == 'SCALE'}">
+                    <ui:include src="barChart.xhtml"/>
+                </h:panelGroup>
+                <h:outputText value="Atsakymų sk.: #{surveyInfoController.getQuestionAnswersNumber(question)}" />
+            </p:fieldset>
+        </ui:repeat>
+
+    </div>
+    <ui:include src="/footer.xhtml"/>
+</h:body>
+</html>

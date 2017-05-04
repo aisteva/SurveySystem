@@ -15,16 +15,7 @@
         <h:outputScript name="/js/bootstrap.min.js"/>
     </h:head>
     <h:body>
-        <nav class="navbar navbar-default" role="navigation">
-            <div class="container">
-                <a class="navbar-brand" href="#">SurveySystem</a>
-                <ul class="nav navbar-nav navbar-right">
-                    <li>
-                        <a href="#" data-toggle="modal" data-target="#login-modal">Prisijungti</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <ui:include src="/header.xhtml"/>
         <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
             <div class="modal-dialog">
                 <div class="loginmodal-container">
@@ -40,11 +31,15 @@
                         ajax="false"/>
                     </h:form>
                     <div class="login-help">
-                        <h:link styleClass="text-primary" value="Registruotis" outcome="/signup/createNewUser.xtml"/>
-                        <!-- - -->
-                        <!--<h:link styleClass="text-primary" value="Pamiršau slaptažodį" outcome="#"/>-->
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                                <h:link styleClass="text-primary" value="Registruotis" outcome="/signup/createNewUser.xhtml"/>
+                            </div>
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                                <h:link styleClass="text-primary" value="Pamiršau slaptažodį" outcome="/signin/forgotPassword.xhhtml"/>
+                            </div>
+                        </div>
                     </div>
-                    <!-- TODO mygtukas "pamiršai slaptažodį?"-->
                 </div>
             </div>
         </div>

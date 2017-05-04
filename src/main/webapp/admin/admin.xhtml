@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <h:head>
+      <title>pavadinimas</title>
+   </h:head>
+   <f:metadata>
+      <f:viewAction action="#{signInController.isSigned}" />
+   </f:metadata>
+   <h:body>
+      <ui:include src="/header.xhtml"/>
+      <div class="container content">
+
+         <ui:include src="registeredPersons.xhtml"/>
+
+         <ui:include src="pendingPersons.xhtml"/>
+      </div>
+      <ui:include src="/footer.xhtml"/>
+   </h:body>
+</html>

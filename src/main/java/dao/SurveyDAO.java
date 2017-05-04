@@ -17,7 +17,7 @@ import java.util.List;
  * Created by vdeiv on 2017-04-07.
  */
 @ApplicationScoped
-public class SurveyDao {
+public class SurveyDAO {
     @Inject
     private EntityManager em;
 
@@ -25,13 +25,26 @@ public class SurveyDao {
         em.persist(survey);
     }
 
-    public List<Survey> getAllQuestions() {
+    public List<Survey> getAllSurveys() {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
     }
 
+    public List<Survey> getAllPublicSurveys(){
+        return em.createNamedQuery("Survey.findByIsPrivate").setParameter("isPrivate", false).getResultList();
+    }
     public Survey getSurveyByUrl(String surveyURL){
 
         Query q = em.createNamedQuery("Survey.findBySurveyURL").setParameter("surveyURL", surveyURL);
+        try {
+            return (Survey) q.getSingleResult();
+        }catch(Exception ex){
+            return null;
+        }
+    }
+
+    public Survey getSurveyById(Long id){
+
+        Query q = em.createNamedQuery("Survey.findBySurveyID").setParameter("surveyID", id);
         try {
             return (Survey) q.getSingleResult();
         }catch(Exception ex){

@@ -5,25 +5,27 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <title>Užbaigti registraciją</title>
-        <h:outputStylesheet name="/css/style.css"/>
+        <h:outputStylesheet name="/css/signup/style.css"/>
     </h:head>
     <h:body>
-        <div class="container content">
-            <h:form>
-               <h:panelGrid columns="1">
-                   <p:outputLabel for="email" value="El.Paštas"/>
-                   <p:inputText id="email" value="#{linkSenderController.person.email}" required="true"/>
-               </h:panelGrid>
+        <ui:include src="/header.xhtml"/>
+        <h:form>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
+                        <h:message for="email" styleClass="error-message"/>
+                        <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.person.email}">
 
-               <p:commandButton value="Registruotis"
-                                action="#{linkSenderController.checkEmailForNewRegistration()}"
-                                ajax="false"/>
-
-            </h:form>
-            <p:messages globalOnly="true"/>
-        </div>
+                        </p:inputText>
+                        <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
+                                         action="#{linkSenderController.checkEmailForNewRegistration()}"
+                                         ajax="false"/>
+                    </div>
+                </div>
+            </div>
+        </h:form>
     </h:body>
 </html>

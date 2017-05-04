@@ -166,6 +166,104 @@ input[type="radio"] {
           box-sizing: border-box;
   padding: 0;
 }
+input[type="checkbox"]:not(:checked),
+input[type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+input[type="checkbox"]:not(:checked) + label,
+input[type="checkbox"]:checked + label {
+  position: relative;
+  padding-left: 1.95em;
+  cursor: pointer;
+}
+input[type="checkbox"]:not(:checked) + label:before,
+input[type="checkbox"]:checked + label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #bdbdbe;
+  border-radius: 10%;
+}
+/* checked mark aspect */
+input[type="checkbox"]:not(:checked) + label:after,
+input[type="checkbox"]:checked + label:after {
+  content: '✔';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  border-radius: 10%;
+  padding: 2px 0 0 2px;
+  font-size: 1.3em;
+  line-height: 0.8;
+  color: #ffffff;
+  background: #0083BB;
+  transition: all .2s;
+}
+/* checked mark aspect changes */
+input[type="checkbox"]:not(:checked) + label:after {
+  opacity: 0;
+  transform: scale(0);
+}
+input[type="checkbox"]:checked + label:after {
+  opacity: 1;
+  transform: scale(1);
+}
+input[type="radio"]:not(:checked),
+input[type="radio"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+input[type="radio"]:not(:checked) + label,
+input[type="radio"]:checked + label {
+  position: relative;
+  padding-left: 1.95em;
+  cursor: pointer;
+}
+input[type="radio"]:not(:checked) + label:before,
+input[type="radio"]:checked + label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #bdbdbe;
+  border-radius: 50%;
+}
+/* checked mark aspect */
+input[type="radio"]:not(:checked) + label:after,
+input[type="radio"]:checked + label:after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  font-size: 1.3em;
+  line-height: 0.8;
+  background: #0083BB;
+  transition: all .2s;
+}
+/* checked mark aspect changes */
+input[type="radio"]:not(:checked) + label:after {
+  opacity: 0;
+  transform: scale(0);
+}
+input[type="radio"]:checked + label:after {
+  opacity: 1;
+  transform: scale(1);
+}
+/* hover style just for information */
+label:hover:before {
+  border: 1px solid #0083BB!important;
+}
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   height: auto;
@@ -278,8 +376,8 @@ th {
 }
 @font-face {
   font-family: 'Glyphicons Halflings';
-  src: url('../fonts/glyphicons-halflings-regular.eot');
-  src: url('../fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../fonts/glyphicons-halflings-regular.woff') format('woff'), url('../fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
+  src: url('/resources/fonts/glyphicons-halflings-regular.eot');
+  src: url('/resources/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/resources/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('/resources/fonts/glyphicons-halflings-regular.woff') format('woff'), url('/resources/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
 .glyphicon {
   position: relative;
@@ -1096,13 +1194,19 @@ html {
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+.ui-widget, .ui-inputfield{
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  font-size: 16px;
   line-height: 1.42857143;
   color: #333;
   background-color: #fff;
   margin-bottom: 60px;
+  margin-top: 60px;
 }
 input,
 button,
@@ -1200,7 +1304,7 @@ h6,
 .h5,
 .h6 {
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 300;
   line-height: 1.1;
   color: inherit;
 }
@@ -2525,7 +2629,7 @@ label {
   display: inline-block;
   max-width: 100%;
   margin-bottom: 5px;
-  font-weight: bold;
+  font-weight: 300;
 }
 input[type="search"] {
   -webkit-box-sizing: border-box;
@@ -3556,7 +3660,6 @@ tbody.collapse.in {
   display: block;
   padding: 10px 20px;
   clear: both;
-  font-weight: normal;
   line-height: 1.42857143;
   color: #7e8d85;
   white-space: nowrap;
@@ -4519,7 +4622,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-default .navbar-nav > li > a {
   color: #7e8d85;
-  font-weight: 500;
+  font-weight: 300;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {

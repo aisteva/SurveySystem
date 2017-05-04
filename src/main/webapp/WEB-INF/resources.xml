@@ -6,8 +6,9 @@
     <!-- pasikeiskit savo db prisijungimus -->
     <Resource id="SurveyDataSource" type="DataSource">
         JdbcDriver = com.mysql.jdbc.Driver
-        JdbcUrl = jdbc:mysql://localhost:3306/surveydb
+        JdbcUrl = jdbc:mysql://193.219.91.103:3306/SurveyDB
         UserName = root
+        Password = labaipasimete
         InitialSize = 1
         MaxActive = 10
         MaxWaitTime = 10 seconds
