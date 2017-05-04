@@ -18,6 +18,11 @@
                   </div>
                </div>
                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+                  <h:commandLink action="#{createFormController.addChildQuestion(answerStatus.index, questionStatus.index)}">
+                     <div class="glyphicon glyphicon-plus action-icon"></div>
+                  </h:commandLink>
+               </div>
+               <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
                   <h:commandLink action="#{createFormController.removeAnswer(questionStatus.index, answerStatus.index)}">
                      <div class="glyphicon glyphicon-remove action-icon"></div>
                   </h:commandLink>

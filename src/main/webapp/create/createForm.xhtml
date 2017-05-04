@@ -80,6 +80,7 @@
                                 #{question.setQuestionNumber(questionStatus.index)}
                                 <div class="row question-info">
                                     <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                                        <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
                                         <h:inputText value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
                                             <f:ajax render="@form"/>
                                         </h:inputText>
