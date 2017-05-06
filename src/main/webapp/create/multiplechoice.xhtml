@@ -20,6 +20,7 @@
                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
                   <h:commandLink action="#{createFormController.removeAnswer(questionStatus.index, answerStatus.index)}">
                      <div class="glyphicon glyphicon-remove action-icon"></div>
+                     <f:ajax render="@form"/>
                   </h:commandLink>
                </div>
             </div>
@@ -29,9 +30,9 @@
          <div class="row">
             <div class="logo-with-text col-lg-11 col-md-11 col-sm-11 col-xs-11">
                <div class="circle"/>
-               <h:commandLink value="Pridėti atsakymą" action="#{createFormController.addOfferedAnswer(questionStatus.index)}"/>
-               arba
-               <h:commandLink value="Pridėti 'Kita' NEVEIKIA" action="#{createFormController.addOfferedAnswer(questionStatus.index)}"/>
+               <h:commandLink value="Pridėti atsakymą" action="#{createFormController.addOfferedAnswer(questionStatus.index)}">
+                  <f:ajax render="@form"/>
+               </h:commandLink>
             </div>
          </div>
       </div>

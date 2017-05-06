@@ -37,22 +37,28 @@
     top:0;
     left: 0;
     opacity: 0;
-    background: rgba(0,0,0, .5);
+    background: rgba(255,255,255, .9);
     height: 100%;
     width: 100%;
     transition: 0.1s opacity linear;
 }
 .survey-box-inside > .action-with-survey .btn {
-
     margin-top: 30px;
 }
-.survey-box-inside:hover > .action-with-survey {
+@media (min-width: 768px) {
+    .survey-box-inside:hover > .action-with-survey {
+        opacity: 1;
+        transition: 0.1s opacity linear;
 
-    opacity: 1;
-    transition: 0.1s opacity linear;
-
+    }
 }
+@media (max-width: 767px) {
+    .survey-box-inside:active > .action-with-survey {
+        opacity: 1;
+        transition: 0.1s opacity linear;
 
+    }
+}
 .description-fade {
     z-index: 10;
     position: absolute;
@@ -63,5 +69,24 @@
     background: linear-gradient(rgba(0,0,0,0), #f7f7f7);
 }
 
+.ui-messages-info, .ui-messages-error  {
+    color: #ff3b3f!important;
+    background: transparent!important;
+    border-radius: 0!important;
+    border: none!important;
+    padding-bottom: 0!important;
+}
 
+.ui-messages-info ul {
+    margin: 0!important;
+}
 
+.ui-messages-info-icon, .ui-messages-warn-icon, .ui-messages-error-icon, .ui-messages-fatal-icon {
+    visibility: hidden!important;
+    display: none!important;
+}
+
+.ui-messages-info-summary, .ui-messages-warn-summary, .ui-messages-error-summary, .ui-messages-fatal-summary, .ui-message-info-summary, .ui-message-warn-summary, .ui-message-error-summary, .ui-message-fatal-summary {
+    margin-left: 0!important;
+    font-weight: 300!important;
+}

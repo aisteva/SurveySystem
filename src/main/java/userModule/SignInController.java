@@ -38,7 +38,7 @@ public class SignInController implements Serializable {
     public String signIn(){
         //tikrinam, ar į abu laukus kas nors įrašyta
         if (expectedEmail == "" || expectedPassword == "") {
-            FacesContext.getCurrentInstance().addMessage("signin-form:password",
+            FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
                     new FacesMessage("Įveskite el. paštą ir slaptažodį"));
             loggedInPerson = null;
             return null;
@@ -46,7 +46,7 @@ public class SignInController implements Serializable {
         //tikrinam, ar toks email yra duomenų bazėj ir ar teisingas password
         else if (!isEmailInDatabase() || !isPasswordCorrect())
         {
-            FacesContext.getCurrentInstance().addMessage("signin-form:password",
+            FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
                     new FacesMessage("Neteisingas el.paštas arba slaptažodis"));
             loggedInPerson = null;
             return null;
@@ -54,7 +54,7 @@ public class SignInController implements Serializable {
         //tikrinam, ar vartotojas nėra užblokuotas
         else if (loggedInPerson.isBlocked())
         {
-            FacesContext.getCurrentInstance().addMessage("signin-form:password",
+            FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
                     new FacesMessage("Vartotojas užblokuotas"));
             loggedInPerson = null;
             return null;

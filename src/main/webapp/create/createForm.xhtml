@@ -11,6 +11,7 @@
     <h:head>
         <title>Nauja apklausa</title>
         <h:outputStylesheet name="/css/create/style.css" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     </h:head>
     <f:metadata>
         <f:viewAction action="#{signInController.isSigned}" />
@@ -110,21 +111,25 @@
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
                                         <h:commandLink action="#{createFormController.moveQuestionUp(questionStatus.index)}">
                                             <div class="glyphicon glyphicon-triangle-top action-icon"></div>
+                                            <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
                                         <h:commandLink action="#{createFormController.moveQuestionDown(questionStatus.index)}">
                                             <div class="glyphicon glyphicon-triangle-bottom action-icon"></div>
+                                            <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
                                         <h:commandLink action="#{createFormController.removeQuestion(questionStatus.index)}">
                                             <div class="glyphicon glyphicon-trash action-icon"></div>
+                                            <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
                                         <h:commandLink action="#{createFormController.addQuestion(questionStatus.index)}">
                                             <div class="glyphicon glyphicon-plus action-icon"></div>
+                                            <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4 vertical-align">
