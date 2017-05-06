@@ -60,8 +60,8 @@ public class SurveyInfoController implements Serializable{
             if (q.getType().equals("CHECKBOX") || q.getType().equals("MULTIPLE_CHOICE")) {
                 pieCharts.put(q.getQuestionID(),getPieChartModel(q));
             }
-            if (q.getType().equals("SCALE"))
-                barCharts.put(q.getQuestionID(), getBarChartModel(q));
+           // if (q.getType().equals("SCALE"))
+            //    barCharts.put(q.getQuestionID(), getBarChartModel(q));
         }
     }
 

@@ -63,8 +63,29 @@ public class CreateFormController implements Serializable {
         addOfferedAnswer(questionIndex + 1);
     }
 
+    public void addChildQuestion(final int offeredAnswerIndex, final int questionIndex) {
+        Question question = new Question();
+        question.setSurveyID(survey);
+        question.setQuestionNumber(questionIndex + 2);    // current (clicked) question index + next question (1) + 1
+        question.setPage(page);
+
+        AnswerConnection answerConnection = new AnswerConnection();
+        question.getAnswerConnectionList().add(answerConnection);
+        answerConnection.setQuestionID(question);
+        OfferedAnswer parentOfferedAnswer = getOfferedAnswers(questionIndex).get(offeredAnswerIndex);
+        parentOfferedAnswer.getAnswerConnectionList().add(answerConnection);
+        answerConnection.setOfferedAnswerID(parentOfferedAnswer);
+
+        survey.getQuestionList().add(questionIndex + 1, question);
+        addOfferedAnswer(questionIndex + 1);
+    }
+
     public void removeAnswer(int questionIndex, final int answerIndex){
-        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().remove(answerIndex);
+        OfferedAnswer offeredAnswer = survey.getQuestionList().get(questionIndex).getOfferedAnswerList().get(answerIndex);
+        for (AnswerConnection answerConnection : offeredAnswer.getAnswerConnectionList()){
+            answerConnection.getQuestionID().getAnswerConnectionList().remove(answerConnection); // Deletes from question answerconnections
+        }
+        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().remove(offeredAnswer);
     }
 
     public void addOfferedAnswer(final int questionIndex) {
@@ -73,20 +94,10 @@ public class CreateFormController implements Serializable {
 
         offeredAnswer.setQuestionID(question);
         question.getOfferedAnswerList().add(offeredAnswer);
-
-        AnswerConnection answerConnection = new AnswerConnection();
-        question.getAnswerConnectionList().add(answerConnection);
-        offeredAnswer.getAnswerConnectionList().add(answerConnection);
-        answerConnection.setQuestionID(question);
-        answerConnection.setOfferedAnswerID(offeredAnswer);
     }
 
     public void removeAllOfferedAnswers(final int questionIndex) {
         survey.getQuestionList().get(questionIndex).getOfferedAnswerList().clear();
-    }
-
-    public void removeAllAnswerConnections(final int questionIndex){
-        survey.getQuestionList().get(questionIndex).getAnswerConnectionList().clear();
     }
 
     public void moveQuestionUp(final int questionIndex) {
@@ -102,9 +113,20 @@ public class CreateFormController implements Serializable {
             survey.getQuestionList().get(questionIndex + 1).setQuestionNumber(questionIndex);
             Collections.swap(survey.getQuestionList(), questionIndex, questionIndex+1);
         }
-
-
     }
+
+    public String getQuestionParentMessage(final int questionIndex){
+        if (questionIndex != survey.getQuestionList().size()) {
+            Question question = survey.getQuestionList().get(questionIndex);
+            if (question.getAnswerConnectionList().size() > 0){
+                return "Jeigu prieš tai buvo atsakyta "+ question.getAnswerConnectionList().get(0).getOfferedAnswerID().getText();
+            }else{
+                return "";
+            }
+        }
+        return "";
+    }
+
     @Transactional
     public String createForm(final String personEmail) {
         Person person = personDAO.FindPersonByEmail(personEmail);

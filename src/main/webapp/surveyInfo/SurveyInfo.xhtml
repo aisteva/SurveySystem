@@ -32,9 +32,7 @@
                 <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
                     <ui:include src="chartTable.xhtml"/>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                    <ui:include src="barChart.xhtml"/>
-                </h:panelGroup>
+
                 <h:outputText value="Atsakymų sk.: #{surveyInfoController.getQuestionAnswersNumber(question)}" />
             </p:fieldset>
         </ui:repeat>
