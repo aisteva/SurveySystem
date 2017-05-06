@@ -121,6 +121,7 @@ public class SignInController implements Serializable {
             return "/signin/signin.xhtml";
         return null;
     }
+
     public void validate(FacesContext context, UIComponent component, Object object) {
         if(loggedInPerson.getFirstName() != "null" )
         {
@@ -140,6 +141,12 @@ public class SignInController implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public String onlyAdmin() {
+        if (isAdmin())
+            return null;
+        return "/index.xhtml";
     }
 
 }
