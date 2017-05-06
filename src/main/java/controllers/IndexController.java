@@ -1,15 +1,20 @@
 package controllers;
 
 import dao.AnswerDAO;
+import dao.PersonDAO;
 import dao.SurveyDAO;
 import entitiesJPA.Answer;
+import entitiesJPA.Person;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
+import userModule.SignInController;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -28,19 +33,34 @@ public class IndexController implements Serializable {
     SurveyDAO surveyDao;
 
     @Inject
-    AnswerDAO answerDAO;
+    private SignInController signInController;
 
     @Getter
-    List<Survey> allSurveys = new ArrayList<>();
+    List<Survey> publicSurveys = new ArrayList<>();
 
     @Getter
-    List<Survey> userSurveys = new ArrayList<>();
+    List<Survey> privateSurveys = new ArrayList<>(); // Only if admin
+
+    @Getter
+    List<Survey> personSurveys = new ArrayList<>();
 
     @PostConstruct
-    public void init() {
-        allSurveys = surveyDao.getAllPublicSurveys();
-        userSurveys = new ArrayList<>(allSurveys);
-        //userSurveys.removeIf(x -> !x.getPersonID().getEmail().equals(personEmail) );
+    public void load() {
+        personSurveys = signInController.getLoggedInPerson().getSurveyList();
+        publicSurveys = surveyDao.getAllSurveysByPrivate(false);
+        publicSurveys.stream().filter(p -> !personSurveys.contains(p));
+        if (isAdmin()) {
+            privateSurveys = surveyDao.getAllSurveysByPrivate(true);
+            privateSurveys.stream().filter(p -> !personSurveys.contains(p));
+        }
+    }
+
+    public boolean isAdmin(){
+        Person person = signInController.getLoggedInPerson();
+        if (person.getUserType().equals(Person.USER_TYPE.ADMIN.toString())){
+            return true;
+        }
+        return false;
     }
 
 }

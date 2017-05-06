@@ -4,7 +4,6 @@ package dao;
  * Created by vdeiv on 2017-04-07.
  */
 
-import entitiesJPA.Person;
 import entitiesJPA.Survey;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -29,9 +28,10 @@ public class SurveyDAO {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
     }
 
-    public List<Survey> getAllPublicSurveys(){
-        return em.createNamedQuery("Survey.findByIsPrivate").setParameter("isPrivate", false).getResultList();
+    public List<Survey> getAllSurveysByPrivate(boolean isPrivate){
+        return em.createNamedQuery("Survey.findByIsPrivate").setParameter("isPrivate", isPrivate).getResultList();
     }
+
     public Survey getSurveyByUrl(String surveyURL){
 
         Query q = em.createNamedQuery("Survey.findBySurveyURL").setParameter("surveyURL", surveyURL);
