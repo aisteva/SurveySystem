@@ -132,6 +132,14 @@ public class SignInController implements Serializable {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
     }
+
+    public boolean isAdmin(){
+        if (loggedInPerson == null) return false;
+        if (loggedInPerson.getUserType().equals(Person.USER_TYPE.ADMIN.toString())){
+            return true;
+        }
+        return false;
+    }
+
 }
