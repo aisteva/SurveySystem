@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+   <h:head>
+      <title>Apklausos importavimas</title>
+   </h:head>
+   <f:metadata>
+      <f:viewAction action="#{signInController.isSigned}" />
+   </f:metadata>
+   <h:body>
+      <!-- TODO neatsinaujina žinutės, rodo pačią pirmą, kuri buvo, nežinau kaip pataisyt :/ -->
+      <p:messages  id="messages" autoUpdate="true"/>
+
+      <!-- būtina palikt enctype, kitaip neveiks file upload -->
+      <h:form id="uploadForm" enctype="multipart/form-data">
+         <p:fileUpload fileUploadListener="#{excelImportController.handleFileUpload}"
+                       invalidFileMessage="Neteisingo formato failas"
+                       mode="advanced" update=":surveyImportResults"
+                       uploadLabel="Įkelti failą"
+                       cancelLabel="Atšaukti"
+                       sizeLimit="100000" allowTypes="/(\.|\/)(xls|xlsx)$/"
+                       label="Pasirinkti failą" oncomplete="PF('pollSurvey').start()"/>
+         <p:poll widgetVar="pollSurvey" interval="1" autoStart="false" listener="#{excelImportController.importSurvey}"
+                 stop="#{not excelImportController.pollResult}" update=":surveyImportResults"/>
+      </h:form>
+
+      <h:form id="surveyImportResults">
+         <p:outputLabel rendered="#{excelImportController.pollResult}" value="Apklausa importuojama"/>
+         <p:panel rendered="#{not empty excelImportController.importedSurvey}">
+            <p:inputText placeholder="Apklausos pavadinimas" value="#{excelImportController.importedSurvey.title}"/>
+            <p:inputTextarea placeholder="Apklausos aprašymas" value="#{excelImportController.importedSurvey.description}"/>
+            <p:commandButton value="Baigti importavimą" action="#{excelImportController.finishImport}"/>
+         </p:panel>
+
+      </h:form>
+   </h:body>
+</html>

@@ -4,18 +4,22 @@ import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
+import org.apache.deltaspike.core.api.future.Futureable;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javax.ejb.AsyncResult;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import static entitiesJPA.Question.QUESTION_TYPE.*;
 
@@ -24,7 +28,7 @@ import static entitiesJPA.Question.QUESTION_TYPE.*;
  */
 @Named
 @RequestScoped
-public class ExcelSurveyImport
+public class ExcelSurveyImport implements Serializable
 {
     private XSSFSheet surveySheet = null;
     private String[] surveyColumns = new String[]{"$questionNumber", "$question", "$questionType", "$optionsList"};
@@ -32,7 +36,9 @@ public class ExcelSurveyImport
     private XSSFSheet answerSheet = null;
     private String[] answerColumns = new String[]{"$answerID", "$questionNumber", "$answer"};
 
-    public Survey importSurveyIntoEntity(File excelFile) throws IOException, InvalidFormatException
+
+    @Futureable
+    public Future<Survey> importSurveyIntoEntity(File excelFile) throws IOException, InvalidFormatException
     {
         Survey survey = new Survey();
 
@@ -59,6 +65,7 @@ public class ExcelSurveyImport
         while(!isRowEmpty(currentRow))
         {
             Question question = new Question();
+            question.setPage(1);
             question.setQuestionNumber(getNumericValueFromCell(currentRow.getCell(0)));
             question.setQuestionText(getStringValueFromCell(currentRow.getCell(1)));
             Question.QUESTION_TYPE questionType = getQuestionTypeFromCell(currentRow.getCell(2));
@@ -75,7 +82,7 @@ public class ExcelSurveyImport
                 case TEXT:
                     if(!isCellEmpty(currentRow.getCell(currentCellNumber)))
                     {
-                        throw new InvalidFormatException(currentRow.getRowNum() +
+                        throw new InvalidFormatException(currentRow.getRowNum()+1 +
                                 " eilutėje TEXT tipo klausimas turi turėti tuščią $optionsList stulpelį");
                     }
                     offeredAnswer = new OfferedAnswer();
@@ -143,11 +150,11 @@ public class ExcelSurveyImport
         //tikrinama, ar yra atsakymų lapas. Jei yra, kviečiamas metodas atsakymų parsinimui
         if(this.answerSheet == null)
         {
-            return survey;
+            return new AsyncResult<>(survey);
         }
         else
         {
-            return importAnswersIntoSurveyEntity(survey);
+            return new AsyncResult<>(importAnswersIntoSurveyEntity(survey));
         }
 
     }
@@ -164,9 +171,11 @@ public class ExcelSurveyImport
         Answer answer;
         OfferedAnswer offeredAnswer;
 
+        int answerCount = 0;
         //iteruojam per eilutes, kol sutinkam tuščią (pagal reikalavimus)
         while(!isRowEmpty(currentRow))
         {
+            answerCount = getNumericValueFromCell(currentRow.getCell(0));
             int currentQuestionNumber = getNumericValueFromCell(currentRow.getCell(1));
             Question currentQuestion = null;
             try
@@ -229,6 +238,8 @@ public class ExcelSurveyImport
             }
             currentRow = answerSheet.getRow(++currentRowNumber);
         }
+
+        survey.setSubmits((long) answerCount);
         return survey;
     }
 
@@ -342,12 +353,12 @@ public class ExcelSurveyImport
             Cell cell = firstRow.getCell(i);
             if(isCellEmpty(cell))
             {
-                throw new InvalidFormatException("Lentelė turi turėti " + args[i] + "stulpelį");
+                throw new InvalidFormatException("Lentelė turi turėti " + args[i] + " stulpelį");
             }
             if(!cell.getStringCellValue().equals(args[i]))
             {
                 throw new InvalidFormatException(cell.getAddress().toString() + " langelis turi turėti "
-                        + args[i] + "pavadinimą");
+                        + args[i] + " pavadinimą");
             }
         }
     }
