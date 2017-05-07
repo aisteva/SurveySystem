@@ -74,6 +74,9 @@ button {
     box-shadow: none !important;
     text-shadow: none !important;
 }
+textarea {
+    background: #f7f7f7!important;
+}
 textarea:focus, input:focus {
     border: 1px solid #0083BB !important;
     transition: 0.2s border ease;
@@ -91,8 +94,6 @@ textarea:focus, input:focus {
 
 .one-question {
     margin-top: 20px;
-    padding-right: 20px;
-    padding-left: 20px;
     position: relative;
     border-right: 3px solid rgba(0,0,0,0);
     background: #f7f7f7;

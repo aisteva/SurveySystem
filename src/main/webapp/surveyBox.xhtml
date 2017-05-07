@@ -5,28 +5,28 @@
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://primefaces.org/ui"
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
-<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 survey-box">
-<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 survey-box-inside">
-    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-        <h3 class="text-center">#{survey.title}</h3>
-        <p class="text-center">#{survey.description}</p>
-    </div>
-    <div class="description-fade">
-    </div>
-    <div class="row">
-    </div>
-    <div class="action-with-survey">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-            <h:link value="Atsakinėti"
-                    styleClass="btn btn-primary btn-lg"
-                    outcome="/surveyAnswers/showSurvey.xhtml?id=#{survey.surveyURL}"/>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 survey-box">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 survey-box-inside">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                <h3 class="text-center">#{survey.title}</h3>
+                <p class="text-center">#{survey.description}</p>
+            </div>
+            <div class="description-fade">
+            </div>
+            <div class="row">
+            </div>
+            <div class="action-with-survey">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                    <h:link value="Atsakinėti"
+                            styleClass="btn btn-primary btn-lg"
+                            outcome="/surveyAnswers/showSurvey.xhtml?id=#{survey.surveyURL}"/>
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                    <h:link value="Žiūrėti atsakymus"
+                            styleClass="btn btn-success btn-lg"
+                            outcome="/surveyInfo/SurveyInfo.xhtml?survey=#{survey.surveyID}"/>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-            <h:link value="Žiūrėti atsakymus"
-                    styleClass="btn btn-success btn-lg"
-                    outcome="/surveyInfo/SurveyInfo.xhtml?survey=#{survey.surveyID}"/>
-        </div>
     </div>
-</div>
-</div>
 </ui:composition>

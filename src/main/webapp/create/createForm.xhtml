@@ -10,18 +10,19 @@
       xmlns:c="http://java.sun.com/jsp/jstl/core">
     <h:head>
         <title>Nauja apklausa</title>
+        <h:outputStylesheet name="/css/style.css" />
         <h:outputStylesheet name="/css/create/style.css" />
         <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     </h:head>
     <f:metadata>
         <f:viewAction action="#{signInController.isSigned}" />
     </f:metadata>
-    <h:body>
+    <h:body style="background: linear-gradient(#29bf89, #0083BB);">
         <ui:include src="/header.xhtml"/>
         <div class="container">
             <h:form>
-                <div class="col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
-                    <div class="survey">
+                <div class="box-shadow col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
+                    <div class="survey col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="row">
                             <div class="surveyTitle col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                 <h:inputText value="#{createFormController.survey.title}" styleClass="onlyBottomBorder" a:placeholder="Apklausos pavadinimas">
@@ -77,7 +78,7 @@
                     </div>
                     <h:panelGroup id="survey" >
                         <ui:repeat  value="#{createFormController.getQuestions()}" var="question" varStatus="questionStatus">
-                            <div class="one-question row">
+                            <div class="one-question">
                                 #{question.setQuestionNumber(questionStatus.index)}
                                 <div class="row question-info">
                                     <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
