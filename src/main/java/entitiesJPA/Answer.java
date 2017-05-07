@@ -24,7 +24,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "answerID")
-@ToString(of = "answerID")
+@ToString(of = {"answerID", "text"})
 public class Answer implements Serializable {
 
     public Answer(){}
