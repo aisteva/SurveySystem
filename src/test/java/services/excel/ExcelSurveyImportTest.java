@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.File;
+import java.util.concurrent.Future;
 
 /**
  * Created by arturas on 2017-04-27.
@@ -67,8 +68,8 @@ public class ExcelSurveyImportTest
     @Test
     public void importSurvey() throws Exception
     {
-        Survey s = esi.importSurveyIntoEntity(exampleImportFile);
-        System.out.println(s);
+        Future<Survey> survey = esi.importSurveyIntoEntity(exampleImportFile);
+        survey.get();
     }
 
     @Test
