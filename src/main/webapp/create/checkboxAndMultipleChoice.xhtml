@@ -10,7 +10,12 @@
          <div class="row">
             <div class="answer-text col-lg-12 col-md-12 col-sm-12 col-xs-12">
                <div class="logo-with-text col-lg-11 col-md-11 col-sm-11 col-xs-10">
-                  <div class="square"/>
+                  <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                     <div class="square"/>
+                  </h:panelGroup>
+                  <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
+                     <div class="circle"/>
+                  </h:panelGroup>
                   <div class="answer-input">
                      <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}" styleClass="onlyBottomBorder">
                         <f:ajax render="@form" />
