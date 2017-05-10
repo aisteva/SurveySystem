@@ -34,7 +34,7 @@ public class OfferedAnswer implements Serializable {
     private Long offeredAnswerID;
     @Basic(optional = false)
     @Column(name = "Text")
-    private String text=""; //TODO: it is required but in case
+    private String text;
     @JoinColumn(name = "QuestionID", referencedColumnName = "QuestionID")
     @ManyToOne(optional = false)
     private Question questionID;
