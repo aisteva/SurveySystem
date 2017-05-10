@@ -70,9 +70,9 @@ public class AdminController implements Serializable {
     }
 
     @Transactional
-    public void updateSelectedPerson() {
+    public void updateSelectedPerson(Person p) {    //KEIČIAU
         try {
-            personDao.updateAndFlush(selectedPerson);
+            personDao.updateAndFlush(p);
             selectedPerson = null;
             reloadAll();
         } catch (OptimisticLockException ole) {
@@ -82,6 +82,12 @@ public class AdminController implements Serializable {
             // Pranešam PrimeFaces dialogui, kad užsidaryti dar negalima:
             RequestContext.getCurrentInstance().addCallbackParam("validationFailed", true);
         }
+    }
+    @Transactional
+    public void overwriteAllUsers() {   //KEIČIAU - PRIDĖJAU
+        for (int i = 0; i < registeredPersons.size(); i++)
+            updateSelectedPerson(registeredPersons.get(i));
+        reloadAll();
     }
 
     @Transactional
@@ -104,13 +110,13 @@ public class AdminController implements Serializable {
     @Transactional
     public void overwritePerson() {
         selectedPerson.setOptLockVersion(conflictingPerson.getOptLockVersion());
-        updateSelectedPerson();
+        updateSelectedPerson(selectedPerson);   //KEIČIAU
     }
 
     @Transactional
-    public void overDeletePerson() {
-        selectedPerson = null;
-        personDao.DeleteUser(conflictingPerson);
+    public void overDeletePerson(Person person) {
+//        selectedPerson = null;        //KEIČIAU
+        personDao.DeleteUser(person);   //KEIČIAU
         reloadAll();
     }
 
