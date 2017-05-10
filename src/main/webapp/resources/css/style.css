@@ -33,7 +33,7 @@
 }
 .survey-box-inside > .action-with-survey {
     z-index: 11;
-    padding-top: 10%;
+    padding-top: 6%;
     position: absolute;
     top:0;
     left: 0;
@@ -126,4 +126,18 @@ body {
 }
 .section {
     margin-bottom: 30px!important;
+}
+
+.edit-button, .edit-button:focus, .edit-button:hover {
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.edit-button span {
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    display: none;
 }

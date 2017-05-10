@@ -3289,8 +3289,10 @@ fieldset[disabled] .btn-primary.focus {
   background-color: #fff;
 }
 .btn-success {
-  color: #fff;
-  background-color: #29bf89;
+  color: #29bf89;
+  background-color: transparent;
+  border: 2px solid #29bf89;
+  text-transform: uppercase;
 }
 .btn-success:focus,
 .btn-success.focus {
@@ -3299,7 +3301,7 @@ fieldset[disabled] .btn-primary.focus {
 }
 .btn-success:hover {
   color: #fff;
-  background-color: #24ab7b;
+  background-color: #29bf89;
 }
 .btn-success:active,
 .btn-success.active,
@@ -4282,6 +4284,8 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   min-height: 50px;
   margin-bottom: 20px;
   border: 1px solid transparent;
+  border-bottom: 1px solid #bdbdbe;
+  padding-bottom: 0px!important;
 }
 @media (min-width: 768px) {
   .navbar {

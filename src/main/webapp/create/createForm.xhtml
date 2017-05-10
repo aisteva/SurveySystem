@@ -16,6 +16,10 @@
     </h:head>
     <f:metadata>
         <f:viewAction action="#{signInController.isSigned}" />
+        <f:viewParam name="id"
+                     required="false"
+                     value="#{createFormController.survey.surveyID}"
+                     validator="#{createFormController.validate}"/>
     </f:metadata>
     <h:body style="background: linear-gradient(#29bf89, #0083BB);">
         <ui:include src="/header.xhtml"/>
@@ -60,13 +64,13 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 vertical-align">
-                                            <span style="padding-right: 10px;">Privati</span>
-                                            <label class="switch">
-                                                <h:selectBooleanCheckbox value="#{createFormController.survey.surveyPrivate}">
-                                                    <f:ajax render="@form"/>
-                                                </h:selectBooleanCheckbox>
-                                                <div class="slider round"></div>
-                                            </label>
+                                        <span style="padding-right: 10px;">Privati</span>
+                                        <label class="switch">
+                                            <h:selectBooleanCheckbox value="#{createFormController.survey.surveyPrivate}">
+                                                <f:ajax render="@form"/>
+                                            </h:selectBooleanCheckbox>
+                                            <div class="slider round"></div>
+                                        </label>
                                 </div>
                             </div>
                         </div>

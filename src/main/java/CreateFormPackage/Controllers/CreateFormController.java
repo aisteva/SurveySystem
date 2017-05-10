@@ -1,12 +1,15 @@
 package CreateFormPackage.Controllers;
 
 import dao.PersonDAO;
+import dao.SurveyDAO;
 import entitiesJPA.*;
 import lombok.Getter;
 import services.SaltGenerator;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
@@ -34,6 +37,9 @@ public class CreateFormController implements Serializable {
 
     @Inject
     private PersonDAO personDAO;
+
+    @Inject
+    private SurveyDAO surveyDAO;
 
     public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
         return survey.getQuestionList().get(questionIndex).getOfferedAnswerList();
@@ -125,6 +131,17 @@ public class CreateFormController implements Serializable {
             }
         }
         return "";
+    }
+
+    public void validate(FacesContext context, UIComponent component, Object object) {
+        //surandam apklausą pagal url
+        try {
+            survey = surveyDAO.getSurveyById((Long) object);
+
+        } catch (Exception e) {
+            context.getExternalContext().setResponseStatus(404);
+            context.responseComplete();
+        }
     }
 
     @Transactional
