@@ -8,6 +8,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
+        <h:outputStylesheet name="/css/style.css"/>
        <h:outputStylesheet name="/css/create/style.css"/>
     </h:head>
 
@@ -23,7 +24,7 @@
         <ui:include src="/header.xhtml"/>
         <div class="container">
             <h:form>
-                <div class="col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
+                <div class="col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12 box-shadow">
                     <h1 class="text-center">#{showSurveyController.survey.title}</h1>
                     <h4 align="justify" class="title">#{showSurveyController.survey.description}</h4>
 
@@ -53,7 +54,7 @@
                                     </h:selectManyCheckbox>
                                     <!--TODO KITA-->
                                 </h:panelGroup>
-                                <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
+                                <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
                                     <h:selectOneRadio layout="pageDirection">
                                         <f:selectItems  styleClass="radio" value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
                                     </h:selectOneRadio>
