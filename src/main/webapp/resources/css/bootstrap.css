@@ -1207,8 +1207,13 @@ body {
   line-height: 1.42857143;
   color: #333;
   background-color: #fff;
-  margin-bottom: 60px;
+  margin-bottom: 500px;
   margin-top: 60px;
+}
+@media (max-width: 991px) {
+  body {
+    margin-bottom: 540px;
+  }
 }
 input,
 button,
@@ -3178,20 +3183,18 @@ fieldset[disabled] a.btn {
   pointer-events: none;
 }
 .btn-default {
-  color: #333;
-  background-color: #fff;
-  border-color: #ccc;
+  text-transform: uppercase;
+  color: #bdbdbe;
+  background-color: transparent;
+  border: 2px solid #bdbdbe;
 }
 .btn-default:focus,
 .btn-default.focus {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #8c8c8c;
+  background-color: #cdcdce;
 }
 .btn-default:hover {
-  color: #333;
-  background-color: #e6e6e6;
-  border-color: #adadad;
+  color: #0f0f0f;
+  background-color: #bdbdbe;
 }
 .btn-default:active,
 .btn-default.active,
@@ -6116,10 +6119,10 @@ button.close {
   position: absolute;
   z-index: 1070;
   display: block;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
   font-size: 12px;
   font-style: normal;
-  font-weight: normal;
+  font-weight: 300;
   line-height: 1.42857143;
   text-align: left;
   text-align: start;
@@ -6159,9 +6162,9 @@ button.close {
 .tooltip-inner {
   max-width: 200px;
   padding: 3px 8px;
-  color: #fff;
+  color: #f7f7f7;
   text-align: center;
-  background-color: #000;
+  background-color: #0f0f0f;
   border-radius: 4px;
 }
 .tooltip-arrow {
