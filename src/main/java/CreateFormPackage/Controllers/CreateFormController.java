@@ -63,6 +63,7 @@ public class CreateFormController implements Serializable {
     public void addQuestion(final int questionIndex) {
         Question question = new Question();
         question.setSurveyID(survey);
+        question.setType(Question.QUESTION_TYPE.TEXT.toString());
         question.setQuestionNumber(questionIndex + 2);    // current (clicked) question index + next question (1) + 1
         question.setPage(page);
         survey.getQuestionList().add(questionIndex + 1, question);
@@ -146,6 +147,8 @@ public class CreateFormController implements Serializable {
 
     @Transactional
     public String createForm(final String personEmail) {
+        //Mergin scale offeredAnswer
+        if (!surveyIsCorrect()) return null; //TODO: pagal įdėją turėtų būti kažkokie messagai jei blogai.
         Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
         survey.setSurveyURL(sg.getRandomString(8));
@@ -153,4 +156,29 @@ public class CreateFormController implements Serializable {
         personDAO.UpdateUser(person);
         return "/create/formCreated.xhtml?id="+survey.getSurveyURL(); //TODO: not sure if correct navigation
     }
+
+    private boolean surveyIsCorrect(){
+        if (survey.getStartDate() == null || survey.getEndDate() == null){
+            return false;
+        }
+        for (Question q : survey.getQuestionList()){
+            if (q.getType().equals(Question.QUESTION_TYPE.SCALE)){
+                OfferedAnswer offeredAnswer = new OfferedAnswer();
+                offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
+                q.getOfferedAnswerList().clear();
+                offeredAnswer.setQuestionID(q);
+                q.getOfferedAnswerList().add(offeredAnswer);
+            }
+            if (q.getQuestionText() == null || q.getQuestionText().isEmpty()){
+                return false;
+            }
+            for (OfferedAnswer o : q.getOfferedAnswerList()){
+                if (o.getText() == null || o.getText().isEmpty()){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
