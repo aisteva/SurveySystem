@@ -1,117 +1,51 @@
 <ui:composition
         xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:outputStylesheet name="/css/create/style.css"/>
     <h:form id="form">
-        <p:fieldset id="list" style="width: 50%">
-            <f:facet name="legend">
-                Registruoti vartotojai
-            </f:facet>
-
-            <p:dataTable value="#{adminController.registeredPersons}" var="person" tableStyle="table-layout: auto">
-                <p:column headerText="Person">
-                    #{person.firstName} #{person.lastName}, <br/><b>Reg. nr.</b>: #{person.personID}
-                </p:column>
-                <p:column headerText="Naudotojo tipas">
-                    #{person.userType}
-                </p:column>
-                <p:column headerText="Užblokuotas">
-                    #{person.blocked}
-                </p:column>
-                <p:column>
-                    <p:commandButton value="Edit" icon="ui-icon-pencil"
-                                     actionListener="#{adminController.prepareForEditing(person)}"
-                                     update=":form:personDetail"
-                                     oncomplete="PF('personDialog').show()" />
-                </p:column>
-            </p:dataTable>
-        </p:fieldset>
-        <p:dialog header="Edit Person" widgetVar="personDialog" modal="true" closable="true" resizable="false" closeOnEscape="true">
-            <p:outputPanel id="personDetail">
-                <h:outputText value="No person was selected... Weird..." rendered="#{empty adminController.selectedPerson}" />
-                <p:panelGrid  columns="2" rendered="#{not empty adminController.selectedPerson}"
-                              columnClasses="value" styleClass="ui-noborder">
-                    <h:outputText value="First name:"/>
-                    <h:outputText value="#{adminController.selectedPerson.firstName}"/>
-
-                    <h:outputText value="Last name:"/>
-                    <h:outputText value="#{adminController.selectedPerson.lastName}"/>
-
-                    <div id="userType0" class="user-type">
-                        <h:selectOneMenu id="user-type-input0" value="#{adminController.selectedPerson.userType}" required="true">
-                            <f:selectItems value = "#{adminController.selectedPerson.getUserTypesEnum()}"/>
-                        </h:selectOneMenu>
-                    </div>
-                    <p:message for="user-type-input0"/>
-
-                    <p:outputLabel for="blocked" value="Užblokuotas"/>
-                    <p:selectBooleanCheckbox  id="blocked" value="#{adminController.selectedPerson.blocked}"/>
-                    <p:message for="blocked"/>
-
-                    <h:outputText value="Versija:" />
-                    <h:outputText value="#{adminController.selectedPerson.optLockVersion}" style="font-weight: bold"/>
-
-                    <h:outputText value="Apklausos:"/>
-                    <p:selectCheckboxMenu id="survey" value="#{adminController.selectedPerson.surveyList}"
-                                          converter="omnifaces.SelectItemsIndexConverter"
-                                          label="Select surveys:" updateLabel="true"
-                                          filter="true" filterMatchMode="startsWith" panelStyle="width:250px">
-                        <f:attribute name="collectionType" value="java.util.ArrayList" />
-                        <f:selectItems value="#{adminController.allSurveys}" var="survey"
-                                       itemLabel="#{survey.description}" itemValue="#{survey}" />
-                    </p:selectCheckboxMenu>
-                    <p:message for="survey"/>
-
-                    <p:commandButton value="Update" actionListener="#{adminController.updateSelectedPerson}"
-                                     rendered="#{empty adminController.conflictingPerson}"
-                                     icon="ui-icon-check" style="margin-top: 1em"
-                                     update=":form:personDetail :form:list"
-                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
-                    <p:commandButton value="Delete" action="#{adminController.deleteSelectedPerson}"
-                                     rendered="#{empty adminController.conflictingPerson}"
-                                     icon="ui-icon-check" style="margin-top: 1em"
-                                     update=":form2:pendingPersonDetail :form2:list2"
-                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()"/>
-
-                    <p:panelGrid  columns="2" rendered="#{not empty adminController.conflictingPerson}"
-                                  columnClasses="label,value" styleClass="ui-noborder" style="margin-top: 1em">
-                        <f:facet name="header">Conflicting person</f:facet>
-
-                        <h:outputText value="First name:"/>
-                        <h:outputText value="#{adminController.conflictingPerson.firstName}"/>
-
-                        <h:outputText value="Last name:"/>
-                        <h:outputText value="#{adminController.conflictingPerson.lastName}"/>
-
-                        <h:outputText value="Id.:"/>
-                        <h:outputText value="#{adminController.conflictingPerson.personID}"/>
-
-                        <h:outputText value="Versija:" />
-                        <h:outputText value="#{adminController.selectedPerson.optLockVersion}" style="font-weight: bold"/>
-
-                        <h:outputText value="Surveys:"/>
-                        <ui:repeat var="course" value="#{adminController.conflictingPerson.surveyList}" varStatus="courseStatus">
-                            #{course.description}<h:outputText value=", " rendered="#{not courseStatus.last}"/>
+        <div class="col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-sm-12 col-xs-12 box-shadow section">
+            <h1 class="text-center">Registruoti vartotojai</h1>
+            <div class="table-responsive">
+                <table id="list" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Vardas</th>
+                            <th>Pavardė</th>
+                            <th>El. paštas</th>
+                            <th>Naudotojo tipas</th>
+                            <th>Ar užblokuotas?</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ui:repeat value="#{adminController.registeredPersons}" var="person">
+                            <tr>
+                                <td>#{person.firstName}</td>
+                                <td>#{person.lastName}</td>
+                                <td>#{person.email}</td>
+                                <td>
+                                    <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}" required="true">
+                                        <f:selectItems value = "#{person.getUserTypesEnum()}"/>
+                                    </h:selectOneMenu>
+                                </td>
+                                <td>
+                                    <label class="switch" style="display:flex; margin: auto;">
+                                        <h:selectBooleanCheckbox value="#{person.blocked}">
+                                        </h:selectBooleanCheckbox>
+                                        <div class="slider round"></div>
+                                    </label>
+                                </td>
+                            </tr>
                         </ui:repeat>
-
-                    </p:panelGrid>
-
-                    <p:commandButton value="Overwrite" actionListener="#{adminController.overwritePerson}"
-                                     rendered="#{not empty adminController.conflictingPerson}"
-                                     icon="ui-icon-notice" style="margin-top: 1em"
-                                     update=":form:personDetail :form:list"
-                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
-                    <p:commandButton value="Delete" actionListener="#{adminController.overDeletePerson}"
-                                     rendered="#{not empty adminController.conflictingPerson}"
-                                     icon="ui-icon-notice" style="margin-top: 1em"
-                                     update=":form:personDetail :form:list"
-                                     oncomplete="if (args &amp;&amp; !args.validationFailed) PF('personDialog').hide()" />
-                </p:panelGrid>
-
-            </p:outputPanel>
-        </p:dialog>
-        <p:messages globalOnly="true"/>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                <h:commandButton value="Išsaugoti" action="#{adminController.overwriteAllUsers}" styleClass="btn btn-primary btn-md center-block"></h:commandButton>
+            </div>
+        </div>
     </h:form>
 </ui:composition>

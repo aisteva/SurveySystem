@@ -6,7 +6,9 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
    <h:head>
-      <title>pavadinimas</title>
+      <title>Naudotojų administravimas</title>
+      <h:outputStylesheet name="css/style.css"/>
+      <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
    </h:head>
    <f:metadata>
       <f:viewAction action="#{signInController.isSigned}" />
@@ -14,11 +16,11 @@
    </f:metadata>
    <h:body>
       <ui:include src="/header.xhtml"/>
-      <div class="container content">
-
-         <ui:include src="registeredPersons.xhtml"/>
-
-         <ui:include src="pendingPersons.xhtml"/>
+      <div class="container">
+         <div class="row">
+            <ui:include src="registeredPersons.xhtml"/>
+            <ui:include src="pendingPersons.xhtml"/>
+         </div>
       </div>
       <ui:include src="/footer.xhtml"/>
    </h:body>
