@@ -14,6 +14,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import services.SaltGenerator;
 import services.excel.ExcelSurveyImport;
+import services.excel.Importable;
 import userModule.SignInController;
 
 import javax.enterprise.context.RequestScoped;
@@ -37,7 +38,7 @@ import java.util.concurrent.Future;
 public class ExcelImportController implements Serializable
 {
     @Inject
-    ExcelSurveyImport excelSurveyImport;
+    Importable excelSurveyImport;
 
     @Inject
     SaltGenerator sg;
