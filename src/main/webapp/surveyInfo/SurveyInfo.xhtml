@@ -33,7 +33,7 @@
                     <ui:include src="chartTable.xhtml"/>
                 </h:panelGroup>
 
-                <h:outputText value="Atsakymų sk.: #{surveyInfoController.getQuestionAnswersNumber(question)}" />
+                <h:outputText value="Atsakymų(dbr belekas čia) sk.: #{surveyInfoController.getAnswerCounterList(question.questionID).size()}" />
             </p:fieldset>
         </ui:repeat>
 

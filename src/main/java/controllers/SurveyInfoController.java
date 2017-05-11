@@ -22,6 +22,7 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Tuple;
 import java.io.Serializable;
 import java.util.*;
 
@@ -35,19 +36,35 @@ public class SurveyInfoController implements Serializable{
 
     @Getter
     @Setter
-    String surveyId="";
+    private String surveyId="";
 
     @Getter
-    Survey survey;
+    private Survey survey;
 
     @Inject
-    SurveyDAO surveyDao;
+    private SurveyDAO surveyDao;
 
-    @Getter
-    Map<Long, PieChartModel> pieCharts = new HashMap<>();
+    private class AnswerCounter {
+        public AnswerCounter(String answerText, int countAnswers){
+            this.answerText = answerText;
+            this.countAnswers = countAnswers;
+        }
+        @Getter private String answerText;
+        @Getter private int countAnswers;
+    }
 
-    @Getter
-    Map<Long, BarChartModel> barCharts = new HashMap<>();
+    public List<AnswerCounter> getAnswerCounterList(Long questionId){
+        List<AnswerCounter> answerCounterList = new ArrayList<>();
+        Question question = survey.getQuestionList().stream().filter(x -> x.getQuestionID().equals(questionId)).findFirst().get();
+        List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
+        for (OfferedAnswer o : offeredAnswers){
+            answerCounterList.add(new AnswerCounter(o.getText(), o.getAnswerList().size()));
+        }
+        if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
+            answerCounterList.sort((x,y) -> x.answerText.compareTo(y.answerText));
+        }
+        return answerCounterList;
+    }
 
     @PostConstruct
     public void init(){
@@ -56,109 +73,6 @@ public class SurveyInfoController implements Serializable{
     public void load(){
         Long ind = Long.parseLong(surveyId);
         survey = surveyDao.getSurveyById(ind);
-        for(Question q : survey.getQuestionList()){
-            if (q.getType().equals("CHECKBOX") || q.getType().equals("MULTIPLE_CHOICE")) {
-                pieCharts.put(q.getQuestionID(),getPieChartModel(q));
-            }
-           // if (q.getType().equals("SCALE"))
-            //    barCharts.put(q.getQuestionID(), getBarChartModel(q));
-        }
     }
-
-    public List<Answer> getFreeTextAnswers(Question question){
-        OfferedAnswer offeredAnswer = question.getOfferedAnswerList().get(0);
-        //TODO: delete at the end.
-        offeredAnswer.getAnswerList().add(new Answer(1l, 1, "atsakymasmano", offeredAnswer));
-        return offeredAnswer.getAnswerList();
-    }
-
-    public PieChartModel getPieChartModel(Question question){
-
-        List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
-
-        int i =1;
-        for (OfferedAnswer o: offeredAnswers) {
-            o.getAnswerList().add(new Answer(1l, 1, "atsakymasmano"+i, o));
-            i++;
-        }
-
-        PieChartModel pieModel1 = new PieChartModel();
-
-        for (OfferedAnswer o: offeredAnswers) {
-            pieModel1.set(o.getText(), o.getAnswerList().size());
-        }
-
-        pieModel1.setTitle(question.getQuestionText());
-        pieModel1.setLegendPosition("e");
-        return pieModel1;
-    }
-
-    public BarChartModel getBarChartModel(Question question){
-
-        List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
-
-        int min = Integer.parseInt(offeredAnswers.get(0).getText());
-        int max = Integer.parseInt(offeredAnswers.get(1).getText());
-
-        BarChartModel model = new BarChartModel();
-
-        ChartSeries series = new ChartSeries();
-        series.setLabel(question.getQuestionText());
-
-        Map<String, Integer> occurrences = new HashMap<>();
-        for (int i=min;i<=max;i++){
-            occurrences.put(Integer.toString(i), 0);
-        }
-        for ( Answer a : offeredAnswers.get(0).getAnswerList() ) {
-            Integer oldCount = occurrences.get(a.getText());
-            if ( oldCount == null ) {
-                oldCount = 0;
-            }
-            occurrences.put(a.getText(), oldCount + 1);
-        }
-
-        for (String s : occurrences.keySet()){
-            series.set(s, occurrences.get(s));
-        }
-        model.addSeries(series);
-        return model;
-    }
-
-    public int getQuestionAnswersNumber(Question question){
-        List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
-        int sk = 0;
-        for (OfferedAnswer o: offeredAnswers) {
-            sk += o.getAnswerList().size();
-        }
-        return sk;
-    }
-
-    public TagCloudModel getTagCloudModel(Question question){
-        OfferedAnswer offeredAnswer = question.getOfferedAnswerList().get(0);
-        List<Answer> answers = offeredAnswer.getAnswerList();
-        String txt="";
-        for(Answer answer : answers){
-           txt += answer.getText()+" ";
-        }
-
-        String[] splitWords = txt.split("\\s*(=>|,|\\s)\\s*");
-        Map<String, Integer> occurrences = new HashMap<>();
-
-        for ( String word : splitWords ) {
-            Integer oldCount = occurrences.get(word);
-            if ( oldCount == null ) {
-                oldCount = 0;
-            }
-            occurrences.put(word, oldCount + 1);
-        }
-
-        TagCloudModel model = new DefaultTagCloudModel();
-
-        for(String o : occurrences.keySet()){
-            model.addTag(new DefaultTagCloudItem(o, occurrences.get(o)));
-        }
-        return model;
-    }
-
 
 }
