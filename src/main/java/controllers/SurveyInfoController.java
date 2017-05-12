@@ -58,11 +58,6 @@ public class SurveyInfoController implements Serializable{
         }
         return answerCounterList;
     }
-    public String getDataPoints(Long questionId) {
-        List<AnswerCounter> answerCounterList = getAnswerCounterList(questionId);
-
-        return "";
-    }
     @PostConstruct
     public void init(){
     }
