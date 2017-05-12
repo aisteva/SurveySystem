@@ -15,8 +15,5 @@
     <div>
         <h:outputText value="Žodžių debesis"></h:outputText>
         <p:growl id="msgs" showDetail="true" />
-        <p:tagCloud model="#{surveyInfoController.getTagCloudModel(question)}">
-            <p:ajax event="select" update="msgs" /> <!--TODO:nk nedaryta-->
-        </p:tagCloud>
     </div>
 </ui:composition>
