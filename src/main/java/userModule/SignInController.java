@@ -116,9 +116,13 @@ public class SignInController implements Serializable {
         return loggedInPerson.getFirstName() + " " + loggedInPerson.getLastName();
     }
 
+    public void reload() {
+        loggedInPerson = personDAO.findById(loggedInPerson.getPersonID());
+    }
     public String isSigned() {
         if (loggedInPerson == null)
             return "/signin/signin.xhtml";
+        reload();
         return null;
     }
 
