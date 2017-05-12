@@ -5,16 +5,9 @@ import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
-import javafx.scene.chart.PieChart;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.primefaces.model.chart.BarChartModel;
-import org.primefaces.model.chart.ChartSeries;
-import org.primefaces.model.chart.PieChartModel;
-import org.primefaces.model.tagcloud.DefaultTagCloudItem;
-import org.primefaces.model.tagcloud.DefaultTagCloudModel;
-import org.primefaces.model.tagcloud.TagCloudModel;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -44,7 +37,7 @@ public class SurveyInfoController implements Serializable{
     @Inject
     private SurveyDAO surveyDao;
 
-    private class AnswerCounter {
+    public class AnswerCounter {
         public AnswerCounter(String answerText, int countAnswers){
             this.answerText = answerText;
             this.countAnswers = countAnswers;
@@ -65,7 +58,11 @@ public class SurveyInfoController implements Serializable{
         }
         return answerCounterList;
     }
+    public String getDataPoints(Long questionId) {
+        List<AnswerCounter> answerCounterList = getAnswerCounterList(questionId);
 
+        return "";
+    }
     @PostConstruct
     public void init(){
     }

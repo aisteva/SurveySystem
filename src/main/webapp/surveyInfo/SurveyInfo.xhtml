@@ -5,38 +5,77 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
       xmlns:p="http://primefaces.org/ui"
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
     <title>pavadinimas</title>
+    <h:outputStylesheet name="/css/style.css"/>
+    <h:outputStylesheet name="/css/jqcloud.css"/>
 </h:head>
 <f:metadata>
+    <f:viewParam name="person" value="#{signInController.loggedInPerson}" />
+    <f:viewAction action="#{signInController.isSigned}" />
     <f:viewParam name="survey" value="#{surveyInfoController.surveyId}" />
     <f:viewAction action="#{surveyInfoController.load}" />
 </f:metadata> <!--TODO: kažkaip parametrą gražiau galima būtų perduoti.-->
 <h:body>
     <ui:include src="/header.xhtml"/>
-    <div class="container content">
-        Pavadinimas: #{surveyInfoController.survey.title} <br></br>
-        Klausimų skaičius: #{surveyInfoController.survey.getQuestionList().size()} <br></br>
-        Atsakiusių žmonių sk.: #{surveyInfoController.survey.submits}
+    <h:outputScript name="/js/canvasjs.min.js"/>
+    <h:outputScript name="/js/jqcloud-1.0.4.min.js"/>
+    <div class="container">
+        <div class="box-shadow col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
+            <h1 class="text-center">#{surveyInfoController.survey.title}</h1>
+            <h4 class="text-center">#{surveyInfoController.survey.submits} atsakymų</h4>
+            <!--<h:panelGroup rendered="#{surveyInfoController.survey.submits > 0}">-->
 
-        <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
-            <p:fieldset legend="#{question.questionText}" style="margin-bottom:20px">
-                <h:panelGroup rendered="#{question.type == 'TEXT'}">
-                    <ui:include src="dataTable.xhtml"/>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                    <ui:include src="chartTable.xhtml"/>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
-                    <ui:include src="chartTable.xhtml"/>
-                </h:panelGroup>
+            <h:outputScript>
+                window.onload = function () {
+                    <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
 
-                <h:outputText value="Atsakymų(dbr belekas čia) sk.: #{surveyInfoController.getAnswerCounterList(question.questionID).size()}" />
-            </p:fieldset>
-        </ui:repeat>
+                        if (#{question.type == 'TEXT'}){
+                            var words#{question.questionID} = [
+                                <ui:repeat value="#{surveyInfoController.getAnswerCounterList(question.questionID)}"
+                                           var="answerCounter" varStatus="loop">
+                                    {text: "#{answerCounter.answerText}", weight:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
+                                </ui:repeat>
+                            ];
+                            $('#chartContainer#{question.questionID}').jQCloud(words#{question.questionID});
+                        }
+                        else {
+                            var finals#{question.questionID} = [
+                                <ui:repeat value="#{surveyInfoController.getAnswerCounterList(question.questionID)}"
+                                           var="answerCounter" varStatus="loop">
+                                    {label: "#{answerCounter.answerText}", y:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
+                                </ui:repeat>
+                            ];
+                            var chartType#{question.questionID};
+                            if (#{question.type == 'CHECKBOX'})
+                                chartType#{question.questionID} = "column";
+                            else if (#{question.type == 'MULTIPLECHOICE'})
+                                chartType#{question.questionID} = "pie";
+                            else if (#{question.type == 'SCALE'})
+                                chartType#{question.questionID} = "column";
+                            var chart#{question.questionID} = new CanvasJS.Chart("chartContainer#{question.questionID}", {
+                                backgroundColor: "transparent",
+                                data: [{
+                                    type: chartType#{question.questionID},
+                                    dataPoints: finals#{question.questionID}
+                                }]
+                            });
+                            chart#{question.questionID}.render();
+                        }
+                    </ui:repeat>
+                }
+            </h:outputScript>
+            <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 one-question">
+                    <h3>#{question.questionNumber}. #{question.questionText}</h3>
+                    <div id="chartContainer#{question.questionID}" style="height: 300px; width: 100%;"></div>
+                </div>
+            </ui:repeat>
 
+        </div>
     </div>
     <ui:include src="/footer.xhtml"/>
 </h:body>
