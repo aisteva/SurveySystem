@@ -144,6 +144,9 @@ public class ExcelSurveyImport implements Serializable
         //baigus iteruot per eilutes, priskiriam apklausai klausimu sarasa
         survey.setQuestionList(questionList);
 
+        //priskiriam pradžiai, kad apklausa neturi atsakymų.
+        survey.setSubmits((long)0);
+
         //tikrinama, ar yra answer lapas, jei yra, importuojami atsakymai ir priskiriami survey failui
         this.answerSheet = (XSSFSheet) wb.getSheet("Answer");
 
@@ -242,7 +245,6 @@ public class ExcelSurveyImport implements Serializable
         survey.setSubmits((long) answerCount);
         return survey;
     }
-
 
     private boolean isScaleAnswerInBounds(int answer, String unparsedScale)
     {
