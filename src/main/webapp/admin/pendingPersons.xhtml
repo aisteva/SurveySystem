@@ -24,11 +24,12 @@
                                     <td>#{person.email}</td>
                                     <td>
                                         <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}" required="true">
+                                            <p:ajax update=":form2:pending" listener="#{adminController.updateUserType(person, true)}" />
                                             <f:selectItems value = "#{person.getUserTypesEnum()}"/>
                                         </h:selectOneMenu>
                                     </td>
                                     <td>
-                                        <h:commandLink action="#{adminController.overDeletePerson(person)}">
+                                        <h:commandLink action="#{adminController.deletePerson(person)}">
                                             <div class="glyphicon glyphicon-trash"></div>
                                         </h:commandLink>
                                     </td>
@@ -50,13 +51,6 @@
                 <p:commandButton value="Pridėti"
                                  styleClass="btn btn-primary btn-md pull-right"
                                  action="#{adminController.addNewPendingPerson}"
-                                 update=":form2:pending">
-                </p:commandButton>
-            </div>
-            <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
-                <p:commandButton value="Išsaugoti"
-                                 styleClass="btn btn-primary btn-md"
-                                 action="#{adminController.overwritePerson}"
                                  update=":form2:pending">
                 </p:commandButton>
             </div>

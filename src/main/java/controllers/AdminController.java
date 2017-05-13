@@ -11,6 +11,9 @@ import org.primefaces.context.RequestContext;
 
 import javax.annotation.PostConstruct;
 import org.omnifaces.cdi.ViewScoped;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.OptimisticLockException;
@@ -32,7 +35,6 @@ public class AdminController implements Serializable {
     @Inject
     SurveyDAO surveyDAO;
 
-    @Getter private Person selectedPerson;
     @Getter private Person conflictingPerson;
 
     @Getter private Person newPendingPerson = new Person();
@@ -48,81 +50,85 @@ public class AdminController implements Serializable {
         reloadAll();
     }
 
-    private List<Person> loadPersons() {
-        List<Person> persons = personDao.findPersons();
-        persons.forEach(p -> Hibernate.initialize(p.getSurveyList()));
-        return persons;
-    }
-
-
-    public void prepareForEditing(Person person) {
-        selectedPerson = person;
-        conflictingPerson = null;
-    }
-
     public void reloadAll(){
-        List<Person> allPersons = loadPersons();
-        registeredPersons = new ArrayList<Person>(allPersons);
+        List<Person> allPersons = personDao.findPersons();
+        registeredPersons = new ArrayList<>(allPersons);
         registeredPersons.removeIf(p -> p.getPassword() == null);
-        pendingPersons = allPersons;
+        pendingPersons = new ArrayList<>(allPersons);
         pendingPersons.removeIf(p -> p.getPassword() != null);
-        allSurveys = surveyDAO.getAllSurveys();
     }
 
     @Transactional
-    public void updateSelectedPerson(Person p) {    //KEIČIAU
+    public void updateUserType(Person p){
+        updateUserType(p, false);
+    }
+
+    @Transactional
+    public void updateUserType(Person p, boolean isPending){
+        String title = "Įvyko išoriniai pasikeitimai";
+        String text;
         try {
+            if (isPending && personDao.findById(p.getPersonID()) == null){
+                    text = "Būsimas vartotojas " + p.getEmail() + " buvo prieš tai ištrintas. Pakeitimai anuliuoti.";
+                    reloadAll();
+                    updateAndShowDialog(title, text);
+                    return;
+            }
             personDao.updateAndFlush(p);
-            selectedPerson = null;
+            text = "Vartotojo " + p.getFirstName() +" "+p.getLastName() + " tipas sėkmingai atnaujintas į " + p.getUserType() +"!";
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successful",  text) );
             reloadAll();
-        } catch (OptimisticLockException ole) {
-            conflictingPerson = personDao.findById(selectedPerson.getPersonID());
-            // Pavyzdys, kaip inicializuoti LAZY ryšį, jei jo reikia HTML puslapyje:
-            Hibernate.initialize(conflictingPerson.getSurveyList());
-            // Pranešam PrimeFaces dialogui, kad užsidaryti dar negalima:
-            RequestContext.getCurrentInstance().addCallbackParam("validationFailed", true);
+        }
+        catch (OptimisticLockException ole) {
+            conflictingPerson = personDao.findById(p.getPersonID());
+            if (conflictingPerson.getUserType().equals(p.getUserType())){
+                if (isPending) text = text = "Būsimo vartotojo " + p.getEmail() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
+                          else text = "Vartotojo " + p.getFirstName() +" "+p.getLastName() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
+                updateAndShowDialog(title, text);
+            }
+            else {
+                conflictingPerson.setUserType(p.getUserType());
+                personDao.updateAndFlush(conflictingPerson);
+                text = "Vartotojo " + p.getFirstName() +" "+p.getLastName() + " tipas sėkmingai atnaujintas į " + p.getUserType() +"!";
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successful",  text) );
+            }
+            reloadAll();
         }
     }
-    @Transactional
-    public void overwriteAllUsers() {   //KEIČIAU - PRIDĖJAU
-        for (int i = 0; i < registeredPersons.size(); i++)
-            updateSelectedPerson(registeredPersons.get(i));
-        reloadAll();
+
+    private void updateAndShowDialog(String title, String text){
+        RequestContext.getCurrentInstance().execute("$('#change-me-pls0').text('"+title+"')");
+        RequestContext.getCurrentInstance().execute("$('#change-me-pls').text('"+text+"')");
+        RequestContext.getCurrentInstance().execute("$('#user-modal').modal()");
     }
 
     @Transactional
-    public void deleteSelectedPerson(){
+    public void deletePerson(Person p){
         try {
-            if (selectedPerson.getOptLockVersion() < personDao.findById(selectedPerson.getPersonID()).getOptLockVersion())
+            conflictingPerson = personDao.findById(p.getPersonID());
+            if (conflictingPerson == null){
+                String title = "Įvyko išoriniai pasikeitimai";
+                String text  = "Būsimas vartotojas " + p.getEmail() + " jau buvo prieš tai ištrintas!";
+                reloadAll();
+                updateAndShowDialog(title, text);
+                return;
+            }
+            if (p.getOptLockVersion() < conflictingPerson.getOptLockVersion())
                 throw new OptimisticLockException();
-            personDao.DeleteUser(selectedPerson);
-            selectedPerson = null;
+            personDao.DeleteUser(p);
             reloadAll();
-        } catch (OptimisticLockException ole) {
-            conflictingPerson = personDao.findById(selectedPerson.getPersonID());
-            // Pavyzdys, kaip inicializuoti LAZY ryšį, jei jo reikia HTML puslapyje:
-            Hibernate.initialize(conflictingPerson.getSurveyList());
-            // Pranešam PrimeFaces dialogui, kad užsidaryti dar negalima:
-            RequestContext.getCurrentInstance().addCallbackParam("validationFailed", true);
         }
-    }
-
-    @Transactional
-    public void overwritePerson() {
-        selectedPerson.setOptLockVersion(conflictingPerson.getOptLockVersion());
-        updateSelectedPerson(selectedPerson);   //KEIČIAU
-    }
-
-    @Transactional
-    public void overDeletePerson(Person person) {
-//        selectedPerson = null;        //KEIČIAU
-        personDao.DeleteUser(person);   //KEIČIAU
-        reloadAll();
+        catch (OptimisticLockException ole) {
+            String title ="Įvyko išoriniai pasikeitimai";
+            String text = "Būsimas vartotojas " + p.getEmail() + " buvo prieš tai pakeistas. Pakeitimai anuliuoti!";
+            reloadAll();
+            updateAndShowDialog(title, text);
+        }
     }
 
     @Transactional
     public void addNewPendingPerson() {
-        personDao.CreateUser(newPendingPerson);
+        personDao.CreateUser(newPendingPerson); //TODO: add regex and shit
         newPendingPerson = new Person();
         reloadAll();
     }

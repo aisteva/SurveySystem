@@ -28,6 +28,7 @@
                                 <td>#{person.email}</td>
                                 <td>
                                     <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}" required="true">
+                                        <p:ajax listener="#{adminController.updateUserType(person)}" />
                                         <f:selectItems value = "#{person.getUserTypesEnum()}"/>
                                     </h:selectOneMenu>
                                 </td>
@@ -43,9 +44,11 @@
                     </tbody>
                 </table>
             </div>
-            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
-                <h:commandButton value="Išsaugoti" action="#{adminController.overwriteAllUsers}" styleClass="btn btn-primary btn-md center-block"></h:commandButton>
-            </div>
         </div>
+        <ul class="nav navbar-nav navbar-right"> <!-- TODO: delete me at the end -->
+            <li>
+                <a href="#" data-toggle="modal" data-target="#user-modal">Prisijungti</a>
+            </li>
+        </ul>
     </h:form>
 </ui:composition>
