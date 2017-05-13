@@ -264,7 +264,7 @@ public class ExcelSurveyImport implements Serializable
         Answer answer = new Answer();
         answer.setOfferedAnswerID(offeredAnswer);
         answer.setText(answerText);
-        answer.setSessionID(0);
+        answer.setSessionID(null);
 
         offeredAnswer.getAnswerList().add(answer);
     }

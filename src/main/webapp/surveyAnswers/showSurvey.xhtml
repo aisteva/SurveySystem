@@ -6,88 +6,158 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
-    <h:head>
-        <h:outputStylesheet name="/css/style.css"/>
-       <h:outputStylesheet name="/css/create/style.css"/>
-    </h:head>
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:o="http://omnifaces.org/ui">
+<h:head>
+    <title>#{saveAnswersController.survey.title}</title>
 
-    <f:metadata>
-        <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
-        <f:viewAction action="#{signInController.isSigned}" />
-        <f:viewParam name="id"
-                     required="true"
-                     value="#{showSurveyController.survey.surveyURL}"
-                     validator="#{showSurveyController.validate}"/>
-    </f:metadata>
-    <h:body>
-        <ui:include src="/header.xhtml"/>
-        <div class="container">
-            <h:form>
-                <div class="col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12 box-shadow">
-                    <h1 class="text-center">#{showSurveyController.survey.title}</h1>
-                    <h4 align="justify" class="title">#{showSurveyController.survey.description}</h4>
+    <h:outputStylesheet name="/css/style.css" />
+    <h:outputStylesheet name="/css/create/style.css" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+</h:head>
+<f:metadata>
+    <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
+    <f:viewAction action="#{signInController.isSigned}" />
+    <o:viewParam name="id" required="true" value="#{saveAnswersController.survey.surveyURL}"
+                 validator="#{saveAnswersController.validate}">
+    </o:viewParam>
+    <f:viewAction action="#{saveAnswersController.init}" />
 
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <span class="required">* - Privaloma</span>
-                        </div>
-                        <ui:repeat  value="#{showSurveyController.survey.questionList}" var="question" varStatus="questionStatus">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
-                                <h2>#{question.questionNumber}. #{question.questionText}
-                                    <h:panelGroup rendered="#{question.required}">
-                                        <span class="required">*</span>
-                                    </h:panelGroup>
-                                </h2>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <h:panelGroup rendered="#{question.type == 'TEXT'}">
-                                    <div class="row">
-                                        <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
-                                            <h:inputText styleClass="onlyBottomBorder" a:placeholder="Atsakymas"/>
-                                        </div>
-                                    </div>
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                                    <h:selectManyCheckbox layout="pageDirection">
-                                        <f:selectItems value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
-                                    </h:selectManyCheckbox>
-                                    <!--TODO KITA-->
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
-                                    <h:selectOneRadio layout="pageDirection">
-                                        <f:selectItems  styleClass="radio" value="#{question.offeredAnswerList}" var="q" itemLabel="#{q.text}" itemValue="#{q.text}"/>
-                                    </h:selectOneRadio>
-                                    <!--TODO KITA-->
-                                </h:panelGroup>
-                                <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                                    <div class="row">
-                                        <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
-                                            <div class="row">
-                                                <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
-                                                    <p:inputText id="slider6" value="#{showSurveyController.getScaleMinValue(questionStatus.index)}" styleClass="onlyBottomBorder"/>
-                                                </div>
-                                                <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
-                                                    <p:slider for="slider6" minValue="#{showSurveyController.getScaleMinValue(questionStatus.index)}" maxValue="#{showSurveyController.getScaleMaxValue(questionStatus.index)}"/>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </h:panelGroup>
-                            </div>
-                        </ui:repeat>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
-                            <h:commandButton value="Siųsti atsakymą"
-                                             styleClass="btn btn-primary btn-md text-center"
-                                             action="#{showSurveyController.findBySurveyURL('Y3ql8F5X')}">
-                            </h:commandButton>
-                        </div>
-
+</f:metadata>
+<h:body>
+    <ui:include src="/header.xhtml"/>
+    <div class="container">
+        <h:form id="show-survey-form">
+            <div class="section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12 box-shadow">
+                <h1 class="text-center">#{saveAnswersController.survey.title}</h1>
+                <h4 align="justify" class="title">#{saveAnswersController.survey.description}</h4>
+            </div>
+            <div class="section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12 box-shadow">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 30px;">
+                        <span class="required">* - Privaloma</span>
+                        <p:messages id="show-survey-message" autoUpdate="true"/>
                     </div>
+                    <ui:repeat  value="#{saveAnswersController.getQuestionList()}" var="question" varStatus="questionStatus">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
+                            <h2>#{question.questionNumber}. #{question.questionText}
+                                <h:panelGroup rendered="#{question.isRequired()}">
+                                    <span class="required">*</span>
+                                </h:panelGroup>
+                            </h2>
+
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h:panelGroup rendered="#{question.type == 'TEXT'}">
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
+                                        <h:inputText id="text"
+                                                     value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
+                                                     required="#{question.isRequired() and not empty param.nextPage}"
+                                                     requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
+                                                     styleClass="onlyBottomBorder"
+                                                     a:placeholder="Atsakymas"/>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                                <h:selectManyCheckbox id="multiple"
+                                                      value="#{saveAnswersController.selectedOfferedAnswers}"
+                                                      layout="pageDirection"
+                                                      converter="omnifaces.SelectItemsIndexConverter"
+                                                      required="#{not empty param.nextPage and question.isRequired()}"
+                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                    <f:selectItems value="#{question.offeredAnswerList}"
+                                                   var="offeredAnswer"
+                                                   itemLabel="#{offeredAnswer.text}"
+                                                   itemValue="#{offeredAnswer}"/>
+                                </h:selectManyCheckbox>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
+                                <h:selectOneRadio id="oneMeniu"
+                                                  layout="pageDirection"
+                                                  value="#{saveAnswersController.selectedOfferedAnswer}"
+                                                  converter="omnifaces.SelectItemsConverter"
+                                                  required="#{question.isRequired() and not empty param.nextPage}"
+                                                  requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                    <f:selectItems  styleClass="radio"
+                                                    value="#{question.offeredAnswerList}"
+                                                    var="offeredAnswer"
+                                                    itemLabel="#{offeredAnswer.text}"
+                                                    itemValue="#{offeredAnswer}"/>
+                                </h:selectOneRadio>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'SCALE'}">
+                                #{saveAnswersController.processLine(question.getOfferedAnswerList())}
+                                <h4>Įveskite skaičių tarp #{saveAnswersController.min} ir #{saveAnswersController.max}</h4>
+                                <div class="row">
+                                    <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
+                                        <div class="row">
+                                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                                                <h:panelGrid>
+                                                    <h:panelGroup rendered="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}">
+                                                        #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.min}
+                                                    </h:panelGroup>
+                                                    <p:inputText id="scale"
+                                                                 value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
+                                                                 required="#{question.isRequired() and not empty param.nextPage}"
+                                                                 converter="javax.faces.Integer"
+                                                                 converterMessage="Klausime nr. #{question.questionNumber} įveskite tik skaičius!"
+                                                                 validatorMessage="Klausime nr. #{question.questionNumber} skaičius turi būti tarp #{saveAnswersController.min} ir #{saveAnswersController.max}"
+                                                                 requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
+                                                                 styleClass="onlyBottomBorder">
+                                                        <f:validateLongRange minimum="#{saveAnswersController.min}"
+                                                                             maximum="#{saveAnswersController.max}"/>
+                                                    </p:inputText>
+                                                </h:panelGrid>
+                                            </div>
+                                            <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+                        </div>
+                    </ui:repeat>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
+                        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12" style="padding-top: 7px; padding-bottom: 10px">
+                            <h:panelGroup rendered="#{saveAnswersController.page > 1}">
+                                <p:commandButton value="Praeitas puslapis"
+                                                 styleClass="btn btn-success btn-sm"
+                                                 action="#{saveAnswersController.prevPage()}"
+                                                 update="@form">
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-4 col-xs-12">
+                            <h:panelGroup rendered="#{saveAnswersController.getQuestionList().size() > 0}">
+                                <p:commandButton value="Kitas puslapis"
+                                                 styleClass="btn btn-primary btn-lg text-center"
+                                                 action="#{saveAnswersController.nextPage()}"
+                                                 ajax="false"
+                                                 update="@form">
+                                    <f:param name="nextPage" value="true"/>
+                                </p:commandButton>
+                            </h:panelGroup>
+                        </div>
+
+                        <div class="col-lg-8 col-md-8 col-sm-4 col-xs-12">
+                            <h:panelGroup rendered="#{saveAnswersController.getQuestionList().size() == 0}">
+                                <h:commandButton value="Siųsti atsakymą"
+                                                 styleClass="btn btn-primary btn-lg text-center"
+                                                 action="#{saveAnswersController.saveAnswer()}"
+                                                 ajax="false">
+                                    <f:ajax execute="@form" render="@form"/>
+                                </h:commandButton>
+                            </h:panelGroup>
+                        </div>
+                    </div>
+
                 </div>
-            </h:form>
-        </div>
-        <ui:include src="/footer.xhtml"/>
-    </h:body>
+            </div>
+        </h:form>
+    </div>
+    <ui:include src="/footer.xhtml"/>
+</h:body>
 </html>

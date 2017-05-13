@@ -34,6 +34,10 @@ select {
     padding: 40px 0px !important;
 }
 
+.add-survey {
+    padding-top: 30px;
+}
+
 .surveyTitle input {
     font-size: 200%;
     width: 100%;

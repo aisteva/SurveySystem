@@ -138,3 +138,10 @@ body {
     width: 0;
     display: none;
 }
+
+.ui-messages-error {
+    padding: 0 !important;
+}
+.ui-messages-error ul {
+    margin: 0 !important;
+}

@@ -2,6 +2,7 @@ package dao;
 
 
 import entitiesJPA.Answer;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import java.util.List;
  */
 
 @ApplicationScoped
+@Slf4j
 public class AnswerDAO {
 
     @Inject
