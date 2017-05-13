@@ -44,22 +44,43 @@ public class SurveyInfoController implements Serializable{
         }
         @Getter private String answerText;
         @Getter private int countAnswers;
+
+        public void addToCountAnswers(){
+            countAnswers++;
+        }
     }
 
     public List<AnswerCounter> getAnswerCounterList(Long questionId){
-        List<AnswerCounter> answerCounterList = new ArrayList<>();
         Question question = survey.getQuestionList().stream().filter(x -> x.getQuestionID().equals(questionId)).findFirst().get();
         List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
+
+        List<AnswerCounter> answerCounterList = new ArrayList<>();
         for (OfferedAnswer o : offeredAnswers){
-            answerCounterList.add(new AnswerCounter(o.getText(), o.getAnswerList().size()));
+            if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())){ // Only for text
+                Set<String> texts = new HashSet<>();
+                for (Answer a : o.getAnswerList()) {
+                    if (texts.contains(a.getText())){
+                        answerCounterList.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();
+                    } else {
+                        texts.add(a.getText());
+                        answerCounterList.add(new AnswerCounter(a.getText(), 1));
+                    }
+                }
+            }
+            else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
+                for (Answer a : o.getAnswerList()) {
+                    answerCounterList.add(new AnswerCounter(a.getText(), o.getAnswerList().size()));
+                }
+            }
+            else { // Checkbox or multiple
+                answerCounterList.add(new AnswerCounter(o.getText(), o.getAnswerList().size()));
+            }
         }
+
         if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
             answerCounterList.sort((x,y) -> x.answerText.compareTo(y.answerText));
         }
         return answerCounterList;
-    }
-    @PostConstruct
-    public void init(){
     }
 
     public void load(){
