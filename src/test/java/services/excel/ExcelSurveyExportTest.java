@@ -1,9 +1,11 @@
 package services.excel;
 
 import entitiesJPA.Survey;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +24,10 @@ public class ExcelSurveyExportTest
     public void exportSurveyIntoExcelFile() throws Exception
     {
         Survey s = esi.importSurveyIntoEntity(exampleImportFile).get();
-        ese.exportSurveyIntoExcelFile(s);
+        Workbook wb = ese.exportSurveyIntoExcelFile(s).get();
+        FileOutputStream fileOut = new FileOutputStream("survey.xlsx");
+        wb.write(fileOut);
+        fileOut.close();
     }
 
 }

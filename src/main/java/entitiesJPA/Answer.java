@@ -29,7 +29,7 @@ public class Answer implements Serializable {
 
     public Answer(){}
 
-    public Answer(Long id, int sessionID, String text, OfferedAnswer offeredAnswerID) {
+    public Answer(Long id, String sessionID, String text, OfferedAnswer offeredAnswerID) {
         this.answerID = id;
         this.sessionID = sessionID;
         this.text = text;
@@ -43,7 +43,7 @@ public class Answer implements Serializable {
     private Long answerID;
     @Basic(optional = false)
     @Column(name = "SessionID")
-    private int sessionID;
+    private String sessionID;
     @Column(name = "Text")
     private String text;
     @JoinColumn(name = "OfferedAnswerID", referencedColumnName = "OfferedAnswerID")

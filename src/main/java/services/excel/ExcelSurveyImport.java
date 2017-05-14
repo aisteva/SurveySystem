@@ -4,20 +4,24 @@ import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
+import lombok.Setter;
 import org.apache.deltaspike.core.api.future.Futureable;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import services.SaltGenerator;
 
 import javax.ejb.AsyncResult;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -36,6 +40,11 @@ public class ExcelSurveyImport implements Serializable, Importable
     private XSSFSheet answerSheet = null;
     private String[] answerColumns = new String[]{"$answerID", "$questionNumber", "$answer"};
 
+    @Setter
+    @Inject
+    SaltGenerator sg;
+
+    String currentSessionId = null;
 
     @Futureable
     public Future<Survey> importSurveyIntoEntity(File excelFile) throws IOException, InvalidFormatException
@@ -175,7 +184,13 @@ public class ExcelSurveyImport implements Serializable, Importable
         //iteruojam per eilutes, kol sutinkam tuščią (pagal reikalavimus)
         while(!isRowEmpty(currentRow))
         {
-            answerCount = getNumericValueFromCell(currentRow.getCell(0));
+
+            int answerId = getNumericValueFromCell(currentRow.getCell(0));
+            if(answerId != answerCount)
+            {
+                currentSessionId = sg.getRandomString(15);
+                answerCount = answerId;
+            }
             int currentQuestionNumber = getNumericValueFromCell(currentRow.getCell(1));
             Question currentQuestion = null;
             try
@@ -262,7 +277,7 @@ public class ExcelSurveyImport implements Serializable, Importable
         Answer answer = new Answer();
         answer.setOfferedAnswerID(offeredAnswer);
         answer.setText(answerText);
-        answer.setSessionID(0);
+        answer.setSessionID(currentSessionId);
 
         offeredAnswer.getAnswerList().add(answer);
     }
