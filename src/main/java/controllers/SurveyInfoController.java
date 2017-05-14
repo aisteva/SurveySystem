@@ -188,15 +188,10 @@ public class SurveyInfoController implements Serializable{
             Faces.sendFile(file, true);
             file.delete();
         }
-        catch (IOException e)
+        catch (IOException | InterruptedException e)
         {
             e.printStackTrace();
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-        catch (ExecutionException e)
+        } catch (ExecutionException e)
         {
             e.printStackTrace();
         }

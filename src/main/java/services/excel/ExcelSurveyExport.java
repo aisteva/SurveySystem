@@ -5,8 +5,10 @@ import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 import entitiesJPA.Survey;
 import org.apache.deltaspike.core.api.future.Futureable;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -14,7 +16,7 @@ import javax.ejb.AsyncResult;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import java.io.*;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Future;
 
 /**
@@ -31,6 +33,8 @@ public class ExcelSurveyExport implements Serializable
     private int currentSurveyRowNumber = 0;
     private int currentAnswerRowNumber = 0;
 
+    XSSFCellStyle style;
+
 
     /*
         Metodas grąžina Apache POI workbook - paskui controlleris sukurs excel failą
@@ -42,6 +46,12 @@ public class ExcelSurveyExport implements Serializable
         Workbook wb = new XSSFWorkbook();
         Sheet surveySheet = wb.createSheet("Survey");
         Sheet answerSheet = wb.createSheet("Answer");
+
+        style = (XSSFCellStyle) wb.createCellStyle();
+        style.setBorderTop(BorderStyle.THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
 
         //Į pirmą eilutę įrašomi parametrų pavadinimai
         Row surveyFirstRow = surveySheet.createRow(currentSurveyRowNumber++);
@@ -76,14 +86,6 @@ public class ExcelSurveyExport implements Serializable
                     for(OfferedAnswer offeredAnswer: question.getOfferedAnswerList())
                     {
                         questionRow.createCell(currentCellNumber++).setCellValue(offeredAnswer.getText());
-                        //apdorojami pateikti atsakymai į klausimą
-                        for(Answer answer: offeredAnswer.getAnswerList())
-                        {
-                            Row answerRow = answerSheet.createRow(currentAnswerRowNumber++);
-                            answerRow.createCell(0).setCellValue(answer.getSessionID());
-                            answerRow.createCell(1).setCellValue(question.getQuestionNumber());
-                            answerRow.createCell(2).setCellValue(answer.getOfferedAnswerID().getText());
-                        }
                     }
                     break;
                 case "SCALE":
@@ -92,33 +94,79 @@ public class ExcelSurveyExport implements Serializable
                     String[] answers = scale.split(";");
                     createNumericCell(questionRow, 3).setCellValue(Integer.parseInt(answers[0]));
                     createNumericCell(questionRow, 4).setCellValue(Integer.parseInt(answers[1]));
-                    for(OfferedAnswer offeredAnswer: question.getOfferedAnswerList())
-                    {
-                        for(Answer answer: offeredAnswer.getAnswerList())
-                        {
-                            Row answerRow = answerSheet.createRow(currentAnswerRowNumber++);
-                            answerRow.createCell(0).setCellValue(answer.getSessionID());
-                            answerRow.createCell(1).setCellValue(question.getQuestionNumber());
-                            answerRow.createCell(2).setCellValue(Integer.parseInt(answer.getText()));
-                        }
-                    }
                     break;
                 case "TEXT":
                     //nerašomas joks option pagal reikalavimus
-                    for(OfferedAnswer offeredAnswer: question.getOfferedAnswerList())
-                    {
-                        for(Answer answer: offeredAnswer.getAnswerList())
-                        {
-                            Row answerRow = answerSheet.createRow(currentAnswerRowNumber++);
-                            answerRow.createCell(0).setCellValue(answer.getSessionID());
-                            answerRow.createCell(1).setCellValue(question.getQuestionNumber());
-                            answerRow.createCell(2).setCellValue(answer.getText());
-                        }
-                    }
                     break;
             }
         }
+        parseAnswers(survey, answerSheet);
         return new AsyncResult<>(wb);
+    }
+
+    private void parseAnswers(Survey survey, Sheet answerSheet)
+    {
+        //Visi atsakymai surenkami į vieną sąrašą
+        List<Answer> allAnswers = new ArrayList<>();
+        for(Question q: survey.getQuestionList())
+        {
+            int answerNumber = 1;
+            for(OfferedAnswer oa: q.getOfferedAnswerList())
+            {
+                oa.setAnswerNumber(answerNumber++);
+                for(Answer a: oa.getAnswerList())
+                {
+                    allAnswers.add(a);
+                }
+            }
+        }
+        //atsakymai išrūšiuojami pagal session id
+        allAnswers.sort(sessionComparator);
+
+        int answerId = 0; //kadangi keičiam session id į int reikšmes, tam sukuriamas skaitliukas
+        String previousSessionId = null; //su šitu tikrinama, ar pasikeitė session id, t.y. ar reikia padidinti skaitliuką
+
+        int previousQuestionNumber = 0; //skirtas tam, kad kai pasikeičia klausimo nr, sukuriama nauja eilutė
+        int multipleChoiceCellNumber = 2; //multiplechoice atsakymai rašomi į tą pačią eilutę, tad tai tam skirtas skaitliukas
+
+        Row answerRow = null;
+        for(Answer a: allAnswers)
+        {
+            //jei sessionID pasikeitė, pakeičiam answer id skaitliuką
+            if(!a.getSessionID().equals(previousSessionId))
+            {
+                previousSessionId = a.getSessionID();
+                answerId++;
+            }
+            //jei pasikeitė klausimo numeris, kuriam naują eilutę
+            if(a.getOfferedAnswerID().getQuestionID().getQuestionNumber() != previousQuestionNumber)
+            {
+                answerRow = answerSheet.createRow(currentAnswerRowNumber++);
+                previousQuestionNumber = a.getOfferedAnswerID().getQuestionID().getQuestionNumber();
+
+                multipleChoiceCellNumber = 2;
+            }
+            //išsaugojam į excel atsakymo id ir klausimo id
+            answerRow.createCell(0).setCellValue(answerId);
+            answerRow.createCell(1).setCellValue(a.getOfferedAnswerID().getQuestionID().getQuestionNumber());
+
+            //toliau atsakymai surašomi pagal klausimo tipą
+            switch(a.getOfferedAnswerID().getQuestionID().getType())
+            {
+                //rašomi į sekančią laisvą celę
+                case "CHECKBOX":
+                case "MULTIPLECHOICE":
+                    answerRow.createCell(multipleChoiceCellNumber++).setCellValue(a.getOfferedAnswerID().getAnswerNumber());
+                    break;
+                //rašomi į answer celę
+                case "SCALE":
+                    answerRow.createCell(2).setCellValue(Integer.parseInt(a.getText()));
+                    break;
+                case "TEXT":
+                    answerRow.createCell(2).setCellValue(a.getText());
+                    break;
+            }
+        }
     }
 
     private Cell createNumericCell(Row row, int index)
@@ -127,4 +175,14 @@ public class ExcelSurveyExport implements Serializable
         c.setCellType(CellType.NUMERIC);
         return c;
     }
+
+    //Comparator, kuris išrūšiuoja sąrašą pagal session ID
+    private static Comparator<Answer> sessionComparator = (a1, a2) ->
+    {
+        int res = String.CASE_INSENSITIVE_ORDER.compare(a1.getSessionID(), a2.getSessionID());
+        if (res == 0) {
+            res = a1.getSessionID().compareTo(a2.getSessionID());
+        }
+        return res;
+    };
 }

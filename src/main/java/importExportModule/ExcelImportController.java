@@ -85,12 +85,7 @@ public class ExcelImportController implements Serializable
                 importedSurvey = null;
                 asyncSurveyResult = excelSurveyImport.importSurveyIntoEntity(excelFile);
             }
-            catch (IOException e)
-            {
-                pollResult = false;
-                Messages.addGlobalError(e.getMessage());
-            }
-            catch (InvalidFormatException e)
+            catch (IOException | InvalidFormatException e)
             {
                 pollResult = false;
                 Messages.addGlobalError(e.getMessage());
@@ -111,11 +106,12 @@ public class ExcelImportController implements Serializable
                 }
                 catch (ExecutionException e)
                 {
-
+                    System.out.println(e.getCause().getMessage());
                     if(e.getCause() instanceof InvalidFormatException)
                     {
                         FacesContext.getCurrentInstance().addMessage("messages",
                                 new FacesMessage(e.getCause().getMessage()));
+                        System.out.println(e.getCause().getMessage());
                     }
 
                 }
