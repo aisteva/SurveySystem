@@ -152,7 +152,10 @@ public class ExcelSurveyExport implements Serializable
                 oa.setAnswerNumber(answerNumber++);
                 for(Answer a: oa.getAnswerList())
                 {
-                    allAnswers.add(a);
+                    if(a.isFinished())
+                    {
+                        allAnswers.add(a);
+                    }
                 }
             }
         }

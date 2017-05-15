@@ -49,4 +49,7 @@ public class Answer implements Serializable {
     @JoinColumn(name = "OfferedAnswerID", referencedColumnName = "OfferedAnswerID")
     @ManyToOne(optional = false)
     private OfferedAnswer offeredAnswerID;
+    @Basic(optional = false)
+    @Column(name="isFinished")
+    private boolean isFinished;
 }
