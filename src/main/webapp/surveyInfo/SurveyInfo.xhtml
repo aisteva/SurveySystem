@@ -12,6 +12,7 @@
     <title>pavadinimas</title>
     <h:outputStylesheet name="/css/style.css"/>
     <h:outputStylesheet name="/css/jqcloud.css"/>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
 </h:head>
 <f:metadata>
     <f:viewParam name="person" value="#{signInController.loggedInPerson}" />
@@ -32,7 +33,6 @@
             <h:outputScript>
                 window.onload = function () {
                     <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
-
                         if (#{question.type == 'TEXT'}){
                             var words#{question.questionID} = [
                                 <ui:repeat value="#{surveyInfoController.getAnswerCounterList(question.questionID)}"
@@ -71,7 +71,7 @@
             <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 one-question">
                     <h3>#{question.questionNumber}. #{question.questionText}</h3>
-                    <div id="chartContainer#{question.questionID}" style="height: 300px; width: 100%;"></div>
+                    <div id="chartContainer#{question.questionID}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 300px"></div>
                 </div>
             </ui:repeat>
 
