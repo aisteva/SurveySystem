@@ -108,7 +108,7 @@ public class SignInController implements Serializable {
 
     public String signOut() {
         loggedInPerson = null;
-        return "/signin/signin.xhtml";
+        return "/signin/signin?faces-redirect=true";
     }
 
 
