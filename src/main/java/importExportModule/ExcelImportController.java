@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
-import org.omnifaces.cdi.ViewScoped;
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.context.RequestContext;
@@ -20,6 +19,7 @@ import userModule.SignInController;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
@@ -106,12 +106,15 @@ public class ExcelImportController implements Serializable
                 }
                 catch (ExecutionException e)
                 {
-                    System.out.println(e.getCause().getMessage());
                     if(e.getCause() instanceof InvalidFormatException)
                     {
                         FacesContext.getCurrentInstance().addMessage("messages",
                                 new FacesMessage(e.getCause().getMessage()));
                         System.out.println(e.getCause().getMessage());
+                    }
+                    else
+                    {
+                        e.printStackTrace();
                     }
 
                 }

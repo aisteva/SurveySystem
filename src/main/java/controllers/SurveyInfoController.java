@@ -23,7 +23,7 @@ import services.excel.ExcelSurveyExport;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutionException;
  * Created by vdeiv on 2017-04-29.
  */
 @Named
-@org.omnifaces.cdi.ViewScoped
+@ViewScoped
 @Slf4j
 public class SurveyInfoController implements Serializable{
 
@@ -64,6 +64,7 @@ public class SurveyInfoController implements Serializable{
     @PostConstruct
     public void init(){
     }
+
 
     public void load(){
         Long ind = Long.parseLong(surveyId);
@@ -177,9 +178,6 @@ public class SurveyInfoController implements Serializable{
         try
         {
             File file = new File("apklausa.xlsx");
-            Long ind = Long.parseLong(surveyId);
-            survey = surveyDao.getSurveyById(ind);
-            System.out.println(survey);
             Workbook wb = excelSurveyExport.exportSurveyIntoExcelFile(survey).get();
             FileOutputStream fileOut = new FileOutputStream(file);
             wb.write(fileOut);

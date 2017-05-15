@@ -299,6 +299,7 @@ public class ExcelSurveyImport implements Serializable, Importable
 
     //Funkcija tikrina, ar eilutė tuščia
     private boolean isRowEmpty(Row row) {
+        if(row == null) return true;
         for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
             Cell cell = row.getCell(c);
             if (cell != null && cell.getCellTypeEnum() != CellType.BLANK)
