@@ -2,21 +2,16 @@ package importExportModule;
 
 import dao.SurveyDAO;
 import entitiesJPA.Survey;
+import interceptor.LogInterceptor;
 import lombok.Getter;
-import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
-import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
 import services.SaltGenerator;
-import services.excel.ExcelSurveyImport;
 import services.excel.Importable;
 import userModule.SignInController;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -24,8 +19,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.io.*;
-import java.nio.file.Files;
-import java.time.DateTimeException;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -35,6 +28,7 @@ import java.util.concurrent.Future;
  */
 @Named
 @ViewScoped
+@LogInterceptor
 public class ExcelImportController implements Serializable
 {
     @Inject
