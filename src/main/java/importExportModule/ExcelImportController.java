@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
-import org.omnifaces.cdi.ViewScoped;
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.context.RequestContext;
@@ -14,11 +13,13 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import services.SaltGenerator;
 import services.excel.ExcelSurveyImport;
+import services.excel.Importable;
 import userModule.SignInController;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
@@ -37,7 +38,7 @@ import java.util.concurrent.Future;
 public class ExcelImportController implements Serializable
 {
     @Inject
-    ExcelSurveyImport excelSurveyImport;
+    Importable excelSurveyImport;
 
     @Inject
     SaltGenerator sg;
@@ -84,12 +85,7 @@ public class ExcelImportController implements Serializable
                 importedSurvey = null;
                 asyncSurveyResult = excelSurveyImport.importSurveyIntoEntity(excelFile);
             }
-            catch (IOException e)
-            {
-                pollResult = false;
-                Messages.addGlobalError(e.getMessage());
-            }
-            catch (InvalidFormatException e)
+            catch (IOException | InvalidFormatException e)
             {
                 pollResult = false;
                 Messages.addGlobalError(e.getMessage());
@@ -110,11 +106,15 @@ public class ExcelImportController implements Serializable
                 }
                 catch (ExecutionException e)
                 {
-
                     if(e.getCause() instanceof InvalidFormatException)
                     {
                         FacesContext.getCurrentInstance().addMessage("messages",
                                 new FacesMessage(e.getCause().getMessage()));
+                        System.out.println(e.getCause().getMessage());
+                    }
+                    else
+                    {
+                        e.printStackTrace();
                     }
 
                 }
