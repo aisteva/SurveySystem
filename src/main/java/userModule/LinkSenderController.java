@@ -2,9 +2,9 @@ package userModule;
 
 import dao.PersonDAO;
 import entitiesJPA.Person;
+import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import services.EmailService;
 import services.SaltGenerator;
 
@@ -21,6 +21,7 @@ import java.util.Date;
  */
 @Named
 @RequestScoped
+@LogInterceptor
 public class LinkSenderController
 {
 

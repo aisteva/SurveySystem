@@ -1,20 +1,14 @@
 package controllers;
 
-import dao.AnswerDAO;
-import dao.PersonDAO;
 import dao.SurveyDAO;
-import entitiesJPA.Answer;
-import entitiesJPA.Person;
-import entitiesJPA.Question;
 import entitiesJPA.Survey;
+import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import userModule.SignInController;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.bean.ManagedProperty;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -27,6 +21,7 @@ import java.util.List;
 @Named
 @RequestScoped
 @Slf4j
+@LogInterceptor
 public class IndexController implements Serializable {
 
     @Inject

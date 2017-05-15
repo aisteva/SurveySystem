@@ -1,22 +1,18 @@
 package services;
 
-import sun.net.smtp.SmtpClient;
-import sun.security.util.Password;
+import interceptor.LogInterceptor;
 
-import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.Date;
 import java.util.Properties;
 
 /**
  * Created by arturas on 2017-04-04.
  */
 @ApplicationScoped
+@LogInterceptor
 public class EmailService
 {
     private String port = "587";

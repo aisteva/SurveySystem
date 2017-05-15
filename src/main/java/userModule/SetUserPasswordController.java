@@ -2,18 +2,16 @@ package userModule;
 
 import dao.PersonDAO;
 import entitiesJPA.Person;
+import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.Setter;
 import services.PasswordHash;
 import services.SaltGenerator;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.bind.ValidationException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Calendar;
@@ -25,6 +23,7 @@ import java.util.Date;
  */
 @Named
 @javax.faces.view.ViewScoped
+@LogInterceptor
 public class SetUserPasswordController implements Serializable
 {
     @Inject private PersonDAO personDAO;
