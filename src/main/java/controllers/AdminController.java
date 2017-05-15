@@ -4,14 +4,13 @@ import dao.PersonDAO;
 import dao.SurveyDAO;
 import entitiesJPA.Person;
 import entitiesJPA.Survey;
+import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
+import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.context.RequestContext;
 
 import javax.annotation.PostConstruct;
-import org.omnifaces.cdi.ViewScoped;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -28,6 +27,7 @@ import java.util.List;
 @Named
 @ViewScoped
 @Slf4j
+@LogInterceptor
 public class AdminController implements Serializable {
 
     @Inject

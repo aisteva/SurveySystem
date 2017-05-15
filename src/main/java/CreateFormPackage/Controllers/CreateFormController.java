@@ -3,6 +3,7 @@ package CreateFormPackage.Controllers;
 import dao.PersonDAO;
 import dao.SurveyDAO;
 import entitiesJPA.*;
+import interceptor.LogInterceptor;
 import lombok.Getter;
 import services.SaltGenerator;
 
@@ -13,7 +14,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @ManagedBean
 @ViewScoped
 @Getter
+@LogInterceptor
 public class CreateFormController implements Serializable {
 
     @Inject
