@@ -8,6 +8,9 @@ import entitiesJPA.Survey;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.omnifaces.util.Faces;
+import services.excel.ExcelSurveyExport;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -16,14 +19,18 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Tuple;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by vdeiv on 2017-04-29.
  */
 @Named
-@Model
+@javax.faces.view.ViewScoped
 @Slf4j
 public class SurveyInfoController implements Serializable{
 
@@ -36,6 +43,9 @@ public class SurveyInfoController implements Serializable{
 
     @Inject
     private SurveyDAO surveyDao;
+
+    @Inject
+    private ExcelSurveyExport excelSurveyExport;
 
     public class AnswerCounter {
         public AnswerCounter(String answerText, int countAnswers){
@@ -86,6 +96,28 @@ public class SurveyInfoController implements Serializable{
     public void load(){
         Long ind = Long.parseLong(surveyId);
         survey = surveyDao.getSurveyById(ind);
+    }
+
+    public void exportSurvey()
+    {
+        try
+        {
+            File file = new File("apklausa.xlsx");
+            Workbook wb = excelSurveyExport.exportSurveyIntoExcelFile(survey).get();
+            FileOutputStream fileOut = new FileOutputStream(file);
+            wb.write(fileOut);
+            fileOut.close();
+            Faces.sendFile(file, true);
+            file.delete();
+        }
+        catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        } catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
 }
