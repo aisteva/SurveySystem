@@ -20,7 +20,7 @@ public class ExcelSurveyExportTest
 
     ExcelSurveyExport ese = new ExcelSurveyExport();
 
-    @Test
+    //@Test
     public void exportSurveyIntoExcelFile() throws Exception
     {
         Survey s = esi.importSurveyIntoEntity(exampleImportFile).get();

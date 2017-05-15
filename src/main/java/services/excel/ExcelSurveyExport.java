@@ -96,11 +96,47 @@ public class ExcelSurveyExport implements Serializable
                     createNumericCell(questionRow, 4).setCellValue(Integer.parseInt(answers[1]));
                     break;
                 case "TEXT":
+                    questionRow.createCell(3).setCellValue("");
                     //nerašomas joks option pagal reikalavimus
                     break;
             }
         }
         parseAnswers(survey, answerSheet);
+
+        //Sudedami borderiai survey lentelėje
+        Iterator<Row> surveyRowIterator = surveySheet.rowIterator();
+        while(surveyRowIterator.hasNext())
+        {
+            Row row = surveyRowIterator.next();
+            for(int i=0; i<surveyColumns.length; i++)
+            {
+                row.getCell(i).setCellStyle(style);
+            }
+        }
+
+        //sudedami borderiai answer lentelėje
+        Iterator<Row> answerRowIterator = answerSheet.rowIterator();
+        while(answerRowIterator.hasNext())
+        {
+            Row row = answerRowIterator.next();
+            for(int i=0; i<answerColumns.length; i++)
+            {
+                row.getCell(i).setCellStyle(style);
+            }
+        }
+
+        //auto size columns survey lentelėje
+        for(int i=0; i<=surveyColumns.length; i++)
+        {
+            surveySheet.autoSizeColumn(i);
+        }
+
+        //auto size columns answer lentelėje
+        for(int i=0; i<=answerColumns.length; i++)
+        {
+            answerSheet.autoSizeColumn(i);
+        }
+
         return new AsyncResult<>(wb);
     }
 
