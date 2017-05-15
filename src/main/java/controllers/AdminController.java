@@ -113,8 +113,14 @@ public class AdminController implements Serializable {
                 updateAndShowDialog(title, text);
                 return;
             }
-            if (p.getOptLockVersion() < conflictingPerson.getOptLockVersion())
-                throw new OptimisticLockException();
+            if (p.getOptLockVersion() < conflictingPerson.getOptLockVersion()){
+                if (p.getUserType().equals(conflictingPerson.getUserType())){
+                    personDao.DeleteUser(conflictingPerson);
+                    reloadAll();
+                    return;
+                }
+                else throw new OptimisticLockException();
+            }
             personDao.DeleteUser(p);
             reloadAll();
         }

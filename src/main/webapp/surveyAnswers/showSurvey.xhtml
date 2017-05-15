@@ -61,6 +61,7 @@
                                 </div>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                                #{saveAnswersController.setTempQuestionId(question.questionID)}
                                 <h:selectManyCheckbox id="multiple"
                                                       value="#{saveAnswersController.selectedOfferedAnswers}"
                                                       layout="pageDirection"
@@ -74,6 +75,7 @@
                                 </h:selectManyCheckbox>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
+                                #{saveAnswersController.setTempQuestionId(question.questionID)}
                                 <h:selectOneRadio id="oneMeniu"
                                                   layout="pageDirection"
                                                   value="#{saveAnswersController.selectedOfferedAnswer}"

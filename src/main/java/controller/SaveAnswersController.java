@@ -43,13 +43,13 @@ public class SaveAnswersController implements Serializable{
     private Survey survey = new Survey();
 
     @Getter @Setter
-    private List<Answer> answersList = new ArrayList<>();
-
-    @Getter @Setter
     private Map<Long, Answer> textAndScaleAnswersList = new HashMap<>();
 
     @Getter @Setter
-    private OfferedAnswer[] selectedOfferedAnswers = new OfferedAnswer[20];
+    private OfferedAnswer[] selectedOfferedAnswers = new OfferedAnswer[999];
+
+    @Getter @Setter
+    private Map<Long, List<Answer>> checkboxAndMultipleAnswersList = new HashMap<>();
 
     @Getter @Setter
     private OfferedAnswer selectedOfferedAnswer = new OfferedAnswer();
@@ -71,6 +71,12 @@ public class SaveAnswersController implements Serializable{
 
     @Inject
     private SurveyDAO surveyDAO;
+
+    private Long tempQuestionId;
+
+    public void setTempQuestionId(Long tempQuestionId){
+        this.tempQuestionId = tempQuestionId;
+    }
 
     public void init() {
         //prasideda conversation, kai atidaromas puslapis
@@ -115,14 +121,21 @@ public class SaveAnswersController implements Serializable{
             answer.setOfferedAnswerID(o);;
             answer.setSessionID(null);
             o.getAnswerList().add(answer);
-            answersList.add(answer);
+            if (checkboxAndMultipleAnswersList.containsKey(o.getQuestionID()) == false){
+                checkboxAndMultipleAnswersList.put(o.getQuestionID().getQuestionID(), new ArrayList<>());
+            }
+            checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).add(answer);
         }
     }
 
-    public void setSelectedOfferedAnswer(OfferedAnswer offered){
-
-        if(offered!=null)
-            setSelectedOfferedAnswers(new OfferedAnswer[]{offered});
+    public OfferedAnswer[] getSelectedOfferedAnswers(){
+        List<OfferedAnswer> offeredList = new ArrayList<OfferedAnswer>();
+        if (checkboxAndMultipleAnswersList.containsKey(tempQuestionId)) {
+            for (Answer a : checkboxAndMultipleAnswersList.get(tempQuestionId)) {
+                offeredList.add(a.getOfferedAnswerID());
+            }
+        }
+        return offeredList.toArray(new OfferedAnswer[offeredList.size()]);
     }
 
     public List<Question> getQuestionList() {
@@ -141,12 +154,16 @@ public class SaveAnswersController implements Serializable{
                 if (aa.getText() != "")
                     answerDAO.save(aa);
             }
-            for (Answer a : answersList) {
-                if (a.getText() != "")
-                    answerDAO.save(a);
+
+            for (Long l : checkboxAndMultipleAnswersList.keySet()) {
+                List<Answer> answerList = checkboxAndMultipleAnswersList.get(l);
+                for (Answer a : answerList){
+                    if (a.getText() != "")
+                        answerDAO.save(a);
+                }
             }
 
-            if((textAndScaleAnswersList.isEmpty())&&(answersList.isEmpty()))
+            if((textAndScaleAnswersList.isEmpty())&&(checkboxAndMultipleAnswersList.isEmpty()))
                 log.error("Niekas neišsaugota");
         }
         catch (Exception e){
