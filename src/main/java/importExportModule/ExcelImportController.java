@@ -14,6 +14,7 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import services.SaltGenerator;
 import services.excel.ExcelSurveyImport;
+import services.excel.Importable;
 import userModule.SignInController;
 
 import javax.enterprise.context.RequestScoped;
@@ -37,7 +38,7 @@ import java.util.concurrent.Future;
 public class ExcelImportController implements Serializable
 {
     @Inject
-    ExcelSurveyImport excelSurveyImport;
+    Importable excelSurveyImport;
 
     @Inject
     SaltGenerator sg;
@@ -84,12 +85,7 @@ public class ExcelImportController implements Serializable
                 importedSurvey = null;
                 asyncSurveyResult = excelSurveyImport.importSurveyIntoEntity(excelFile);
             }
-            catch (IOException e)
-            {
-                pollResult = false;
-                Messages.addGlobalError(e.getMessage());
-            }
-            catch (InvalidFormatException e)
+            catch (IOException | InvalidFormatException e)
             {
                 pollResult = false;
                 Messages.addGlobalError(e.getMessage());
@@ -110,11 +106,12 @@ public class ExcelImportController implements Serializable
                 }
                 catch (ExecutionException e)
                 {
-
+                    System.out.println(e.getCause().getMessage());
                     if(e.getCause() instanceof InvalidFormatException)
                     {
                         FacesContext.getCurrentInstance().addMessage("messages",
                                 new FacesMessage(e.getCause().getMessage()));
+                        System.out.println(e.getCause().getMessage());
                     }
 
                 }

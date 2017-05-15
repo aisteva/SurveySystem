@@ -42,4 +42,8 @@ public class OfferedAnswer implements Serializable {
     private List<Answer> answerList = new ArrayList<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
     private List<AnswerConnection> answerConnectionList = new ArrayList<>();
+
+    //excel importui - su duomenų baze nesusiję
+    @Transient
+    private int answerNumber;
 }

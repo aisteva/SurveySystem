@@ -16,6 +16,16 @@
 </f:metadata> <!--TODO: kažkaip parametrą gražiau galima būtų perduoti.-->
 <h:body>
     <ui:include src="/header.xhtml"/>
+
+    <!--TODO čia test eksportas, dizainą reikia pakeisti -->
+
+    <!-- TODO. ar darom kaip importe, kad darom užrašą, kad apklausa eksportuojama, ar tiesiog paleidžiam async metodą
+            ir laukiam, kol apklausa eksportuosis? -->
+         <h:form>
+             <h:commandButton value="Eksportuoti apklausą" actionListener="#{surveyInfoController.exportSurvey()}" />
+         </h:form>
+    <!-- end test -->
+
     <div class="container content">
         Pavadinimas: #{surveyInfoController.survey.title} <br></br>
         Klausimų skaičius: #{surveyInfoController.survey.getQuestionList().size()} <br></br>
@@ -32,9 +42,7 @@
                 <h:panelGroup rendered="#{question.type == 'MULTIPLE_CHOICE'}">
                     <ui:include src="chartTable.xhtml"/>
                 </h:panelGroup>
-                <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                    <ui:include src="barChart.xhtml"/>
-                </h:panelGroup>
+
                 <h:outputText value="Atsakymų sk.: #{surveyInfoController.getQuestionAnswersNumber(question)}" />
             </p:fieldset>
         </ui:repeat>

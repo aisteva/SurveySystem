@@ -9,12 +9,16 @@ import javafx.scene.chart.PieChart;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.Hibernate;
+import org.omnifaces.util.Faces;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 import org.primefaces.model.chart.PieChartModel;
 import org.primefaces.model.tagcloud.DefaultTagCloudItem;
 import org.primefaces.model.tagcloud.DefaultTagCloudModel;
 import org.primefaces.model.tagcloud.TagCloudModel;
+import services.excel.ExcelSurveyExport;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -22,14 +26,19 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by vdeiv on 2017-04-29.
  */
 @Named
-@Model
+@org.omnifaces.cdi.ViewScoped
 @Slf4j
 public class SurveyInfoController implements Serializable{
 
@@ -49,6 +58,9 @@ public class SurveyInfoController implements Serializable{
     @Getter
     Map<Long, BarChartModel> barCharts = new HashMap<>();
 
+    @Inject
+    ExcelSurveyExport excelSurveyExport;
+
     @PostConstruct
     public void init(){
     }
@@ -60,15 +72,15 @@ public class SurveyInfoController implements Serializable{
             if (q.getType().equals("CHECKBOX") || q.getType().equals("MULTIPLE_CHOICE")) {
                 pieCharts.put(q.getQuestionID(),getPieChartModel(q));
             }
-            if (q.getType().equals("SCALE"))
-                barCharts.put(q.getQuestionID(), getBarChartModel(q));
+           // if (q.getType().equals("SCALE"))
+            //    barCharts.put(q.getQuestionID(), getBarChartModel(q));
         }
     }
 
     public List<Answer> getFreeTextAnswers(Question question){
         OfferedAnswer offeredAnswer = question.getOfferedAnswerList().get(0);
         //TODO: delete at the end.
-        offeredAnswer.getAnswerList().add(new Answer(1l, 1, "atsakymasmano", offeredAnswer));
+        offeredAnswer.getAnswerList().add(new Answer(1l, "1", "atsakymasmano", offeredAnswer));
         return offeredAnswer.getAnswerList();
     }
 
@@ -78,7 +90,7 @@ public class SurveyInfoController implements Serializable{
 
         int i =1;
         for (OfferedAnswer o: offeredAnswers) {
-            o.getAnswerList().add(new Answer(1l, 1, "atsakymasmano"+i, o));
+            o.getAnswerList().add(new Answer(1l, "1", "atsakymasmano"+i, o));
             i++;
         }
 
@@ -158,6 +170,32 @@ public class SurveyInfoController implements Serializable{
             model.addTag(new DefaultTagCloudItem(o, occurrences.get(o)));
         }
         return model;
+    }
+
+    public void exportSurvey()
+    {
+        try
+        {
+            File file = new File("apklausa.xlsx");
+            Long ind = Long.parseLong(surveyId);
+            survey = surveyDao.getSurveyById(ind);
+            System.out.println(survey);
+            Workbook wb = excelSurveyExport.exportSurveyIntoExcelFile(survey).get();
+            FileOutputStream fileOut = new FileOutputStream(file);
+            wb.write(fileOut);
+            fileOut.close();
+
+            Faces.sendFile(file, true);
+            file.delete();
+        }
+        catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        } catch (ExecutionException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
 

@@ -9,9 +9,13 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:o="http://omnifaces.org/ui">
 
+    <h:outputStylesheet name="/css/bootstrap.css"/>
+    <h:outputScript name="/js/jquery-3.2.1.min.js"/>
+    <h:outputScript name="/js/bootstrap.min.js"/>
     <h:outputStylesheet name="/css/signup/style.css"/>
     <h:head>
         <title>Užbaigti registraciją</title>
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     </h:head>
     <f:metadata>
         <o:viewParam name="id" value="#{setUserPasswordController.person.inviteUrl}"
@@ -20,7 +24,6 @@
             <o:viewParamValidationFailed sendError="400" message="Neteisingas URL" />
         </o:viewParam>
     </f:metadata>
-    <ui:include src="/header.xhtml"/>
     <h:body>
         <div class="container">
             <h:form>
