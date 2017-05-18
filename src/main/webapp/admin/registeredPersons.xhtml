@@ -35,6 +35,7 @@
                                 <td>
                                     <label class="switch" style="display:flex; margin: auto;">
                                         <h:selectBooleanCheckbox value="#{person.blocked}">
+                                            <p:ajax listener="#{adminController.updateIfBlocked(person)}" />
                                         </h:selectBooleanCheckbox>
                                         <div class="slider round"></div>
                                     </label>
