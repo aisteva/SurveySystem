@@ -24,7 +24,7 @@ public class LoggingInterceptor implements Serializable {
 
 
     @Inject
-    private SignInController signInController;
+    private SignInController signedPerson;
 
     private String userEmail;
     private String userType;
@@ -37,22 +37,25 @@ public class LoggingInterceptor implements Serializable {
     @AroundInvoke
     public Object logMethodEntry(InvocationContext ctx) throws Exception {
 
-        if(signInController == null){
+        if(signedPerson == null){
+                userEmail = "not Signed";;
+                userType = "not Signed";
+        }
+        else if(signedPerson.getLoggedInPerson()==null||signedPerson.getLoggedInPerson()==null){
             userEmail = "not Signed";;
             userType = "not Signed";
         }
         else{
-            userEmail = signInController.getLoggedInPerson().getEmail();
-            userType = signInController.getLoggedInPerson().getUserType();
+            userEmail = signedPerson.getLoggedInPerson().getEmail();
+            userType = signedPerson.getLoggedInPerson().getUserType();
         }
 
         FileWriter fw = null;
         PrintWriter pw = null;
         try {
             // failas išsisaugo darbo direktorijoje
-            // jeigu tokios nežinot savo kompiuteryje, išsiprintinkit šitą: System.getProperty("user.dir");
+            // jeigu tokios nežinot savo kompiuteryje, išsiprintinkit šitą: System.out.println(System.getProperty("user.dir"));
             fw = new FileWriter("logOutput.txt", true);
-            System.out.println();
             pw = new PrintWriter(fw);
 
             pw.println(formatedDate.format(dateNow)+
