@@ -31,6 +31,9 @@ import java.util.List;
 public class AdminController implements Serializable {
 
     @Inject
+    AdminController self;
+
+    @Inject
     PersonDAO personDao;
     @Inject
     SurveyDAO surveyDAO;
@@ -82,15 +85,14 @@ public class AdminController implements Serializable {
         catch (OptimisticLockException ole) {
             conflictingPerson = personDao.findById(p.getPersonID());
             if (conflictingPerson.getUserType().equals(p.getUserType())){
-                if (isPending) text = text = "Būsimo vartotojo " + p.getEmail() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
+                if (isPending) text = "Būsimo vartotojo " + p.getEmail() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
                           else text = "Vartotojo " + p.getFirstName() +" "+p.getLastName() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
                 updateAndShowDialog(title, text);
             }
             else {
                 conflictingPerson.setUserType(p.getUserType());
-                personDao.updateAndFlush(conflictingPerson);
-                text = "Vartotojo " + p.getFirstName() +" "+p.getLastName() + " tipas sėkmingai atnaujintas į " + p.getUserType() +"!";
-                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successful",  text) );
+                self.updateUserType(conflictingPerson);
+                return;
             }
             reloadAll();
         }
@@ -137,6 +139,38 @@ public class AdminController implements Serializable {
         personDao.CreateUser(newPendingPerson); //TODO: add regex and shit
         newPendingPerson = new Person();
         reloadAll();
+    }
+
+    @Transactional
+    public void updateIfBlocked(Person p){
+        String title = "Įvyko išoriniai pasikeitimai";
+        String text;
+        try {
+            text = "Vartotojas " + p.getFirstName() +" "+p.getLastName();
+            if (p.isBlocked() == true){
+                text += " sėkmingai užblokuotas";
+            }
+            else {
+                text += " sėkmingai atblokuotas";
+            }
+            personDao.updateAndFlush(p);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successful",  text) );
+            reloadAll();
+        }
+        catch (OptimisticLockException ole) {
+            conflictingPerson = personDao.findById(p.getPersonID());
+            if (p.isBlocked() == conflictingPerson.isBlocked()){
+                text = "Vartotojas " + p.getFirstName() +" "+p.getLastName() +" jau buvo prieš tai ";
+                if (p.isBlocked()==true) text += "užblokuotas";
+                    else text += "atblokuotas";
+                reloadAll();
+                return;
+            } else{
+                conflictingPerson.setBlocked(p.isBlocked());
+                self.updateUserType(conflictingPerson);
+                return;
+            }
+        }
     }
 
 
