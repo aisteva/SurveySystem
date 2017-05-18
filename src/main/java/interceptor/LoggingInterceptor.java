@@ -1,7 +1,7 @@
 package interceptor;
 
 import lombok.extern.slf4j.Slf4j;
-import userModule.SignInController;
+import userModule.SignInPerson;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -24,7 +24,7 @@ public class LoggingInterceptor implements Serializable {
 
 
     @Inject
-    private SignInController signedPerson;
+    private SignInPerson signedPerson;
 
     private String userEmail;
     private String userType;
@@ -36,6 +36,7 @@ public class LoggingInterceptor implements Serializable {
     @AroundInvoke
     public Object logMethodEntry(InvocationContext ctx) throws Exception {
 
+        //tikrinama, ar vartotojas yra prisijungęs, ar neprisijungęs
         if(signedPerson == null){
                 userEmail = "not Signed";;
                 userType = "not Signed";
@@ -57,6 +58,7 @@ public class LoggingInterceptor implements Serializable {
             fw = new FileWriter("logOutput.txt", true);
             pw = new PrintWriter(fw);
 
+            //surašoma reikiama informacija į log file
             pw.println(formatedDate.format(dateNow)+
                     ", USER: "+ userEmail +
                     ", USER TYPE: "+ userType +
@@ -70,8 +72,5 @@ public class LoggingInterceptor implements Serializable {
             log.info("Irasymas i faila nepavyko: " + ex.toString());
             return null;
         }
-
-
-
     }
 }

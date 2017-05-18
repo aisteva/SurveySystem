@@ -2,11 +2,12 @@ package userModule;
 
 import dao.PersonDAO;
 import entitiesJPA.Person;
+import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.Setter;
 import services.PasswordHash;
 
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -20,11 +21,12 @@ import java.util.Arrays;
  * Created by Lenovo on 2017-04-06.
  */
 @Named
-@SessionScoped
+@RequestScoped
+@LogInterceptor
 public class SignInController implements Serializable {
-    @Getter
-    @Setter
-    private Person loggedInPerson =  null;
+
+    @Inject
+    SignInPerson signInPerson;
 
     @Getter @Setter String expectedEmail = null;
     @Getter @Setter String expectedPassword = null;
@@ -40,7 +42,7 @@ public class SignInController implements Serializable {
         if (expectedEmail == "" || expectedPassword == "") {
             FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
                     new FacesMessage("Įveskite el. paštą ir slaptažodį"));
-            loggedInPerson = null;
+            signInPerson.setLoggedInPerson(null);
             return null;
         }
         //tikrinam, ar toks email yra duomenų bazėj ir ar teisingas password
@@ -48,15 +50,16 @@ public class SignInController implements Serializable {
         {
             FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
                     new FacesMessage("Neteisingas el.paštas arba slaptažodis"));
-            loggedInPerson = null;
+            signInPerson.setLoggedInPerson(null);
             return null;
         }
         //tikrinam, ar vartotojas nėra užblokuotas
-        else if (loggedInPerson.isBlocked())
+        else if (signInPerson.getLoggedInPerson().isBlocked())
         {
             FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
                     new FacesMessage("Vartotojas užblokuotas"));
-            loggedInPerson = null;
+            //loggedInPerson = null;
+            signInPerson.setLoggedInPerson(null);
             return null;
         }
         //jei viskas ok, išvalom laukus ir parodom index.html
@@ -77,7 +80,7 @@ public class SignInController implements Serializable {
         }
         else
         {
-            loggedInPerson = p;
+            signInPerson.setLoggedInPerson(p);
             return true;
         }
     }
@@ -87,7 +90,7 @@ public class SignInController implements Serializable {
         byte[] byteHashedPasswordAndSalt = new byte[0];
         try
         {
-            byteHashedPasswordAndSalt = ph.base64Decode(loggedInPerson.getPassword());
+            byteHashedPasswordAndSalt = ph.base64Decode(signInPerson.getLoggedInPerson().getPassword());
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -101,33 +104,33 @@ public class SignInController implements Serializable {
         }
         else
         {
-            loggedInPerson = null;
+            signInPerson.setLoggedInPerson(null);
             return false;
         }
     }
 
     public String signOut() {
-        loggedInPerson = null;
+        signInPerson.setLoggedInPerson(null);
         return "/signin/signin?faces-redirect=true";
     }
 
 
     public String getPersonFullName(){
-        return loggedInPerson.getFirstName() + " " + loggedInPerson.getLastName();
+        return signInPerson.getLoggedInPerson().getFirstName() + " " + signInPerson.getLoggedInPerson().getLastName();
     }
 
     public void reload() {
-        loggedInPerson = personDAO.findById(loggedInPerson.getPersonID());
+        signInPerson.setLoggedInPerson(personDAO.findById(signInPerson.getLoggedInPerson().getPersonID()));
     }
     public String isSigned() {
-        if (loggedInPerson == null)
+        if (signInPerson.getLoggedInPerson() == null)
             return "/signin/signin.xhtml";
         reload();
         return null;
     }
 
     public void validate(FacesContext context, UIComponent component, Object object) {
-        if(loggedInPerson.getFirstName() != "null" )
+        if(signInPerson.getLoggedInPerson().getFirstName() != "null" )
         {
             context.responseComplete();
         }
@@ -140,8 +143,8 @@ public class SignInController implements Serializable {
     }
 
     public boolean isAdmin(){
-        if (loggedInPerson == null) return false;
-        if (loggedInPerson.getUserType().equals(Person.USER_TYPE.ADMIN.toString())){
+        if (signInPerson.getLoggedInPerson() == null) return false;
+        if (signInPerson.getLoggedInPerson().getUserType().equals(Person.USER_TYPE.ADMIN.toString())){
             return true;
         }
         return false;

@@ -6,6 +6,7 @@ import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import userModule.SignInController;
+import userModule.SignInPerson;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
@@ -28,6 +29,9 @@ public class IndexController implements Serializable {
     SurveyDAO surveyDao;
 
     @Inject
+    private SignInPerson signInPerson;
+
+    @Inject
     private SignInController signInController;
 
     @Getter
@@ -41,7 +45,7 @@ public class IndexController implements Serializable {
 
     @PostConstruct
     public void load() {
-        personSurveys = signInController.getLoggedInPerson().getSurveyList();
+        personSurveys = signInPerson.getLoggedInPerson().getSurveyList();
         publicSurveys = surveyDao.getAllSurveysByPrivate(false);
         publicSurveys.stream().filter(p -> !personSurveys.contains(p));
         if (signInController.isAdmin()) {

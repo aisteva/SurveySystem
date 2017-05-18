@@ -17,7 +17,7 @@
             </div>
             <div class="action-with-survey">
                 <div class="col-lg-1 col-lg-offset-10 col-md-1 col-md-offset-10 col-sm-1 col-sm-offset-10 col-xs-1 col-xs-offset-10">
-                    <h:panelGroup rendered="#{survey.personID.personID == signInController.loggedInPerson.personID || signInController.loggedInPerson.userType == 'ADMIN'}">
+                    <h:panelGroup rendered="#{survey.personID.personID == signInPerson.loggedInPerson.personID || signInPerson.loggedInPerson.userType == 'ADMIN'}">
                         <h:link outcome="/create/createForm.html?id=#{survey.surveyID}">
                             <div class="glyphicon glyphicon-pencil"></div>
                         </h:link>

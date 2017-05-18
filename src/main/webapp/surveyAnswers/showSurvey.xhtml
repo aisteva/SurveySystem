@@ -16,7 +16,7 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
 </h:head>
 <f:metadata>
-    <f:viewParam name="person" value="#{signInController.loggedInPerson.personID}" />
+    <f:viewParam name="person" value="#{signInPerson.loggedInPerson.personID}" />
     <f:viewAction action="#{signInController.isSigned}" />
     <o:viewParam name="id" required="true" value="#{saveAnswersController.survey.surveyURL}"
                  validator="#{saveAnswersController.validate}">

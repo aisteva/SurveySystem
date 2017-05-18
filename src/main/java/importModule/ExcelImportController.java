@@ -10,7 +10,7 @@ import org.omnifaces.util.Messages;
 import org.primefaces.event.FileUploadEvent;
 import services.SaltGenerator;
 import services.excel.Importable;
-import userModule.SignInController;
+import userModule.SignInPerson;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -41,7 +41,7 @@ public class ExcelImportController implements Serializable
     SurveyDAO surveyDao;
 
     @Inject
-    SignInController signInController;
+    SignInPerson signInPerson;
 
     private File excelFile;
 
@@ -123,7 +123,7 @@ public class ExcelImportController implements Serializable
     @Transactional
     public String finishImport()
     {
-        importedSurvey.setPersonID(signInController.getLoggedInPerson());
+        importedSurvey.setPersonID(signInPerson.getLoggedInPerson());
         importedSurvey.setStartDate(new Date());
         importedSurvey.setCreated(true);
         importedSurvey.setSurveyURL(sg.getRandomString(8));
