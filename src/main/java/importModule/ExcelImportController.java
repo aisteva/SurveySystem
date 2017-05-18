@@ -1,4 +1,4 @@
-package importExportModule;
+package importModule;
 
 import dao.SurveyDAO;
 import entitiesJPA.Survey;
