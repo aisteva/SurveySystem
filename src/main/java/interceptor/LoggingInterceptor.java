@@ -29,7 +29,6 @@ public class LoggingInterceptor implements Serializable {
     private String userEmail;
     private String userType;
 
-
     private static final long serialVersionUID = 813L;
     Date dateNow = new Date( );
     SimpleDateFormat formatedDate = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss a");
