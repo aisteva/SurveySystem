@@ -61,12 +61,12 @@ public class AdminController implements Serializable {
         pendingPersons.removeIf(p -> p.getPassword() != null);
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void updateUserType(Person p){
         updateUserType(p, false);
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void updateUserType(Person p, boolean isPending){
         String title = "Įvyko išoriniai pasikeitimai";
         String text;
@@ -87,14 +87,16 @@ public class AdminController implements Serializable {
             if (conflictingPerson.getUserType().equals(p.getUserType())){
                 if (isPending) text = "Būsimo vartotojo " + p.getEmail() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
                           else text = "Vartotojo " + p.getFirstName() +" "+p.getLastName() + " tipas jau buvo prieš tai pakeistas į " + p.getUserType() +"!";
+                reloadAll();
                 updateAndShowDialog(title, text);
+                return;
             }
             else {
                 conflictingPerson.setUserType(p.getUserType());
-                self.updateUserType(conflictingPerson);
+                self.updateUserType(conflictingPerson, false);
+                reloadAll();
                 return;
             }
-            reloadAll();
         }
     }
 
@@ -141,7 +143,7 @@ public class AdminController implements Serializable {
         reloadAll();
     }
 
-    @Transactional
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void updateIfBlocked(Person p){
         String title = "Įvyko išoriniai pasikeitimai";
         String text;
@@ -164,10 +166,12 @@ public class AdminController implements Serializable {
                 if (p.isBlocked()==true) text += "užblokuotas";
                     else text += "atblokuotas";
                 reloadAll();
+                updateAndShowDialog(title, text);
                 return;
             } else{
                 conflictingPerson.setBlocked(p.isBlocked());
                 self.updateUserType(conflictingPerson);
+                reloadAll();
                 return;
             }
         }
