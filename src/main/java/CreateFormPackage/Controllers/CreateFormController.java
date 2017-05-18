@@ -148,7 +148,7 @@ public class CreateFormController implements Serializable {
 
     @Transactional
     public String createForm(final String personEmail) {
-        //Mergin scale offeredAnswer
+        //Merging scale offeredAnswer
         if (!surveyIsCorrect()) return null; //TODO: pagal įdėją turėtų būti kažkokie messagai jei blogai.
         Person person = personDAO.FindPersonByEmail(personEmail);
         survey.setPersonID(person);
@@ -174,12 +174,22 @@ public class CreateFormController implements Serializable {
                 return false;
             }
             for (OfferedAnswer o : q.getOfferedAnswerList()){
+                if (o.getQuestionID().getType().equals(Question.QUESTION_TYPE.TEXT.toString()))
+                    continue;
                 if (o.getText() == null || o.getText().isEmpty()){
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    public void previousQuestion(Question q){
+    //    q.setType("TEXT");
+    }
+
+    public void changeQuestionType(Question question){
+//        question.setType("TEXT");
     }
 
 }
