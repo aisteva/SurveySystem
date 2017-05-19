@@ -71,6 +71,6 @@ public class Question implements Serializable {
     };
 
     @Transient
-    private QUESTION_TYPE questionType;
+    private String newType;
 
 }

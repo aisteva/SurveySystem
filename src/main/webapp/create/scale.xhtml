@@ -6,13 +6,10 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:c="http://java.sun.com/jsp/jstl/core">
-        #{createFormController.removeAllOfferedAnswers(questionStatus.index)}
-        #{createFormController.addOfferedAnswer(questionStatus.index)}
-        #{createFormController.addOfferedAnswer(questionStatus.index)}
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5 text-center">
             <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}" a:placeholder="Nuo" decimalPlaces="0" thousandSeparator="">
-                <f:ajax render="@form"/>
+                <f:ajax update="@form" render="@none"/>
             </p:inputNumber>
         </div>
         <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
@@ -20,7 +17,7 @@
         </div>
         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
             <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(1).text}" a:placeholder="Iki" decimalPlaces="0" thousandSeparator="" minValue="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}">
-                <f:ajax render="@form"/>
+                <f:ajax update="@form" render="@none"/>
             </p:inputNumber>
         </div>
     </div>

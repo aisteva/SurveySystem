@@ -11,7 +11,7 @@
     <title>Apklausa sukurta</title>
 </h:head>
 <f:metadata>
-    <f:viewParam name="person" value="#{signInController.loggedInPerson}" />
+    <f:viewParam name="person" value="#{signInPerson.loggedInPerson}" />
     <f:viewAction action="#{signInController.isSigned}" />
     <f:viewParam name="id" required="true" value="#{createFormController.survey.surveyURL}"/>
 </f:metadata>

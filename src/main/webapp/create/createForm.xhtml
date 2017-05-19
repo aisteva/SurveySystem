@@ -83,7 +83,6 @@
                     <h:panelGroup id="survey" >
                         <ui:repeat  value="#{createFormController.getQuestions()}" var="question" varStatus="questionStatus">
                             <div class="one-question">
-                                #{question.setQuestionNumber(questionStatus.index)}
                                 <div class="row question-info">
                                     <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
                                         <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
@@ -92,9 +91,9 @@
                                         </h:inputText>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 text-right push-down">
-                                        <h:selectOneMenu value="#{question.type}" styleClass="onlyBottomBorder">
+                                        <h:selectOneMenu value="#{question.newType}" styleClass="onlyBottomBorder">
                                             <f:selectItems value = "#{question.types}"/>
-                                            <f:ajax render="@form"/>
+                                            <f:ajax listener="#{createFormController.changeQuestionType(questionStatus.index)}" render="@form"/>
                                         </h:selectOneMenu>
                                     </div>
                                 </div>
@@ -160,7 +159,7 @@
                         <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
                             <p:commandButton value="Submit form"
                                              styleClass="btn btn-md btn-primary"
-                                             action="#{createFormController.createForm(signInController.loggedInPerson.email)}"
+                                             action="#{createFormController.createForm(signInPerson.loggedInPerson.email)}"
                                              ajax="false"/>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-right">

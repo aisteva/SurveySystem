@@ -14,7 +14,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +46,10 @@ public class CreateFormController implements Serializable {
     private SurveyDAO surveyDAO;
 
     public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
-        return survey.getQuestionList().get(questionIndex).getOfferedAnswerList();
+        return survey.getQuestionList().stream().
+                filter(x -> x.getPage() == page).
+                collect(Collectors.toList()).
+                get(questionIndex).getOfferedAnswerList();
     }
 
     public List<Question> getQuestions() {
@@ -51,6 +57,7 @@ public class CreateFormController implements Serializable {
             addQuestion(-1);
         return survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList());
     }
+
     public void nextPage(){
         page += 1;
     }
@@ -65,17 +72,16 @@ public class CreateFormController implements Serializable {
         Question question = new Question();
         question.setSurveyID(survey);
         question.setType(Question.QUESTION_TYPE.TEXT.toString());
-        question.setQuestionNumber(questionIndex + 2);    // current (clicked) question index + next question (1) + 1
+        question.setNewType(Question.QUESTION_TYPE.TEXT.toString());
+        question.setQuestionNumber(questionIndex + 1);    // current (clicked) question index + next question
         question.setPage(page);
-        survey.getQuestionList().add(questionIndex + 1, question);
-        addOfferedAnswer(questionIndex + 1);
+        survey.getQuestionList().add(questionIndex+1, question);
+        addOfferedAnswer(questionIndex+1);
     }
 
     public void addChildQuestion(final int offeredAnswerIndex, final int questionIndex) {
-        Question question = new Question();
-        question.setSurveyID(survey);
-        question.setQuestionNumber(questionIndex + 2);    // current (clicked) question index + next question (1) + 1
-        question.setPage(page);
+        addQuestion(questionIndex);
+        Question question = survey.getQuestionList().get(questionIndex+1);
 
         AnswerConnection answerConnection = new AnswerConnection();
         question.getAnswerConnectionList().add(answerConnection);
@@ -83,9 +89,6 @@ public class CreateFormController implements Serializable {
         OfferedAnswer parentOfferedAnswer = getOfferedAnswers(questionIndex).get(offeredAnswerIndex);
         parentOfferedAnswer.getAnswerConnectionList().add(answerConnection);
         answerConnection.setOfferedAnswerID(parentOfferedAnswer);
-
-        survey.getQuestionList().add(questionIndex + 1, question);
-        addOfferedAnswer(questionIndex + 1);
     }
 
     public void removeAnswer(int questionIndex, final int answerIndex){
@@ -159,11 +162,15 @@ public class CreateFormController implements Serializable {
     }
 
     private boolean surveyIsCorrect(){
-        if (survey.getStartDate() == null || survey.getEndDate() == null){
-            return false;
+        if (survey.getStartDate() == null){
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Date date = new Date();
+            System.out.println(dateFormat.format(date));
+            survey.setStartDate(date);
         }
         for (Question q : survey.getQuestionList()){
-            if (q.getType().equals(Question.QUESTION_TYPE.SCALE)){
+            q.setQuestionNumber(q.getQuestionNumber()+1);
+            if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){
                 OfferedAnswer offeredAnswer = new OfferedAnswer();
                 offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
                 q.getOfferedAnswerList().clear();
@@ -184,12 +191,31 @@ public class CreateFormController implements Serializable {
         return true;
     }
 
-    public void previousQuestion(Question q){
-    //    q.setType("TEXT");
-    }
-
-    public void changeQuestionType(Question question){
-//        question.setType("TEXT");
+    public void changeQuestionType(final int questionIndex){
+        Question question = survey.getQuestionList().get(questionIndex);
+        if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())){ //If was text
+            if (question.getNewType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
+                addOfferedAnswer(questionIndex);
+            }
+        }
+        else if (question.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString()) //If was checkbox or multiple
+                || question.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())){
+            if (question.getNewType().equals(Question.QUESTION_TYPE.TEXT.toString())) {
+                removeAllOfferedAnswers(questionIndex);
+                addOfferedAnswer(questionIndex);
+            }
+            else if (question.getNewType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
+                removeAllOfferedAnswers(questionIndex);
+                addOfferedAnswer(questionIndex);
+                addOfferedAnswer(questionIndex);
+            }
+        }
+        else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ //If was scale
+            removeAllOfferedAnswers(questionIndex);
+            addOfferedAnswer(questionIndex);
+            addOfferedAnswer(questionIndex);
+        }
+        question.setType(question.getNewType());
     }
 
 }

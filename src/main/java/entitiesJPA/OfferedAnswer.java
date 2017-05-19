@@ -34,7 +34,7 @@ public class OfferedAnswer implements Serializable {
     private Long offeredAnswerID;
     @Basic(optional = false)
     @Column(name = "Text")
-    private String text;
+    private String text="";
     @JoinColumn(name = "QuestionID", referencedColumnName = "QuestionID")
     @ManyToOne(optional = false)
     private Question questionID;
