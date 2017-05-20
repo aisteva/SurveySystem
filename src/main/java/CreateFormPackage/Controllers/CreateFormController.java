@@ -16,16 +16,11 @@ import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Created by vdeiv on 2017-04-07.
  */
-//@Model // tas pats kaip: @Named ir @RequestScoped
-//@Slf4j
 @ManagedBean
 @ViewScoped
 @Getter
@@ -41,94 +36,120 @@ public class CreateFormController implements Serializable {
 
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private SurveyDAO surveyDAO;
 
-    public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
-        return survey.getQuestionList().stream().
-                filter(x -> x.getPage() == page).
-                collect(Collectors.toList()).
-                get(questionIndex).getOfferedAnswerList();
+    @Getter
+    private Map<Integer, List<Question>> questions = new HashMap<>();
+
+    public CreateFormController(){
+        questions.put(1, new ArrayList<>());
+        addQuestion(-1);
     }
 
-    public List<Question> getQuestions() {
-        if (survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList()).size() == 0)
-            addQuestion(-1);
-        return survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList());
+    public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
+        return questions.get(page).get(questionIndex).getOfferedAnswerList();
     }
 
     public void nextPage(){
         page += 1;
+        if (!questions.containsKey(page)){
+            questions.put(page, new ArrayList<>());
+            addQuestion(-1);
+        }
     }
-    public void prevPage(){
+
+    public void prevPage() {
         page -= 1;
     }
+
     public void removeQuestion(final int questionIndex) {
-        survey.getQuestionList().remove(questionIndex);
+        questions.get(page).remove(questionIndex);
     }
 
-    public void addQuestion(final int questionIndex) {
+    public void addQuestion(final int prevQuestionIndex) {
         Question question = new Question();
         question.setSurveyID(survey);
-        question.setType(Question.QUESTION_TYPE.TEXT.toString());
-        question.setNewType(Question.QUESTION_TYPE.TEXT.toString());
-        question.setQuestionNumber(questionIndex + 1);    // current (clicked) question index + next question
+        String type = Question.QUESTION_TYPE.TEXT.toString();
+        if (prevQuestionIndex >= 0) {
+            type = questions.get(page).get(prevQuestionIndex).getType();
+        };
+        question.setType(type);
+        question.setNewType(type);
+        question.setQuestionNumber(prevQuestionIndex + 1 + 1);  // (clicked) question index + starts with 1 + next question
         question.setPage(page);
-        survey.getQuestionList().add(questionIndex+1, question);
-        addOfferedAnswer(questionIndex+1);
+        questions.get(page).add(prevQuestionIndex+1, question);
+        addOfferedAnswer(prevQuestionIndex+1);
     }
 
-    public void addChildQuestion(final int offeredAnswerIndex, final int questionIndex) {
-        addQuestion(questionIndex);
-        Question question = survey.getQuestionList().get(questionIndex+1);
+    public void addChildQuestion(final int offeredAnswerIndex, final int prevQuestionIndex) {
+        addQuestion(prevQuestionIndex);
+        Question question = questions.get(page).get(prevQuestionIndex+1);
 
         AnswerConnection answerConnection = new AnswerConnection();
         question.getAnswerConnectionList().add(answerConnection);
         answerConnection.setQuestionID(question);
-        OfferedAnswer parentOfferedAnswer = getOfferedAnswers(questionIndex).get(offeredAnswerIndex);
+        OfferedAnswer parentOfferedAnswer = getOfferedAnswers(prevQuestionIndex).get(offeredAnswerIndex);
         parentOfferedAnswer.getAnswerConnectionList().add(answerConnection);
         answerConnection.setOfferedAnswerID(parentOfferedAnswer);
     }
 
     public void removeAnswer(int questionIndex, final int answerIndex){
-        OfferedAnswer offeredAnswer = survey.getQuestionList().get(questionIndex).getOfferedAnswerList().get(answerIndex);
-        for (AnswerConnection answerConnection : offeredAnswer.getAnswerConnectionList()){
-            answerConnection.getQuestionID().getAnswerConnectionList().remove(answerConnection); // Deletes from question answerconnections
+        if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 1) {
+            OfferedAnswer offeredAnswer = questions.get(page).get(questionIndex).getOfferedAnswerList().get(answerIndex);
+            for (AnswerConnection answerConnection : offeredAnswer.getAnswerConnectionList()) {
+                answerConnection.getQuestionID().getAnswerConnectionList().remove(answerConnection); // Deletes from question answerconnections
+            }
+            questions.get(page).get(questionIndex).getOfferedAnswerList().remove(offeredAnswer);
         }
-        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().remove(offeredAnswer);
     }
 
     public void addOfferedAnswer(final int questionIndex) {
         OfferedAnswer offeredAnswer = new OfferedAnswer();
-        Question question = survey.getQuestionList().get(questionIndex);
+        Question question = questions.get(page).get(questionIndex);
 
         offeredAnswer.setQuestionID(question);
         question.getOfferedAnswerList().add(offeredAnswer);
     }
 
     public void removeAllOfferedAnswers(final int questionIndex) {
-        survey.getQuestionList().get(questionIndex).getOfferedAnswerList().clear();
+        questions.get(page).get(questionIndex).getOfferedAnswerList().clear();
     }
 
     public void moveQuestionUp(final int questionIndex) {
         if (questionIndex != 0) {
-            survey.getQuestionList().get(questionIndex).setQuestionNumber(questionIndex - 1);
-            survey.getQuestionList().get(questionIndex - 1).setQuestionNumber(questionIndex);
-            Collections.swap(survey.getQuestionList(), questionIndex, questionIndex - 1);
+            if (questions.get(page).get(questionIndex).getAnswerConnectionList().size() > 0 &&
+                    questions.get(page).get(questionIndex).getAnswerConnectionList().get(0) // Can't be higher than parent question
+                    .getOfferedAnswerID().getQuestionID().getQuestionNumber()-1 >= questionIndex-1) {
+                return;
+            }
+            questions.get(page).get(questionIndex).setQuestionNumber(questionIndex - 1+1);
+            questions.get(page).get(questionIndex - 1).setQuestionNumber(questionIndex+1);
+            Collections.swap(questions.get(page), questionIndex, questionIndex - 1);
         }
     }
     public void moveQuestionDown(final int questionIndex) {
-        if (questionIndex != survey.getQuestionList().size()-1){
-            survey.getQuestionList().get(questionIndex).setQuestionNumber(questionIndex + 1);
-            survey.getQuestionList().get(questionIndex + 1).setQuestionNumber(questionIndex);
-            Collections.swap(survey.getQuestionList(), questionIndex, questionIndex+1);
+        if (questionIndex != questions.get(page).size()-1){
+            if (questions.get(page).get(questionIndex).getOfferedAnswerList().size()> 0){
+                for (OfferedAnswer oa : questions.get(page).get(questionIndex).getOfferedAnswerList()) {
+                    if (oa.getAnswerConnectionList().size() > 0) {
+                        for (AnswerConnection ac : oa.getAnswerConnectionList()) {
+                            if (questionIndex + 1 >= ac.getQuestionID().getQuestionNumber() - 1) {
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            questions.get(page).get(questionIndex).setQuestionNumber(questionIndex + 1 + 1);
+            questions.get(page).get(questionIndex + 1).setQuestionNumber(questionIndex + 1);
+            Collections.swap(questions.get(page), questionIndex, questionIndex+1);
         }
     }
 
     public String getQuestionParentMessage(final int questionIndex){
-        if (questionIndex != survey.getQuestionList().size()) {
-            Question question = survey.getQuestionList().get(questionIndex);
+        if (questionIndex != questions.get(page).size()) {
+            Question question = questions.get(page).get(questionIndex);
             if (question.getAnswerConnectionList().size() > 0){
                 return "Jeigu prieš tai buvo atsakyta "+ question.getAnswerConnectionList().get(0).getOfferedAnswerID().getText();
             }else{
@@ -142,7 +163,13 @@ public class CreateFormController implements Serializable {
         //surandam apklausą pagal url
         try {
             survey = surveyDAO.getSurveyById((Long) object);
-
+            questions.clear();
+            for (Question q : survey.getQuestionList()){
+                if (!questions.containsKey(q.getPage())){
+                    questions.put(q.getPage(), new ArrayList<>());
+                }
+                questions.get(q.getPage()).add(q.getQuestionNumber()-1, q);
+            }
         } catch (Exception e) {
             context.getExternalContext().setResponseStatus(404);
             context.responseComplete();
@@ -158,7 +185,7 @@ public class CreateFormController implements Serializable {
         survey.setSurveyURL(sg.getRandomString(8));
         person.getSurveyList().add(survey);
         personDAO.UpdateUser(person);
-        return "/create/formCreated.xhtml?id="+survey.getSurveyURL(); //TODO: not sure if correct navigation
+        return "/create/formCreated.xhtml?faces-redirect=true&id="+survey.getSurveyURL(); //TODO: not sure if correct navigation
     }
 
     private boolean surveyIsCorrect(){
@@ -168,31 +195,38 @@ public class CreateFormController implements Serializable {
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
         }
-        for (Question q : survey.getQuestionList()){
-            q.setQuestionNumber(q.getQuestionNumber()+1);
-            if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){
-                OfferedAnswer offeredAnswer = new OfferedAnswer();
-                offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
-                q.getOfferedAnswerList().clear();
-                offeredAnswer.setQuestionID(q);
-                q.getOfferedAnswerList().add(offeredAnswer);
-            }
-            if (q.getQuestionText() == null || q.getQuestionText().isEmpty()){
-                return false;
-            }
-            for (OfferedAnswer o : q.getOfferedAnswerList()){
-                if (o.getQuestionID().getType().equals(Question.QUESTION_TYPE.TEXT.toString()))
-                    continue;
-                if (o.getText() == null || o.getText().isEmpty()){
+        boolean isZeroQuestions = true;
+        survey.getQuestionList().clear();
+        for (Integer page : questions.keySet()) {
+            List<Question> lst = questions.get(page);
+            for (Question q : lst){
+                isZeroQuestions = false;
+                if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){
+                    OfferedAnswer offeredAnswer = new OfferedAnswer();
+                    offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
+                    offeredAnswer.setQuestionID(q);
+                    q.getOfferedAnswerList().clear();
+                    q.getOfferedAnswerList().add(offeredAnswer);
+                }
+                if (q.getQuestionText() == null || q.getQuestionText().isEmpty()){
                     return false;
                 }
+                for (OfferedAnswer o : q.getOfferedAnswerList()){
+                    if (o.getQuestionID().getType().equals(Question.QUESTION_TYPE.TEXT.toString()))
+                        continue;
+                    if (o.getText() == null || o.getText().isEmpty()){
+                        return false;
+                    }
+                }
             }
+            if (isZeroQuestions) return false;
+            survey.getQuestionList().addAll(lst);
         }
         return true;
     }
 
     public void changeQuestionType(final int questionIndex){
-        Question question = survey.getQuestionList().get(questionIndex);
+        Question question = questions.get(page).get(questionIndex);
         if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())){ //If was text
             if (question.getNewType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
                 addOfferedAnswer(questionIndex);
@@ -212,7 +246,6 @@ public class CreateFormController implements Serializable {
         }
         else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ //If was scale
             removeAllOfferedAnswers(questionIndex);
-            addOfferedAnswer(questionIndex);
             addOfferedAnswer(questionIndex);
         }
         question.setType(question.getNewType());

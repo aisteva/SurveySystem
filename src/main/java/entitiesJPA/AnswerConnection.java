@@ -30,9 +30,9 @@ public class AnswerConnection implements Serializable {
     @Column(name = "AnswerConnectionID")
     private Long answerConnectionID;
     @JoinColumn(name = "QuestionID", referencedColumnName = "QuestionID")
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Question questionID;
     @JoinColumn(name = "OfferedAnswerID", referencedColumnName = "OfferedAnswerID")
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private OfferedAnswer offeredAnswerID;
 }

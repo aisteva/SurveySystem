@@ -40,7 +40,7 @@ public class OfferedAnswer implements Serializable {
     private Question questionID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
     private List<Answer> answerList = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
     private List<AnswerConnection> answerConnectionList = new ArrayList<>();
 
     //excel importui - su duomenų baze nesusiję

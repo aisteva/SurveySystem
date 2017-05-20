@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <h:panelGroup id="survey" >
-                        <ui:repeat  value="#{createFormController.getQuestions()}" var="question" varStatus="questionStatus">
+                        <ui:repeat  value="#{createFormController.questions.get(createFormController.page)}" var="question" varStatus="questionStatus">
                             <div class="one-question">
                                 <div class="row question-info">
                                     <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
