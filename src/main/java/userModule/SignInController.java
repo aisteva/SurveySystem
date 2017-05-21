@@ -123,7 +123,7 @@ public class SignInController implements Serializable {
         signInPerson.setLoggedInPerson(personDAO.findById(signInPerson.getLoggedInPerson().getPersonID()));
     }
     public String isSigned() {
-        if (signInPerson.getLoggedInPerson() == null)
+        if (signInPerson.getLoggedInPerson() == null || signInPerson.getLoggedInPerson().isBlocked())
             return "/signin/signin.xhtml";
         reload();
         return null;
