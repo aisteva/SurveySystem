@@ -24,7 +24,7 @@ import java.util.Date;
 @Named
 @javax.faces.view.ViewScoped
 @LogInterceptor
-public class SetUserPasswordController implements Serializable
+public class SetPasswordByLinkController implements Serializable
 {
     @Inject private PersonDAO personDAO;
     @Getter @Setter Person person = new Person();
@@ -125,29 +125,13 @@ public class SetUserPasswordController implements Serializable
 
     public String finishRegistration()
     {
-        person.setPassword(hashPassword());
+        person.setPassword(ph.hashPassword(unhashedPassword));
         person.setInviteExpiration(null);
         personDAO.UpdateUser(person);
         return "/signin/signin.xhtml?faces-redirect=true";
     }
 
-    private String hashPassword()
-    {
-        byte[] salt = sg.generateSalt(32);
-        byte[] hashedPass;
-        hashedPass = ph.generatePasswordHashWithSalt(unhashedPassword, salt);
-        return (ph.base64Encode(concat(salt, hashedPass)));
 
-    }
-
-    private byte[] concat(byte[] a, byte[] b) {
-        int aLen = a.length;
-        int bLen = b.length;
-        byte[] c= new byte[aLen+bLen];
-        System.arraycopy(a, 0, c, 0, aLen);
-        System.arraycopy(b, 0, c, aLen, bLen);
-        return c;
-    }
 
     //Funkcija HTTP 400 Error kvietimui
     private void set400(FacesContext context, String message)

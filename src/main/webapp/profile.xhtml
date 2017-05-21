@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+
+   <h:outputStylesheet name="/css/bootstrap.css"/>
+   <h:outputScript name="/js/jquery-3.2.1.min.js"/>
+   <h:outputScript name="/js/bootstrap.min.js"/>
+   <h:outputStylesheet name="/css/signup/style.css"/>
+   <h:head>
+       <title>Paskyra</title>
+       <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
+   </h:head>
+   <f:metadata>
+      <f:viewAction action="#{signInController.isSigned}" />
+   </f:metadata>
+   <h:body>
+       <ui:include src="/header.xhtml"/>
+      <div class="container">
+         <h:form id="profile-form">
+            <div class="row">
+               <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                     <h:inputText a:placeholder="Vardas" id="firstname" value="#{profileController.signInPerson.loggedInPerson.firstName}"/>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                     <h:inputText a:placeholder="Pavardė" id="lastname" value="#{profileController.signInPerson.loggedInPerson.lastName}"/>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                     <p:password a:placeholder="Naujas slaptažodis"
+                                 id="pass"
+                                 value="#{profileController.unhashedPassword}"
+                                 redisplay="true"
+                                 match="confirmPass"
+                                 validatorMessage="Slaptažodžiai nesutampa"/>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                     <p:password a:placeholder="Pakartoti slaptažodį"
+                                 id="confirmPass"
+                                 value="#{profileController.confirmPassword}"
+                                 redisplay="true"
+                                 validatorMessage="Slaptažodyje turi būti bent 6 simboliai, bent viena mažoji raidė,
+                                            didžioji raidė, skaičius ">
+                        <f:validateRegex pattern="^$|((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,})" />
+                     </p:password>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                      <!-- TODO: pridėtas h:messages, reikia stilių pritaikyti.
+                            h:messages rodo bullet point, turbūt šito nereikia, ir confirm-message reik spalvą pakeist
+                             -->
+                     <div><h:messages id="profile-confirm-message" styleClass="confirm-message" globalOnly="true"/></div>
+                     <div><h:message for="firstname" styleClass="error-message"/></div>
+                     <div><h:message for="lastname" styleClass="error-message"/></div>
+                     <div><h:message for="pass" styleClass="error-message"/></div>
+                     <div><h:message for="confirmPass" styleClass="error-message"/></div>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                     <h:commandButton value="Atnaujinti paskyrą"
+                                      action="#{profileController.updateProfile()}"
+                                      styleClass="btn btn-primary btn-lg text-center"/>
+                  </div>
+               </div>
+            </div>
+         </h:form>
+      </div>
+      <ui:include src="/footer.xhtml"/>
+   </h:body>
+</html>

@@ -18,8 +18,8 @@
         <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     </h:head>
     <f:metadata>
-        <o:viewParam name="id" value="#{setUserPasswordController.person.inviteUrl}"
-                    validator="#{setUserPasswordController.validateInvitationLink}"
+        <o:viewParam name="id" value="#{setPasswordByLinkController.person.inviteUrl}"
+                    validator="#{setPasswordByLinkController.validateInvitationLink}"
                     required="true">
             <o:viewParamValidationFailed sendError="400" message="Neteisingas URL" />
         </o:viewParam>
@@ -30,18 +30,18 @@
                 <div class="row">
                     <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <h:inputText a:placeholder="Vardas" id="firstname" value="#{setUserPasswordController.person.firstName}" required="true" requiredMessage="Įveskite vardą"/>
+                            <h:inputText a:placeholder="Vardas" id="firstname" value="#{setPasswordByLinkController.person.firstName}" required="true" requiredMessage="Įveskite vardą"/>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <h:inputText a:placeholder="Pavardė" id="lastname" value="#{setUserPasswordController.person.lastName}" required="true" requiredMessage="Įveskite pavardę"/>
+                            <h:inputText a:placeholder="Pavardė" id="lastname" value="#{setPasswordByLinkController.person.lastName}" required="true" requiredMessage="Įveskite pavardę"/>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h:inputText id="email" value="#{setUserPasswordController.person.email}" required="true" readonly="true"/>
+                            <h:inputText id="email" value="#{setPasswordByLinkController.person.email}" required="true" readonly="true"/>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:password a:placeholder="Slaptažodis"
                                         id="pass"
-                                        value="#{setUserPasswordController.unhashedPassword}"
+                                        value="#{setPasswordByLinkController.unhashedPassword}"
                                         required="true"
                                         requiredMessage="Įveskite slaptažodį"
                                         redisplay="true"
@@ -51,7 +51,7 @@
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <p:password a:placeholder="Pakartoti slaptažodį"
                                         id="confirmPass"
-                                        value="#{setUserPasswordController.confirmPassword}"
+                                        value="#{setPasswordByLinkController.confirmPassword}"
                                         required="true"
                                         redisplay="true"
                                         requiredMessage="Įveskite slaptažodį"
@@ -68,7 +68,7 @@
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <h:commandButton value="Registruotis"
-                                             action="#{setUserPasswordController.finishRegistration()}"
+                                             action="#{setPasswordByLinkController.finishRegistration()}"
                                              styleClass="btn btn-primary btn-lg text-center"/>
                         </div>
                     </div>

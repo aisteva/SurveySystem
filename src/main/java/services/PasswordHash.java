@@ -18,6 +18,9 @@ import sun.misc.BASE64Encoder;
 @ApplicationScoped
 public class PasswordHash
 {
+    @Inject
+    SaltGenerator sg;
+
     private static final int ITERATIONS = 10000;
     private static final int KEY_LENGTH = 256;
 
@@ -47,6 +50,24 @@ public class PasswordHash
             if (pwdHash[i] != expectedHash[i]) return false;
         }
         return true;
+    }
+
+    public String hashPassword(String unhashedPassword)
+    {
+        byte[] salt = sg.generateSalt(32);
+        byte[] hashedPass;
+        hashedPass = generatePasswordHashWithSalt(unhashedPassword, salt);
+        return (base64Encode(concat(salt, hashedPass)));
+
+    }
+
+    private byte[] concat(byte[] a, byte[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        byte[] c= new byte[aLen+bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
     }
 
     public String base64Encode(byte[] bytes)
