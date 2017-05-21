@@ -19,13 +19,14 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
-                        <h:message for="email" styleClass="error-message"/>
-                        <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.person.email}">
+                        <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.email}"/>
 
-                        </p:inputText>
+                        <!-- TODO: pridėtas h:messages, reikia stilių pritaikyti.
+                        h:messages rodo bullet point, turbūt šito nereikia, ir confirm-message reik spalvą pakeist
+                        -->
+                        <div><h:messages id="createUser-message" styleClass="error-message" globalOnly="true"/></div>
                         <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
-                                         action="#{linkSenderController.checkEmailForNewRegistration()}"
-                                         ajax="false"/>
+                                         action="#{linkSenderController.checkEmailForNewRegistration()}"/>
                     </div>
                 </div>
             </div>

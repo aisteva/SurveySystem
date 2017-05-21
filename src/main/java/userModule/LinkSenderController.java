@@ -11,18 +11,20 @@ import services.SaltGenerator;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.mail.MessagingException;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by arturas on 2017-04-03.
  */
 @Named
-@RequestScoped
+@ViewScoped
 @LogInterceptor
-public class LinkSenderController
+public class LinkSenderController implements Serializable
 {
 
     private final String registrationText = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
@@ -37,6 +39,8 @@ public class LinkSenderController
     @Setter
     private Person person = new Person();
 
+    @Getter @Setter String email = null;
+
     @Inject
     private PersonDAO personDAO;
 
@@ -46,14 +50,15 @@ public class LinkSenderController
     @Inject
     SaltGenerator sg;
 
-    public void checkEmailForNewRegistration()
+    public String checkEmailForNewRegistration()
     {
-        person = personDAO.FindPersonByEmail(person.getEmail());
+        person = personDAO.FindPersonByEmail(email);
         //jei nerandam vartotojo pagal email, vadinasi jo nera leistinu sarase
         if( person == null)
         {
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Šio el. pašto nėra leistinų sąraše"));
+
         }
         //jei vartotojas tokiu emailu jau turi nustatyta slaptazodi, reiskia jis jau prisiregistraves
         else if (person.getPassword() != null)
@@ -67,13 +72,14 @@ public class LinkSenderController
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
             sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
+            return "/signin/signin.xhtml";
         }
-
+        return null;
     }
 
-    public void ResetPassword()
+    public String ResetPassword()
     {
-        person = personDAO.FindPersonByEmail(person.getEmail());
+        person = personDAO.FindPersonByEmail(email);
         if (person != null)
         {
             if(person.getPassword() == null)
@@ -87,6 +93,7 @@ public class LinkSenderController
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
                 sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
+                return "/signin/signin.xhtml";
             }
         }
         else
@@ -94,6 +101,7 @@ public class LinkSenderController
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Šis vartotojas nėra užsiregistravęs"));
         }
+        return null;
     }
 
     private void sendEmailWithText(String text)

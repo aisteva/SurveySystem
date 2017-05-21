@@ -35,7 +35,6 @@ public class SetPasswordByLinkController implements Serializable
     @Inject PasswordHash ph;
     @Inject SaltGenerator sg;
 
-
     public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {
         String url = (String) object;
@@ -128,7 +127,7 @@ public class SetPasswordByLinkController implements Serializable
         person.setPassword(ph.hashPassword(unhashedPassword));
         person.setInviteExpiration(null);
         personDAO.UpdateUser(person);
-        return "/signin/signin.xhtml?faces-redirect=true";
+        return "/signin/signin?faces-redirect=true";
     }
 
 
