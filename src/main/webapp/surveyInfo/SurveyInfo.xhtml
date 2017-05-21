@@ -44,14 +44,17 @@
             <!-- end test -->
 
             <h1 class="text-center">#{surveyInfoController.survey.title}</h1>
-            <h4 class="text-center">#{surveyInfoController.survey.submits} atsakymų</h4>
-
+            <h4 class="text-center">#{surveyInfoController.survey.description}</h4>
+            <h4 class="text-center">Apklausos autorius: #{surveyInfoController.survey.personID.firstName} #{surveyInfoController.survey.personID.lastName}</h4>
+            <h4 class="text-center">Apklausos atsakymų sk.: #{surveyInfoController.survey.submits}</h4>
+            <br></br>
+            <h4 class="text-left">Klausimų skaičius: #{surveyInfoController.survey.questionList.size()}</h4>
             <h:outputScript>
                 window.onload = function () {
                     <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                         if (#{question.type == 'TEXT'}){
                             var words#{question.questionID} = [
-                                <ui:repeat value="#{surveyInfoController.getAnswerCounterList(question.questionID)}"
+                                <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
                                            var="answerCounter" varStatus="loop">
                                     {text: "#{answerCounter.answerText}", weight:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
                                 </ui:repeat>
@@ -60,7 +63,7 @@
                         }
                         else {
                             var finals#{question.questionID} = [
-                                <ui:repeat value="#{surveyInfoController.getAnswerCounterList(question.questionID)}"
+                                <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
                                            var="answerCounter" varStatus="loop">
                                     {label: "#{answerCounter.answerText}", y:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
                                 </ui:repeat>
@@ -88,6 +91,14 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 one-question">
                     <h3>#{question.questionNumber}. #{question.questionText}</h3>
                     <div id="chartContainer#{question.questionID}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 300px"></div>
+                    <p:outputPanel id ="stats" rendered="#{question.type.equals('SCALE')}">
+                        <p>Reikšmių vidurkis: #{surveyInfoController.questionStatsMap.get(question.questionID).avg}</p>
+                        <p>Mediana: #{surveyInfoController.questionStatsMap.get(question.questionID).mediana}</p>
+                        <ui:repeat  value="#{surveyInfoController.questionStatsMap.get(question.questionID).modaLst}" var="moda">
+                            <p>Moda: #{moda}</p>
+                        </ui:repeat>
+                        <p>Moda pasikartoja: #{surveyInfoController.questionStatsMap.get(question.questionID).modaRepeated} kartų</p>
+                    </p:outputPanel>
                 </div>
             </ui:repeat>
 

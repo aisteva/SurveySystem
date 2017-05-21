@@ -12,13 +12,9 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
 import services.excel.ExcelSurveyExport;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.Tuple;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -30,7 +26,7 @@ import java.util.concurrent.ExecutionException;
  * Created by vdeiv on 2017-04-29.
  */
 @Named
-@javax.faces.view.ViewScoped
+@ViewScoped
 @Slf4j
 public class SurveyInfoController implements Serializable{
 
@@ -47,6 +43,25 @@ public class SurveyInfoController implements Serializable{
     @Inject
     private ExcelSurveyExport excelSurveyExport;
 
+    @Getter
+    private Map<Long, List<AnswerCounter>> answerCounterMap = new HashMap<>();
+
+    @Getter
+    private Map<Long, QuestionStats> questionStatsMap = new HashMap<>();
+
+    public class QuestionStats{
+        public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa){
+            this.avg = avg;
+            this.mediana = mediana;
+            this.modaLst = modaLst;
+            this.modaRepeated = maxModa;
+        }
+        @Getter private float avg = 0;
+        @Getter private float mediana = 0;
+        @Getter private List<Integer> modaLst;
+        @Getter private int modaRepeated;
+    }
+
     public class AnswerCounter {
         public AnswerCounter(String answerText, int countAnswers){
             this.answerText = answerText;
@@ -60,27 +75,56 @@ public class SurveyInfoController implements Serializable{
         }
     }
 
-    public List<AnswerCounter> getAnswerCounterList(Long questionId){
-        Question question = survey.getQuestionList().stream().filter(x -> x.getQuestionID().equals(questionId)).findFirst().get();
-        List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
+    private void addOnlyUnique(List<Answer> lst, List<AnswerCounter> rez){
+        Set<String> texts = new HashSet<>();
+        for (Answer a : lst) {
+            if (texts.contains(a.getText())){
+                rez.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();
+            } else {
+                texts.add(a.getText());
+                rez.add(new AnswerCounter(a.getText(), 1));
+            }
+        }
+    }
 
+    private void calculateStats(Long questionId, List<AnswerCounter> answerCounterList){
+        float mediana;
+        if (answerCounterList.size() % 2 == 0){
+            mediana = (float)(Integer.parseInt(answerCounterList.get(answerCounterList.size()/2-1).answerText) +
+                    Integer.parseInt(answerCounterList.get(answerCounterList.size()/2).answerText))/2;
+        } else {
+            mediana = Integer.parseInt(answerCounterList.get(answerCounterList.size()/2).answerText);
+        }
+        float sum =0, n = 0;
+        List<Integer> modaLst = new ArrayList<>();
+        int maxModa = -1;
+        for (AnswerCounter ac : answerCounterList){
+            sum += Integer.parseInt(ac.getAnswerText())*ac.countAnswers;
+            n += ac.countAnswers;
+            if (modaLst.isEmpty()){
+                modaLst.add(Integer.parseInt(ac.getAnswerText()));
+                maxModa = ac.countAnswers;
+            } else if (maxModa == ac.countAnswers){
+                modaLst.add(Integer.parseInt(ac.getAnswerText()));
+            } else if (maxModa < ac.countAnswers){
+                modaLst.clear();
+                modaLst.add(Integer.parseInt(ac.getAnswerText()));
+                maxModa = ac.countAnswers;
+            }
+        }
+        questionStatsMap.put(questionId, new QuestionStats(sum/n, mediana, modaLst, maxModa));
+    }
+
+    private void addToAnswerCounterMap(Question question){
+        answerCounterMap.put(question.getQuestionID(), new ArrayList<>());
+        List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
         List<AnswerCounter> answerCounterList = new ArrayList<>();
         for (OfferedAnswer o : offeredAnswers){
             if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())){ // Only for text
-                Set<String> texts = new HashSet<>();
-                for (Answer a : o.getAnswerList()) {
-                    if (texts.contains(a.getText())){
-                        answerCounterList.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();
-                    } else {
-                        texts.add(a.getText());
-                        answerCounterList.add(new AnswerCounter(a.getText(), 1));
-                    }
-                }
+                addOnlyUnique(o.getAnswerList(), answerCounterList);
             }
             else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
-                for (Answer a : o.getAnswerList()) {
-                    answerCounterList.add(new AnswerCounter(a.getText(), o.getAnswerList().size()));
-                }
+                addOnlyUnique(o.getAnswerList(), answerCounterList);
             }
             else { // Checkbox or multiple
                 answerCounterList.add(new AnswerCounter(o.getText(), o.getAnswerList().size()));
@@ -88,14 +132,18 @@ public class SurveyInfoController implements Serializable{
         }
 
         if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
-            answerCounterList.sort((x,y) -> x.answerText.compareTo(y.answerText));
+            Collections.sort(answerCounterList, (x, y) -> Integer.compare(Integer.parseInt(x.answerText), Integer.parseInt(y.answerText)));
+            calculateStats(question.getQuestionID(), answerCounterList);
         }
-        return answerCounterList;
+        answerCounterMap.get(question.getQuestionID()).addAll(answerCounterList);
     }
 
     public void load(){
         Long ind = Long.parseLong(surveyId);
         survey = surveyDao.getSurveyById(ind);
+        for (Question q : survey.getQuestionList()){
+            addToAnswerCounterMap(q);
+        }
     }
 
     public void exportSurvey()
