@@ -1,16 +1,12 @@
 package surveyShowing;
 
-import dao.SurveyDAO;
+import DAO.Implementations.SurveyDAO;
 import entitiesJPA.OfferedAnswer;
-import entitiesJPA.Question;
 import entitiesJPA.Survey;
-import javafx.beans.binding.IntegerBinding;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.inject.Model;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;

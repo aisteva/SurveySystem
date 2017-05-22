@@ -1,19 +1,14 @@
 package userModule;
 
-import dao.PersonDAO;
-import entitiesJPA.Person;
+import DAO.Implementations.PersonDAO;
 import interceptor.LogInterceptor;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.context.RequestContext;
 import services.PasswordHash;
-import services.SaltGenerator;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.OptimisticLockException;

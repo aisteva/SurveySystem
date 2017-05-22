@@ -1,7 +1,7 @@
 package controller;
 
-import dao.AnswerDAO;
-import dao.SurveyDAO;
+import DAO.Implementations.AnswerDAO;
+import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
@@ -44,13 +44,11 @@ public class SaveAnswersController implements Serializable{
     @Getter @Setter
     private Map<Long, Answer> textAndScaleAnswersList = new HashMap<>();
 
-    @Getter @Setter
     private OfferedAnswer[] selectedOfferedAnswers = new OfferedAnswer[999];
 
     @Getter @Setter
     private Map<Long, List<Answer>> checkboxAndMultipleAnswersList = new HashMap<>();
 
-    @Getter @Setter
     private OfferedAnswer selectedOfferedAnswer = new OfferedAnswer();
 
     @Getter @Setter
