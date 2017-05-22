@@ -6,7 +6,7 @@
     <!-- pasikeiskit savo db prisijungimus -->
     <Resource id="SurveyDataSource" type="DataSource">
         JdbcDriver = com.mysql.jdbc.Driver
-        JdbcUrl = jdbc:mysql://193.219.91.103:3306/SurveyDB
+        JdbcUrl = jdbc:mysql://193.219.91.103:3306/SurveyDB?characterEncoding=UTF-8
         UserName = root
         Password = labaipasimete
         InitialSize = 1

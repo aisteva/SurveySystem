@@ -371,6 +371,11 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
         for(int i=0; i<args.length; i++)
         {
             Cell cell = firstRow.getCell(i);
+            if(cell.getCellTypeEnum() != CellType.STRING)
+            {
+                throw new InvalidFormatException(cell.getAddress().toString() + " langelis turi turėti "
+                        + args[i] + " pavadinimą");
+            }
             if(isCellEmpty(cell))
             {
                 throw new InvalidFormatException("Lentelė turi turėti " + args[i] + " stulpelį");
