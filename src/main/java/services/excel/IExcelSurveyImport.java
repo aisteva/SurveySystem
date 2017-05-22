@@ -8,10 +8,8 @@ import java.io.IOException;
 import java.util.concurrent.Future;
 
 /**
- * Created by arturas on 2017-05-11.
+ * Created by vdeiv on 2017-05-22.
  */
-public interface Importable
-{
+public interface IExcelSurveyImport {
     Future<Survey> importSurveyIntoEntity(File excelFile) throws IOException, InvalidFormatException;
 }
-
