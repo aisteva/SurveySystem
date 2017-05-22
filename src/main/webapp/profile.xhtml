@@ -12,6 +12,7 @@
    <h:outputScript name="/js/jquery-3.2.1.min.js"/>
    <h:outputScript name="/js/bootstrap.min.js"/>
    <h:outputStylesheet name="/css/signup/style.css"/>
+   <h:outputStylesheet name="/css/style.css"/>
    <h:head>
        <title>Paskyra</title>
        <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
@@ -23,13 +24,19 @@
        <ui:include src="/header.xhtml"/>
       <div class="container">
          <h:form id="profile-form">
-            <div class="row">
+            <div class="row box-shadow" style="padding-top: 40px;">
                <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                     <h:inputText a:placeholder="Vardas" id="firstname" value="#{profileController.signInPerson.loggedInPerson.firstName}"/>
+                     <h:inputText a:placeholder="Vardas"
+                                  id="firstname"
+                                  value="#{profileController.signInPerson.loggedInPerson.firstName}"
+                                  styleClass="onlyBottomBorder"/>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                     <h:inputText a:placeholder="Pavardė" id="lastname" value="#{profileController.signInPerson.loggedInPerson.lastName}"/>
+                     <h:inputText a:placeholder="Pavardė"
+                                  id="lastname"
+                                  value="#{profileController.signInPerson.loggedInPerson.lastName}"
+                                  styleClass="onlyBottomBorder"/>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                      <p:password a:placeholder="Naujas slaptažodis"
@@ -37,7 +44,8 @@
                                  value="#{profileController.unhashedPassword}"
                                  redisplay="true"
                                  match="confirmPass"
-                                 validatorMessage="Slaptažodžiai nesutampa"/>
+                                 validatorMessage="Slaptažodžiai nesutampa"
+                                 styleClass="onlyBottomBorder"/>
                   </div>
                   <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                      <p:password a:placeholder="Pakartoti slaptažodį"
@@ -45,7 +53,8 @@
                                  value="#{profileController.confirmPassword}"
                                  redisplay="true"
                                  validatorMessage="Slaptažodyje turi būti bent 6 simboliai, bent viena mažoji raidė,
-                                            didžioji raidė, skaičius ">
+                                            didžioji raidė, skaičius "
+                                 styleClass="onlyBottomBorder">
                         <f:validateRegex pattern="^$|((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,})" />
                      </p:password>
                   </div>
@@ -62,7 +71,8 @@
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                      <h:commandButton value="Atnaujinti paskyrą"
                                       action="#{profileController.updateProfile()}"
-                                      styleClass="btn btn-primary btn-lg text-center"/>
+                                      styleClass="btn btn-primary btn-lg text-center">
+                     </h:commandButton>
                   </div>
                </div>
             </div>

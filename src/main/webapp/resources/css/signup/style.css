@@ -11,7 +11,14 @@ input, .ui-inputfield {
 .error-message {
     color: #F74356;
 }
+.confirm-message {
+    color: #29bf89;
+}
 
+.confirm-message li {
+    list-style-type: none;
+    margin-left: -40px;
+}
 input[readonly="readonly"] {
     background: #efefef;
 }

@@ -31,6 +31,22 @@
 .survey-box p {
     overflow: hidden;
 }
+
+.onlyBottomBorder, .ui-inputnumber > input, .ui-calendar > input {
+    background: none;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid #bdbdbe;
+    padding: 0px 10px;
+    border-radius: 0;
+}
+
+.onlyBottomBorder:focus, .ui-inputnumber > input:focus, .ui-calendar > input:focus {
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+}
+
 .survey-box-inside > .action-with-survey {
     z-index: 11;
     padding-top: 6%;
