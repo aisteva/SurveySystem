@@ -25,7 +25,7 @@ import java.util.Arrays;
 @LogInterceptor
 public class SignInController implements Serializable {
 
-    @Inject
+    @Inject @Getter @Setter
     SignInPerson signInPerson;
 
     @Getter @Setter String expectedEmail = null;

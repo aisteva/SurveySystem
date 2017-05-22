@@ -9,6 +9,8 @@ import org.primefaces.context.RequestContext;
 import services.PasswordHash;
 import services.SaltGenerator;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -22,10 +24,12 @@ import java.io.Serializable;
  * Created by arturas on 2017-05-21.
  */
 @Named
-@ViewScoped
+@RequestScoped
 @LogInterceptor
 public class ProfileController implements Serializable
 {
+    @Inject
+    SignInController signInController;
     @Inject @Getter
     SignInPerson signInPerson;
     @Inject
@@ -52,11 +56,13 @@ public class ProfileController implements Serializable
         try
         {
             personDAO.updateAndFlush(signInPerson.getLoggedInPerson());
+            signInController.reload();
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage("Paskyros redagavimas sėkmingas"));
         }
         catch(OptimisticLockException ole)
         {
+            System.out.println(ole.getMessage());
             FacesContext.getCurrentInstance().addMessage("profile-form:firstname",
                     new FacesMessage("Profilis buvo pakoreguotas prieš šiuos pakeitimus"));
         }
