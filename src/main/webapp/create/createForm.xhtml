@@ -24,7 +24,7 @@
     <h:body style="background: linear-gradient(#29bf89, #0083BB);">
         <ui:include src="/header.xhtml"/>
         <div class="container">
-            <h:form>
+            <h:form id="create_form">
                 <div class="box-shadow col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
                     <div class="survey col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <div class="row">
@@ -91,12 +91,12 @@
                                 <div class="row question-info">
                                     <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
                                         <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
-                                        <h:inputText value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
+                                        <h:inputText disabled="#{createFormController.survey.submits > 0}" value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
                                             <f:ajax render="@form"/>
                                         </h:inputText>
                                     </div>
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 text-right push-down">
-                                        <h:selectOneMenu value="#{question.newType}" styleClass="onlyBottomBorder">
+                                        <h:selectOneMenu value="#{question.newType}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
                                             <f:selectItems value = "#{question.types}"/>
                                             <f:ajax listener="#{createFormController.changeQuestionType(questionStatus.index)}" render="@form"/>
                                         </h:selectOneMenu>
@@ -107,7 +107,7 @@
                                         <ui:include src="text.xhtml"/>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{question.type == 'CHECKBOX' || question.type == 'MULTIPLECHOICE'}">
-                                        <ui:include src="checkboxAndMultiplechoice.xhtml"/>
+                                        <ui:include src="checkboxAndMultipleChoice.xhtml"/>
                                     </h:panelGroup>
                                     <h:panelGroup rendered="#{question.type == 'SCALE'}">
                                         <ui:include src="scale.xhtml"/>
@@ -116,25 +116,25 @@
 
                                 <div class="actions-with-question">
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.moveQuestionUp(questionStatus.index)}">
+                                        <h:commandLink action="#{createFormController.moveQuestionUp(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
                                             <div class="glyphicon glyphicon-triangle-top action-icon"></div>
                                             <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.moveQuestionDown(questionStatus.index)}">
+                                        <h:commandLink action="#{createFormController.moveQuestionDown(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
                                             <div class="glyphicon glyphicon-triangle-bottom action-icon"></div>
                                             <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.removeQuestion(questionStatus.index)}">
+                                        <h:commandLink action="#{createFormController.removeQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
                                             <div class="glyphicon glyphicon-trash action-icon"></div>
                                             <f:ajax render="@form"/>
                                         </h:commandLink>
                                     </div>
                                     <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.addQuestion(questionStatus.index)}">
+                                        <h:commandLink action="#{createFormController.addQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
                                             <div class="glyphicon glyphicon-plus action-icon"></div>
                                             <f:ajax render="@form"/>
                                         </h:commandLink>
@@ -142,7 +142,7 @@
                                     <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4 vertical-align">
                                         <span style="padding-right: 10px">Privalomas</span>
                                         <label class="switch">
-                                            <h:selectBooleanCheckbox value="#{question.required}">
+                                            <h:selectBooleanCheckbox value="#{question.required}" disabled="#{createFormController.survey.submits > 0}">
                                                 <f:ajax render="@form"/>
                                             </h:selectBooleanCheckbox>
                                             <div class="slider round"></div>
@@ -156,19 +156,19 @@
 
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-left">
                             <c:if test="#{createFormController.page > 1}">
-                                <h:commandLink action="#{createFormController.prevPage()}">
+                                <h:commandLink action="#{createFormController.prevPage()}" disabled="#{createFormController.survey.submits > 0}">
                                     <div class="glyphicon glyphicon-chevron-left action-icon"></div>
                                 </h:commandLink>
                             </c:if>
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-center">
-                            <p:commandButton value="Submit form"
+                            <p:commandButton value="Išsaugoti"
                                              styleClass="btn btn-md btn-primary"
                                              action="#{createFormController.createForm(signInPerson.loggedInPerson.email)}"
                                              ajax="false"/>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-right">
-                            <h:commandLink action="#{createFormController.nextPage()}">
+                            <h:commandLink action="#{createFormController.nextPage()}" disabled="#{createFormController.survey.submits > 0}">
                                 <div class="glyphicon glyphicon-chevron-right action-icon"></div>
                             </h:commandLink>
                         </div>
@@ -178,15 +178,12 @@
                 </div>
 
             </h:form>
-            <!-- Modal -->
             <div id="import" class="modal fade" role="dialog">
                 <div class="modal-dialog">
-
-                    <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Įkelti apklausą</h4>
+                            <h4 class="modal-title text-center">Įkelti apklausą</h4>
                         </div>
                         <div class="modal-body">
                             <p:messages  id="messages" autoUpdate="true"/>
@@ -203,12 +200,16 @@
                             </h:form>
                             <h:form id="surveyImportResults">
                                 <p:panel rendered="#{createFormController.imported}">
-                                    <p:outputLabel value="#{createFormController.survey.submits} submits"/><br/>
+                                    <p style="color: #29bf89;">Apklausa įkelta sėkmingai! Išsaugokite ir uždarykite</p>
                                 </p:panel>
                             </h:form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <h:form>
+                                <p:commandButton value="Išsaugoti ir uždaryti" styleClass="btn btn-primary" process="create_form @this" ajax="false">
+                                    <f:ajax execute="@form"/>
+                                </p:commandButton>
+                            </h:form>
                         </div>
                     </div>
 

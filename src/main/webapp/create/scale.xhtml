@@ -8,7 +8,11 @@
         xmlns:c="http://java.sun.com/jsp/jstl/core">
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5 text-center">
-            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}" a:placeholder="Nuo" decimalPlaces="0" thousandSeparator="">
+            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}"
+                           a:placeholder="Nuo"
+                           decimalPlaces="0"
+                           thousandSeparator=""
+                           disabled="#{createFormController.survey.submits > 0}">
                 <f:ajax update="@form" render="@none"/>
             </p:inputNumber>
         </div>
@@ -16,7 +20,12 @@
             ―
         </div>
         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
-            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(1).text}" a:placeholder="Iki" decimalPlaces="0" thousandSeparator="" minValue="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}">
+            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(1).text}"
+                           a:placeholder="Iki"
+                           decimalPlaces="0"
+                           thousandSeparator=""
+                           minValue="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}"
+                           disabled="#{createFormController.survey.submits > 0}">
                 <f:ajax update="@form" render="@none"/>
             </p:inputNumber>
         </div>

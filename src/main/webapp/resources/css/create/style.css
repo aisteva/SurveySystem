@@ -222,7 +222,6 @@ input:checked + .slider:before {
 .ui-state-default, .ui-state-default:hover, .ui-widget-content .ui-state-focus, ui-state-active {
     box-shadow: none;
 }
-
 .ui-slider .ui-slider-handle {
     background: #0083BB;
     border: none;
@@ -233,4 +232,32 @@ input:checked + .slider:before {
 }
 .required {
     color: #F74356;
+}
+
+.ui-fileupload .ui-fileupload-buttonbar {
+    background: transparent;
+}
+
+.ui-fileupload .ui-fileupload-buttonbar > * {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 300;
+    width: 31.33%;
+    margin: 5px 1%;
+    border: none;
+    border-bottom: 2px solid #0083BB;
+    border-radius: 0px;
+    background: transparent;
+}
+.ui-fileupload .ui-fileupload-buttonbar > * > *:first-child {
+    display: none;
+}
+.ui-fileupload .ui-fileupload-buttonbar > * > *:nth-child(2) {
+    padding: 10px 0;
+}
+.ui-fileupload .ui-fileupload-content .ui-fileupload-cancel {
+    background: transparent;
+    border: none;
+}
+.ui-fileupload .ui-fileupload-content .ui-fileupload-cancel {
+    display: none;
 }
