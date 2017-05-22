@@ -1,5 +1,6 @@
-package CreateFormPackage.Dao;
+package DAO.Implementations;
 
+import DAO.Interfaces.IQuestionDAO;
 import entitiesJPA.Question;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,9 +12,9 @@ import java.util.List;
  * Created by vdeiv on 2017-04-07.
  */
 @ApplicationScoped
-public class QuestionDao {
+public class QuestionDAO implements IQuestionDAO {
     @Inject
-    private EntityManager em;
+    protected EntityManager em;
 
     public void create(Question question) {
         em.persist(question);

@@ -1,5 +1,6 @@
-package CreateFormPackage.Dao;
+package DAO.Implementations;
 
+import DAO.Interfaces.IOfferedAnswerDAO;
 import entitiesJPA.OfferedAnswer;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,9 +12,9 @@ import java.util.List;
  * Created by vdeiv on 2017-04-07.
  */
 @ApplicationScoped
-public class OfferedAnswerDao {
+public class OfferedAnswerDAO implements IOfferedAnswerDAO {
     @Inject
-    private EntityManager em;
+    protected EntityManager em;
 
     public void create(OfferedAnswer answer) {
         em.persist(answer);

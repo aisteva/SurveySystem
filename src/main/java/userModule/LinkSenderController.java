@@ -1,6 +1,6 @@
 package userModule;
 
-import dao.PersonDAO;
+import DAO.Implementations.PersonDAO;
 import entitiesJPA.Person;
 import interceptor.LogInterceptor;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.Setter;
 import services.EmailService;
 import services.SaltGenerator;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;

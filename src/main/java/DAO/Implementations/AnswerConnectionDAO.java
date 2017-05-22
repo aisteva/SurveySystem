@@ -1,5 +1,6 @@
-package CreateFormPackage.Dao;
+package DAO.Implementations;
 
+import DAO.Interfaces.IAnswerConnectionDAO;
 import entitiesJPA.AnswerConnection;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,9 +12,9 @@ import java.util.List;
  * Created by vdeiv on 2017-04-07.
  */
 @ApplicationScoped
-public class AnswerConnectionDao {
+public class AnswerConnectionDAO implements IAnswerConnectionDAO {
     @Inject
-    private EntityManager em;
+    protected EntityManager em;
 
     public void create(AnswerConnection con) {
         em.persist(con);

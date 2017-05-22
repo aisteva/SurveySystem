@@ -1,6 +1,6 @@
 package controllers;
 
-import dao.SurveyDAO;
+import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;

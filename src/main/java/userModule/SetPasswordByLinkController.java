@@ -1,6 +1,6 @@
 package userModule;
 
-import dao.PersonDAO;
+import DAO.Implementations.PersonDAO;
 import entitiesJPA.Person;
 import interceptor.LogInterceptor;
 import lombok.Getter;
