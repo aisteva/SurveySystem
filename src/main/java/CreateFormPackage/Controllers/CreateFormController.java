@@ -208,7 +208,7 @@ public class CreateFormController implements Serializable {
 
     private boolean surveyIsCorrect(){
         if (survey.getStartDate() == null){
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
