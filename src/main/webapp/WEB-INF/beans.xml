@@ -15,7 +15,7 @@
         <stereotype>services.excel.CustomerExcelFormat</stereotype>
     </alternatives>
     <decorators>
-        <class>DAO.Decorators.PersonTestDAO</class>
+        <!--<class>DAO.Decorators.PersonTestDAO</class>-->
     </decorators>
 
 </beans>

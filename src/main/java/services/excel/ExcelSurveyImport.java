@@ -81,6 +81,7 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
             Question.QUESTION_TYPE questionType = getQuestionTypeFromCell(currentRow.getCell(2));
 
             question.setType(questionType.name());
+            question.setNewType(questionType.name());
 
             //pasiruosiam offered answer sarasa, i kuri desim visus galimus atsakymus apklausai
             List<OfferedAnswer> offeredAnswers = new ArrayList<>();

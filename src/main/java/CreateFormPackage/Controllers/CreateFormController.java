@@ -181,16 +181,22 @@ public class CreateFormController implements Serializable {
         //surandam apklausą pagal url
         try {
             survey = surveyDAO.getSurveyById((Long) object);
-            questions.clear();
-            for (Question q : survey.getQuestionList()){
-                if (!questions.containsKey(q.getPage())){
-                    questions.put(q.getPage(), new ArrayList<>());
-                }
-                questions.get(q.getPage()).add(q.getQuestionNumber()-1, q);
-            }
+            mapQuestions();
+
         } catch (Exception e) {
             context.getExternalContext().setResponseStatus(404);
             context.responseComplete();
+        }
+    }
+
+    public void mapQuestions()
+    {
+        questions.clear();
+        for (Question q : survey.getQuestionList()){
+            if (!questions.containsKey(q.getPage())){
+                questions.put(q.getPage(), new ArrayList<>());
+            }
+            questions.get(q.getPage()).add(q.getQuestionNumber()-1, q);
         }
     }
 
@@ -281,6 +287,7 @@ public class CreateFormController implements Serializable {
         try
         {
             survey = excelSurveyImport.importSurveyIntoEntity(excelFile).get();
+            mapQuestions();
             isImported = true;
         } catch (InterruptedException | InvalidFormatException e)
         {
