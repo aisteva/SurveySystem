@@ -281,6 +281,7 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
         answer.setOfferedAnswerID(offeredAnswer);
         answer.setText(answerText);
         answer.setSessionID(currentSessionId);
+        answer.setFinished(true);
 
         offeredAnswer.getAnswerList().add(answer);
     }

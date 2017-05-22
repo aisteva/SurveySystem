@@ -80,6 +80,9 @@ public class CreateFormController implements Serializable {
         question.setPage(page);
         questions.get(page).add(prevQuestionIndex+1, question);
         addOfferedAnswer(prevQuestionIndex+1);
+        if (type==Question.QUESTION_TYPE.SCALE.toString()){
+            addOfferedAnswer(prevQuestionIndex+1);
+        }
     }
 
     public void addChildQuestion(final int offeredAnswerIndex, final int prevQuestionIndex) {
@@ -190,7 +193,7 @@ public class CreateFormController implements Serializable {
 
     private boolean surveyIsCorrect(){
         if (survey.getStartDate() == null){
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/mm/dd");
             Date date = new Date();
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
