@@ -49,6 +49,7 @@ public class SaveAnswersController implements Serializable{
     @Getter @Setter
     private Map<Long, List<Answer>> checkboxAndMultipleAnswersList = new HashMap<>();
 
+    @Getter @Setter
     private OfferedAnswer selectedOfferedAnswer = new OfferedAnswer();
 
     @Getter @Setter
