@@ -9,7 +9,7 @@ import org.apache.poi.util.IOUtils;
 import org.omnifaces.util.Messages;
 import org.primefaces.event.FileUploadEvent;
 import services.SaltGenerator;
-import services.excel.Importable;
+import services.excel.IExcelSurveyImport;
 import userModule.SignInPerson;
 
 import javax.faces.application.FacesMessage;
@@ -32,7 +32,7 @@ import java.util.concurrent.Future;
 public class ExcelImportController implements Serializable
 {
     @Inject
-    Importable excelSurveyImport;
+    IExcelSurveyImport excelSurveyImport;
 
     @Inject
     SaltGenerator sg;

@@ -23,8 +23,8 @@ import java.util.concurrent.Future;
  * Created by arturas on 2017-05-11.
  */
 @RequestScoped
-//TODO interface
-public class ExcelSurveyExport implements Serializable
+@CustomerExcelFormat
+public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
 {
     private static final String[] surveyColumns = new String[]{"$questionNumber", "$question", "$questionType", "$optionsList"};
     private static final String[] answerColumns = new String[]{"$answerID", "$questionNumber", "$answer"};

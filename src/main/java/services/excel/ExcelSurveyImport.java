@@ -32,7 +32,8 @@ import static entitiesJPA.Question.QUESTION_TYPE.*;
  */
 @Named
 @RequestScoped
-public class ExcelSurveyImport implements Serializable, Importable
+@CustomerExcelFormat
+public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
 {
     private XSSFSheet surveySheet = null;
     private String[] surveyColumns = new String[]{"$questionNumber", "$question", "$questionType", "$optionsList"};

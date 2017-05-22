@@ -1,17 +1,15 @@
 package services;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Alternative;
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Random;
 
 @ApplicationScoped
-public class SaltGenerator implements Serializable
+@Alternative
+public class SaltGenerator implements ISaltGenerator, Serializable
 {
-    public SaltGenerator()
-    {
-
-    }
 
     public String getRandomString(int length)
     {

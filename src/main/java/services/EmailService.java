@@ -15,11 +15,11 @@ import java.util.Properties;
 @LogInterceptor
 public class EmailService
 {
-    private String port = "587";
-    private String host = "mail.inbox.lt";
-    private String from = "surveysystem@inbox.lt";
-    private String username = "surveysystem";
-    private String password = "apklausa";
+    protected String port = "";
+    protected String host = "";
+    protected String from = "";
+    protected String username = "";
+    protected String password = "";
 
     public void sendEmail(String to, String text)
     {
