@@ -5,18 +5,25 @@ import dao.SurveyDAO;
 import entitiesJPA.*;
 import interceptor.LogInterceptor;
 import lombok.Getter;
+import lombok.Setter;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.util.IOUtils;
+import org.primefaces.event.FileUploadEvent;
 import services.SaltGenerator;
+import services.excel.IExcelSurveyImport;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.io.Serializable;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -41,6 +48,14 @@ public class CreateFormController implements Serializable {
 
     @Getter
     private Map<Integer, List<Question>> questions = new HashMap<>();
+
+    private File excelFile;
+
+    @Inject
+    IExcelSurveyImport excelSurveyImport;
+
+    @Getter @Setter
+    boolean isImported;
 
     public CreateFormController(){
         questions.put(1, new ArrayList<>());
@@ -252,6 +267,37 @@ public class CreateFormController implements Serializable {
             addOfferedAnswer(questionIndex);
         }
         question.setType(question.getNewType());
+    }
+
+    public void importExcelFile(FileUploadEvent event) throws IOException
+    {
+        isImported = false;
+        File tempFile = File.createTempFile("temp","");
+        tempFile.deleteOnExit();
+        FileOutputStream out = new FileOutputStream(tempFile);
+        InputStream in = event.getFile().getInputstream();
+        IOUtils.copy(in, out);
+        excelFile = tempFile;
+        try
+        {
+            survey = excelSurveyImport.importSurveyIntoEntity(excelFile).get();
+            isImported = true;
+        } catch (InterruptedException | InvalidFormatException e)
+        {
+            e.printStackTrace();
+        } catch (ExecutionException e)
+        {
+            if(e.getCause() instanceof InvalidFormatException)
+            {
+                FacesContext.getCurrentInstance().addMessage("messages",
+                        new FacesMessage(e.getCause().getMessage()));
+            }
+            else
+            {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 }
