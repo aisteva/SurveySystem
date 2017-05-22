@@ -1,7 +1,7 @@
 package CreateFormPackage.Controllers;
 
-import dao.PersonDAO;
-import dao.SurveyDAO;
+import DAO.Implementations.PersonDAO;
+import DAO.Implementations.SurveyDAO;
 import entitiesJPA.*;
 import interceptor.LogInterceptor;
 import lombok.Getter;

@@ -1,6 +1,7 @@
-package dao;
+package DAO.Implementations;
 
 
+import DAO.Interfaces.IAnswerDAO;
 import entitiesJPA.Answer;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,11 +16,10 @@ import java.util.List;
 
 @ApplicationScoped
 @Slf4j
-public class AnswerDAO {
+public class AnswerDAO implements IAnswerDAO {
 
     @Inject
-    private EntityManager em;
-
+    protected EntityManager em;
 
     public void save(Answer answer) {
         em.persist(answer);

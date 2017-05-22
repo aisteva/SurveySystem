@@ -1,7 +1,7 @@
 package controllers;
 
-import dao.PersonDAO;
-import dao.SurveyDAO;
+import DAO.Implementations.PersonDAO;
+import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Person;
 import entitiesJPA.Survey;
 import interceptor.LogInterceptor;

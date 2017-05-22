@@ -1,12 +1,11 @@
-package dao;
+package DAO.Implementations;
 
+import DAO.Interfaces.IPersonDAO;
 import entitiesJPA.Person;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -15,10 +14,10 @@ import java.util.List;
  * Created by arturas on 2017-04-02.
  */
 @ApplicationScoped
-public class PersonDAO
+public class PersonDAO implements IPersonDAO
 {
     @Inject
-    private EntityManager entityManager;
+    protected EntityManager entityManager;
 
     @Transactional
     public void CreateUser(Person person)

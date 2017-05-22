@@ -1,9 +1,10 @@
-package dao;
+package DAO.Implementations;
 
 /**
  * Created by vdeiv on 2017-04-07.
  */
 
+import DAO.Interfaces.ISurveyDAO;
 import entitiesJPA.Survey;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,9 +17,9 @@ import java.util.List;
  * Created by vdeiv on 2017-04-07.
  */
 @ApplicationScoped
-public class SurveyDAO {
+public class SurveyDAO implements ISurveyDAO {
     @Inject
-    private EntityManager em;
+    protected EntityManager em;
 
     public void create(Survey survey) {
         em.persist(survey);
