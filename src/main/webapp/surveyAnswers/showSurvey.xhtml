@@ -62,6 +62,20 @@
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
                                 #{saveAnswersController.setTempQuestionId(question.questionID)}
+                                <h:selectManyCheckbox id="multiple"
+                                                      value="#{saveAnswersController.selectedOfferedAnswers}"
+                                                      layout="pageDirection"
+                                                      converter="omnifaces.SelectItemsIndexConverter"
+                                                      required="#{not empty param.nextPage and question.required}"
+                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                    <f:selectItems value="#{question.offeredAnswerList}"
+                                                   var="offeredAnswer"
+                                                   itemLabel="#{offeredAnswer.text}"
+                                                   itemValue="#{offeredAnswer}"/>
+                                </h:selectManyCheckbox>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
+                                #{saveAnswersController.setTempQuestionId(question.questionID)}
                                 <h:selectOneRadio id="oneMeniu"
                                                   layout="pageDirection"
                                                   value="#{saveAnswersController.selectedOfferedAnswer}"
@@ -74,20 +88,6 @@
                                                     itemLabel="#{offeredAnswer.text}"
                                                     itemValue="#{offeredAnswer}"/>
                                 </h:selectOneRadio>
-                            </h:panelGroup>
-                            <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
-                                #{saveAnswersController.setTempQuestionId(question.questionID)}
-                                <h:selectManyCheckbox id="multiple"
-                                                      value="#{saveAnswersController.selectedOfferedAnswers}"
-                                                      layout="pageDirection"
-                                                      converter="omnifaces.SelectItemsIndexConverter"
-                                                      required="#{not empty param.nextPage and question.required}"
-                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
-                                    <f:selectItems value="#{question.offeredAnswerList}"
-                                                   var="offeredAnswer"
-                                                   itemLabel="#{offeredAnswer.text}"
-                                                   itemValue="#{offeredAnswer}"/>
-                                </h:selectManyCheckbox>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'SCALE'}">
                                 #{saveAnswersController.processLine(question.getOfferedAnswerList())}

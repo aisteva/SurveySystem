@@ -112,24 +112,7 @@ public class SaveAnswersController implements Serializable{
 //        String action = params.get("action");
     }
 
-    // Check box question
-    public void setSelectedOfferedAnswer(OfferedAnswer offered){
-        Answer answer = new Answer();
-        answer.setOfferedAnswerID(offered);
-        answer.setSessionID(null);
-        offered.getAnswerList().add(answer);
-        checkboxAndMultipleAnswersList.put(offered.getQuestionID().getQuestionID(), new ArrayList<>());
-        checkboxAndMultipleAnswersList.get(offered.getQuestionID().getQuestionID()).add(answer);
-    }
-
-    public OfferedAnswer getSelectedOfferedAnswer(){
-        if (checkboxAndMultipleAnswersList.containsKey(tempQuestionId)) {
-            return checkboxAndMultipleAnswersList.get(tempQuestionId).get(0).getOfferedAnswerID();
-        }
-        return null;
-    }
-
-    //Multiple question
+    //Checkbox question - several answers
     public void setSelectedOfferedAnswers(OfferedAnswer[] offered){
         for (OfferedAnswer o : offered){
             Answer answer = new Answer();
@@ -153,6 +136,22 @@ public class SaveAnswersController implements Serializable{
         return offeredList.toArray(new OfferedAnswer[offeredList.size()]);
     }
 
+    // Multiple question - Only one answer
+    public void setSelectedOfferedAnswer(OfferedAnswer offered){
+        Answer answer = new Answer();
+        answer.setOfferedAnswerID(offered);
+        answer.setSessionID(null);
+        offered.getAnswerList().add(answer);
+        checkboxAndMultipleAnswersList.put(offered.getQuestionID().getQuestionID(), new ArrayList<>());
+        checkboxAndMultipleAnswersList.get(offered.getQuestionID().getQuestionID()).add(answer);
+    }
+
+    public OfferedAnswer getSelectedOfferedAnswer(){
+        if (checkboxAndMultipleAnswersList.containsKey(tempQuestionId)) {
+            return checkboxAndMultipleAnswersList.get(tempQuestionId).get(0).getOfferedAnswerID();
+        }
+        return null;
+    }
 
     public List<Question> getQuestionList() {
         return survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList());
