@@ -298,7 +298,8 @@ public class SaveAnswersController implements Serializable{
     }
 
     //isparsina gautus scale skacius
-    public void processLine(List<OfferedAnswer> list) {
+    public ScaleLimits processLine(List<OfferedAnswer> list) {
+        min = 0; max=0;
         if (!list.isEmpty()) {
             String aLine = list.get(0).getText();
             Scanner scanner = new Scanner(aLine);
@@ -308,8 +309,10 @@ public class SaveAnswersController implements Serializable{
                 max = Integer.parseInt(scanner.next());
             } else {
                 setCode(FacesContext.getCurrentInstance(), "Nepavyko atvaizduoti apklausos", 400);
+
             }
         }
+        return new ScaleLimits(min, max);
     }
 
     public void validate(FacesContext context, UIComponent component, Object object) {

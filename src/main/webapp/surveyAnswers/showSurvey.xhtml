@@ -91,26 +91,28 @@
                                 </h:selectOneRadio>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                                #{saveAnswersController.processLine(question.getOfferedAnswerList())}
-                                <h4>Įveskite skaičių tarp #{saveAnswersController.min} ir #{saveAnswersController.max}</h4>
+                                <h4>Įveskite skaičių tarp #{saveAnswersController.processLine(question.getOfferedAnswerList()).min} ir #{saveAnswersController.processLine(question.getOfferedAnswerList()).max}</h4>
                                 <div class="row">
                                     <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
                                         <div class="row">
                                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
                                                 <h:panelGrid>
                                                     <h:panelGroup rendered="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}">
-                                                        #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.min}
+                                                        #{saveAnswersController.processLine(question.getOfferedAnswerList()).min}
+                                                        #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                     </h:panelGroup>
                                                     <p:inputText id="scale"
                                                                  value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
                                                                  required="#{question.isRequired() and not empty param.nextPage}"
                                                                  converter="javax.faces.Integer"
                                                                  converterMessage="Klausime nr. #{question.questionNumber} įveskite tik skaičius!"
-                                                                 validatorMessage="Klausime nr. #{question.questionNumber} skaičius turi būti tarp #{saveAnswersController.min} ir #{saveAnswersController.max}"
+                                                                 validatorMessage="Klausime nr. #{question.questionNumber} skaičius turi būti tarp #{saveAnswersController.processLine(question.getOfferedAnswerList()).min} ir #{saveAnswersController.processLine(question.getOfferedAnswerList()).max}"
                                                                  requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                                  styleClass="onlyBottomBorder">
-                                                        <f:validateLongRange minimum="#{saveAnswersController.min}"
-                                                                             maximum="#{saveAnswersController.max}"/>
+                                                        <!--SVARBU sitoj vietoj pakeiciau f:validateLongRange i o validator!!!!!!-->
+                                                        <o:validator validatorId="javax.faces.LongRange"
+                                                                     minimum="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
+                                                                     maximum="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}"/>
                                                     </p:inputText>
                                                 </h:panelGrid>
                                             </div>

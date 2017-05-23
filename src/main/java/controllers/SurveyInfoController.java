@@ -12,6 +12,8 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
 import services.excel.ExcelSurveyExport;
 
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,7 +34,7 @@ public class SurveyInfoController implements Serializable{
 
     @Getter
     @Setter
-    private String surveyId="";
+    private String surveyUrl;
 
     @Getter
     private Survey survey;
@@ -138,11 +140,17 @@ public class SurveyInfoController implements Serializable{
         answerCounterMap.get(question.getQuestionID()).addAll(answerCounterList);
     }
 
-    public void load(){
-        Long ind = Long.parseLong(surveyId);
-        survey = surveyDao.getSurveyById(ind);
-        for (Question q : survey.getQuestionList()){
-            addToAnswerCounterMap(q);
+    public String load(FacesContext context, UIComponent component, Object object){
+        //Long ind = Long.parseLong(surveyId);
+        survey = surveyDao.getSurveyByUrl((String) object);
+        if(survey!= null){
+            for (Question q : survey.getQuestionList()){
+                addToAnswerCounterMap(q);
+            }
+            return null;
+        }
+        else {
+            return "/errorPage.xhtml?faces-redirect=true";
         }
     }
 
