@@ -5,7 +5,8 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
         <title>Užbaigti registraciją</title>
         <h:outputStylesheet name="/css/bootstrap.css"/>
@@ -15,18 +16,16 @@
         <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     </h:head>
     <h:body>
-        <h:form>
+        <h:form id="createUserForm">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
                         <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.email}"/>
-
-                        <!-- TODO: pridėtas h:messages, reikia stilių pritaikyti.
-                        h:messages rodo bullet point, turbūt šito nereikia, ir confirm-message reik spalvą pakeist
-                        -->
-                        <div><h:messages id="createUser-message" styleClass="error-message" globalOnly="true"/></div>
+                        <div><h:messages id="createUser-message" errorClass="error-message" infoClass="confirm-message" globalOnly="true" autoUpdate="true"/></div>
                         <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
-                                         action="#{linkSenderController.checkEmailForNewRegistration()}"/>
+                                         action="#{linkSenderController.checkEmailForNewRegistration()}"
+                                         onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);">
+                        </h:commandButton>
                     </div>
                 </div>
             </div>

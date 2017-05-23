@@ -19,6 +19,12 @@ input, .ui-inputfield {
     list-style-type: none;
     margin-left: -40px;
 }
+
+li {
+    list-style-type: none;
+    margin-left: -40px;
+}
+
 input[readonly="readonly"] {
     background: #efefef;
 }

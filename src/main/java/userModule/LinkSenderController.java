@@ -55,15 +55,13 @@ public class LinkSenderController implements Serializable
         //jei nerandam vartotojo pagal email, vadinasi jo nera leistinu sarase
         if( person == null)
         {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Šio el. pašto nėra leistinų sąraše"));
+            sendMessage(FacesMessage.SEVERITY_ERROR, "Šio el. pašto nėra leistinų sąraše");
 
         }
         //jei vartotojas tokiu emailu jau turi nustatyta slaptazodi, reiskia jis jau prisiregistraves
         else if (person.getPassword() != null)
         {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Vartotojas su tokiu el. pašto adresu jau registruotas"));
+            sendMessage(FacesMessage.SEVERITY_ERROR, "Vartotojas su tokiu el. pašto adresu jau registruotas");
         }
         else
         {
@@ -83,8 +81,7 @@ public class LinkSenderController implements Serializable
         {
             if(person.getPassword() == null)
             {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage("Šis vartotojas nėra užsiregistravęs"));
+                sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
             }
             else
             {
@@ -92,13 +89,13 @@ public class LinkSenderController implements Serializable
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
                 sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
+                sendMessage(FacesMessage.SEVERITY_INFO, "Laiškas išsiųstas");
                 return "/signin/signin.xhtml";
             }
         }
         else
         {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Šis vartotojas nėra užsiregistravęs"));
+            sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
         }
         return null;
     }
@@ -108,13 +105,13 @@ public class LinkSenderController implements Serializable
         try
         {
             es.sendEmail(person.getEmail(), text);
+            sendMessage(FacesMessage.SEVERITY_INFO, "Registracijos laiškas išsiųstas");
         }
         catch(RuntimeException re)
         {
             if (re.getCause() instanceof MessagingException)
             {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        new FacesMessage("Nepavyko išsiųsti laiško"));
+                sendMessage(FacesMessage.SEVERITY_ERROR, "Nepavyko išsiųsti laiško");
             }
             else
             {
@@ -122,6 +119,12 @@ public class LinkSenderController implements Serializable
             }
 
         }
+    }
+
+    private void sendMessage(FacesMessage.Severity severity, String message)
+    {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(severity, message, message));
     }
 
 }
