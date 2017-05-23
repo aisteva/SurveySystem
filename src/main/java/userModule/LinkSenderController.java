@@ -69,7 +69,8 @@ public class LinkSenderController implements Serializable
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
             sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
-            return "/signin/signin.xhtml";
+            sendMessage(FacesMessage.SEVERITY_INFO, "Registracijos laiškas išsiųstas");
+            return null; //TODO kur redirectinam?
         }
         return null;
     }
@@ -89,8 +90,8 @@ public class LinkSenderController implements Serializable
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
                 sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
-                sendMessage(FacesMessage.SEVERITY_INFO, "Laiškas išsiųstas");
-                return "/signin/signin.xhtml";
+                sendMessage(FacesMessage.SEVERITY_INFO, "Slaptažodžio priminimo laiškas išsiųstas");
+                return null; //TODO kur redirectinam?
             }
         }
         else
@@ -105,7 +106,6 @@ public class LinkSenderController implements Serializable
         try
         {
             es.sendEmail(person.getEmail(), text);
-            sendMessage(FacesMessage.SEVERITY_INFO, "Registracijos laiškas išsiųstas");
         }
         catch(RuntimeException re)
         {
