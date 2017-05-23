@@ -3,7 +3,7 @@ package CreateFormPackage.Controllers;
 import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.*;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -31,7 +31,7 @@ import java.util.concurrent.ExecutionException;
 @ManagedBean
 @ViewScoped
 @Getter
-@LogInterceptor
+@SurveySystemLog
 public class CreateFormController implements Serializable {
 
     @Inject

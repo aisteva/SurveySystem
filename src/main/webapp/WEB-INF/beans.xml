@@ -8,7 +8,7 @@
 
 
     <interceptors>
-        <class>interceptor.LoggingInterceptor</class>
+        <class>log.LoggingSurveySystem</class>
     </interceptors>
     <alternatives>
         <class>services.SaltGenerator</class>

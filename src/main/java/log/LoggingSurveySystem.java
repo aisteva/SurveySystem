@@ -1,4 +1,4 @@
-package interceptor;
+package log;
 
 import lombok.extern.slf4j.Slf4j;
 import userModule.SignInPerson;
@@ -17,10 +17,10 @@ import java.util.Date;
 /**
  * Created by Aiste on 2017-05-15.
  */
-@LogInterceptor
+@SurveySystemLog
 @Interceptor
 @Slf4j
-public class LoggingInterceptor implements Serializable {
+public class LoggingSurveySystem implements Serializable {
 
 
     @Inject

@@ -1,7 +1,7 @@
 package userModule;
 
 import DAO.Implementations.PersonDAO;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import services.PasswordHash;
@@ -20,7 +20,7 @@ import java.io.Serializable;
  */
 @Named
 @RequestScoped
-@LogInterceptor
+@SurveySystemLog
 public class ProfileController implements Serializable
 {
     @Inject

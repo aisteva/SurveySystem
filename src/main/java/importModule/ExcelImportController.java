@@ -2,7 +2,7 @@ package importModule;
 
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Survey;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  */
 @Named
 @ViewScoped
-@LogInterceptor
+@SurveySystemLog
 public class ExcelImportController implements Serializable
 {
     @Inject

@@ -1,6 +1,6 @@
 package services;
 
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.mail.*;
@@ -12,7 +12,7 @@ import java.util.Properties;
  * Created by arturas on 2017-04-04.
  */
 @ApplicationScoped
-@LogInterceptor
+@SurveySystemLog
 public class EmailService
 {
     protected String port = "";

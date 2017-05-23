@@ -2,7 +2,7 @@ package userModule;
 
 import DAO.Implementations.PersonDAO;
 import entitiesJPA.Person;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import services.PasswordHash;
@@ -23,7 +23,7 @@ import java.util.Date;
  */
 @Named
 @javax.faces.view.ViewScoped
-@LogInterceptor
+@SurveySystemLog
 public class SetPasswordByLinkController implements Serializable
 {
     @Inject private PersonDAO personDAO;

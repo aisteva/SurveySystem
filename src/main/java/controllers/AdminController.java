@@ -4,7 +4,7 @@ import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Person;
 import entitiesJPA.Survey;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.omnifaces.cdi.ViewScoped;
@@ -27,7 +27,7 @@ import java.util.List;
 @Named
 @ViewScoped
 @Slf4j
-@LogInterceptor
+@SurveySystemLog
 public class AdminController implements Serializable {
 
     @Inject

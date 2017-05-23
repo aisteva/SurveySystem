@@ -2,7 +2,7 @@ package userModule;
 
 import DAO.Implementations.PersonDAO;
 import entitiesJPA.Person;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import services.EmailService;
@@ -22,7 +22,7 @@ import java.util.Date;
  */
 @Named
 @ViewScoped
-@LogInterceptor
+@SurveySystemLog
 public class LinkSenderController implements Serializable
 {
 

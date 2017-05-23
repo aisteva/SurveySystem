@@ -2,7 +2,7 @@ package controllers;
 
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Survey;
-import interceptor.LogInterceptor;
+import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import userModule.SignInController;
@@ -22,7 +22,7 @@ import java.util.List;
 @Named
 @RequestScoped
 @Slf4j
-@LogInterceptor
+@SurveySystemLog
 public class IndexController implements Serializable {
 
     @Inject

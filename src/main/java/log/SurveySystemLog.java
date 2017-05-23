@@ -1,4 +1,4 @@
-package interceptor;
+package log;
 
 import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Retention;
@@ -15,6 +15,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @InterceptorBinding
 @Target({METHOD, TYPE})
 @Retention(RUNTIME)
-public @interface LogInterceptor {
+public @interface SurveySystemLog {
 
 }
