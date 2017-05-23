@@ -112,14 +112,31 @@ public class SaveAnswersController implements Serializable{
 //        String action = params.get("action");
     }
 
+    // Check box question
+    public void setSelectedOfferedAnswer(OfferedAnswer offered){
+        Answer answer = new Answer();
+        answer.setOfferedAnswerID(offered);
+        answer.setSessionID(null);
+        offered.getAnswerList().add(answer);
+        checkboxAndMultipleAnswersList.put(offered.getQuestionID().getQuestionID(), new ArrayList<>());
+        checkboxAndMultipleAnswersList.get(offered.getQuestionID().getQuestionID()).add(answer);
+    }
+
+    public OfferedAnswer getSelectedOfferedAnswer(){
+        if (checkboxAndMultipleAnswersList.containsKey(tempQuestionId)) {
+            return checkboxAndMultipleAnswersList.get(tempQuestionId).get(0).getOfferedAnswerID();
+        }
+        return null;
+    }
+
+    //Multiple question
     public void setSelectedOfferedAnswers(OfferedAnswer[] offered){
         for (OfferedAnswer o : offered){
             Answer answer = new Answer();
-            answer.setText(o.getText());
             answer.setOfferedAnswerID(o);;
             answer.setSessionID(null);
             o.getAnswerList().add(answer);
-            if (checkboxAndMultipleAnswersList.containsKey(o.getQuestionID()) == false){
+            if (checkboxAndMultipleAnswersList.containsKey(o.getQuestionID().getQuestionID()) == false){
                 checkboxAndMultipleAnswersList.put(o.getQuestionID().getQuestionID(), new ArrayList<>());
             }
             checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).add(answer);
@@ -136,9 +153,8 @@ public class SaveAnswersController implements Serializable{
         return offeredList.toArray(new OfferedAnswer[offeredList.size()]);
     }
 
+
     public List<Question> getQuestionList() {
-        // if (survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList()).size() == 0)
-            //addQuestion(-1);
         return survey.getQuestionList().stream().filter(x -> x.getPage() == page).collect(Collectors.toList());
     }
 
