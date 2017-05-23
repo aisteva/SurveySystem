@@ -95,7 +95,7 @@ public class CreateFormController implements Serializable {
         question.setPage(page);
         questions.get(page).add(prevQuestionIndex+1, question);
         addOfferedAnswer(prevQuestionIndex+1);
-        if (type==Question.QUESTION_TYPE.SCALE.toString()){
+        if (type.equals(Question.QUESTION_TYPE.SCALE.toString())){
             addOfferedAnswer(prevQuestionIndex+1);
         }
     }
