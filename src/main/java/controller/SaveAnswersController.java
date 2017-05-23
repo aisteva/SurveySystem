@@ -109,6 +109,9 @@ public class SaveAnswersController implements Serializable{
 
     public void nextPage() {
         page++;
+        if (questions.containsKey(page)==false){
+            questions.put(page, new ArrayList<>());
+        }
     }
 
     public void prevPage() {
@@ -125,10 +128,11 @@ public class SaveAnswersController implements Serializable{
         List<Question> exist = new ArrayList<>();
         for (Question q : questions.get(page)) {
             for (AnswerConnection ac : q.getAnswerConnectionList()) {
-                // Father question == offered answer question
+                // If Father question == editing question
                 if (ac.getOfferedAnswerID().getQuestionID().getQuestionID() == tempQuestionId) {
                     toRemove.add(q);
                     for (OfferedAnswer o : offered) {
+                        // Question's answerConnection has offeredAnswer which is in offered array.
                         if (ac.getOfferedAnswerID().getOfferedAnswerID() == o.getOfferedAnswerID()) {
                             toRemove.remove(q);
                             exist.add(q);
@@ -148,6 +152,7 @@ public class SaveAnswersController implements Serializable{
             questions.get(page).remove(q);
         }
         if (offered.length == 0){
+            textAndScaleAnswersList.remove(tempQuestionId);
             checkboxAndMultipleAnswersList.get(tempQuestionId).clear();
             return;
         }
@@ -168,12 +173,17 @@ public class SaveAnswersController implements Serializable{
                 if (Arrays.asList(offered).contains(a.getOfferedAnswerID()) == false){
                     removeUnselected.add(a);
                 }
-                if (a.getOfferedAnswerID() != answer.getOfferedAnswerID()){
+                if (a.getOfferedAnswerID() == answer.getOfferedAnswerID()){
                     addNewSelected = false;
                 }
             }
             for (Answer a : removeUnselected){
-                checkboxAndMultipleAnswersList.get(tempQuestionId).remove(a);
+                Iterator<Answer> i = checkboxAndMultipleAnswersList.get(tempQuestionId).iterator();
+                while (i.hasNext()){
+                    if (i.next().getOfferedAnswerID().getOfferedAnswerID() == a.getOfferedAnswerID().getOfferedAnswerID()){
+                        i.remove();
+                    }
+                }
             }
             if (addNewSelected == true){
                 checkboxAndMultipleAnswersList.get(tempQuestionId).add(answer);
