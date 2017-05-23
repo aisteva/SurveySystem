@@ -118,7 +118,7 @@ public class CreateFormController implements Serializable {
             for (AnswerConnection answerConnection : offeredAnswer.getAnswerConnectionList()) {
                 answerConnection.getQuestionID().getAnswerConnectionList().remove(answerConnection); // Deletes from question answerconnections
             }
-            questions.get(page).get(questionIndex).getOfferedAnswerList().remove(offeredAnswer);
+            questions.get(page).get(questionIndex).getOfferedAnswerList().remove(answerIndex);
         }
     }
 
