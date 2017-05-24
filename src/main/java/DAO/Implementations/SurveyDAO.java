@@ -25,6 +25,11 @@ public class SurveyDAO implements ISurveyDAO {
         em.persist(survey);
     }
 
+    public void update(Survey survey) {
+        em.merge(survey);
+        em.flush();
+    }
+
     public List<Survey> getAllSurveys() {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
     }
