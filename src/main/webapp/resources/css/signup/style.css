@@ -15,12 +15,7 @@ input, .ui-inputfield {
     color: #29bf89;
 }
 
-.confirm-message li {
-    list-style-type: none;
-    margin-left: -40px;
-}
-
-li {
+.confirm-message li, li.error-message {
     list-style-type: none;
     margin-left: -40px;
 }

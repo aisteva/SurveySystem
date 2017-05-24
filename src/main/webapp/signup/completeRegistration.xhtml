@@ -12,6 +12,7 @@
     <h:outputStylesheet name="/css/bootstrap.css"/>
     <h:outputScript name="/js/jquery-3.2.1.min.js"/>
     <h:outputScript name="/js/bootstrap.min.js"/>
+    <h:outputStylesheet name="/css/style.css"/>
     <h:outputStylesheet name="/css/signup/style.css"/>
     <h:head>
         <title>Užbaigti registraciją</title>
@@ -28,7 +29,7 @@
         <div class="container">
             <h:form>
                 <div class="row">
-                    <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
+                    <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 box-shadow" style="padding-top: 40px;">
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <h:inputText a:placeholder="Vardas" id="firstname" value="#{setPasswordByLinkController.person.firstName}" required="true" requiredMessage="Įveskite vardą"/>
                         </div>

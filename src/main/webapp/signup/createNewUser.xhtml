@@ -12,6 +12,7 @@
         <h:outputStylesheet name="/css/bootstrap.css"/>
         <h:outputScript name="/js/jquery-3.2.1.min.js"/>
         <h:outputScript name="/js/bootstrap.min.js"/>
+        <h:outputStylesheet name="/css/style.css"/>
         <h:outputStylesheet name="/css/signup/style.css"/>
         <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
     </h:head>
@@ -19,7 +20,7 @@
         <h:form id="createUserForm">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12">
+                    <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12 box-shadow" style="padding-top: 40px">
                         <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.email}"/>
                         <div><h:messages id="createUser-message" errorClass="error-message" infoClass="confirm-message" globalOnly="true" autoUpdate="true"/></div>
                         <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
