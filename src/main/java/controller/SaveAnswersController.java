@@ -208,15 +208,15 @@ public class SaveAnswersController implements Serializable{
     public String saveAnswerTransaction() {
         try {
             for (Long l : textAndScaleAnswersList.keySet()) {
-                Answer aa = textAndScaleAnswersList.get(l);
-                if (aa.getText().equals(""))
-                    answerDAO.save(aa);
+                Answer a = textAndScaleAnswersList.get(l);
+                if (a.getText() != null && a.getText() != "")
+                    answerDAO.save(a);
             }
 
             for (Long l : checkboxAndMultipleAnswersList.keySet()) {
                 List<Answer> answerList = checkboxAndMultipleAnswersList.get(l);
                 for (Answer a : answerList) {
-                    if (a.getText() != "")
+                    if (a.getText() != null && a.getText() != "")
                         answerDAO.save(a);
                 }
             }

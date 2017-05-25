@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -75,6 +76,7 @@ public class SurveyInfoController implements Serializable{
         }
         @Getter private String answerText;
         @Getter private int countAnswers;
+        @Getter @Setter private String percentage;
 
         public void addToCountAnswers(){
             countAnswers++;
@@ -84,6 +86,9 @@ public class SurveyInfoController implements Serializable{
     private void addOnlyUnique(List<Answer> lst, List<AnswerCounter> rez){
         Set<String> texts = new HashSet<>();
         for (Answer a : lst) {
+            if (a.getText() == null || a.getText().isEmpty()) {
+                a.setText("-666");  // Impossible but in case
+            }
             if (texts.contains(a.getText())){
                 rez.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();
             } else {
@@ -150,11 +155,24 @@ public class SurveyInfoController implements Serializable{
         if(survey!= null){
             for (Question q : survey.getQuestionList()){
                 addToAnswerCounterMap(q);
+                calculatePercentage(q.getQuestionID());
             }
         }
         //jei neranda apklausos, išmeta errora
         else {
             mesg.redirectToErrorPage("Tokios apklausos ataskaitos nėra");
+        }
+    }
+
+    private void calculatePercentage(Long questionID){
+        long total = 0;
+        for (AnswerCounter ac : answerCounterMap.get(questionID)){
+            total += ac.countAnswers;
+        }
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(2);
+        for (AnswerCounter ac : answerCounterMap.get(questionID)){
+            ac.setPercentage(df.format((float)ac.countAnswers/total*100f));
         }
     }
 

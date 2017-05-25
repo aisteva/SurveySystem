@@ -37,14 +37,6 @@
                 </h:form>
             </div>
             <!--<h:panelGroup rendered="#{surveyInfoController.survey.submits > 0}">-->
-
-            <!--TODO čia test eksportas, dizainą reikia pakeisti -->
-
-            <!-- TODO. ar darom kaip importe, kad darom užrašą, kad apklausa eksportuojama, ar tiesiog paleidžiam async metodą
-                    ir laukiam, kol apklausa eksportuosis? -->
-
-            <!-- end test -->
-
             <h1 class="text-center">#{surveyInfoController.survey.title}</h1>
             <h4 class="text-center">#{surveyInfoController.survey.description}</h4>
             <h4 class="text-center">Apklausos autorius: #{surveyInfoController.survey.personID.firstName} #{surveyInfoController.survey.personID.lastName}</h4>
@@ -67,7 +59,7 @@
                             var finals#{question.questionID} = [
                                 <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
                                            var="answerCounter" varStatus="loop">
-                                    {label: "#{answerCounter.answerText}", y:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
+                                    {label: "#{answerCounter.answerText} #{answerCounter.percentage} %", y:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
                                 </ui:repeat>
                             ];
                             var chartType#{question.questionID};
