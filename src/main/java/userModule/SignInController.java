@@ -11,6 +11,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import java.util.Arrays;
  * Created by Lenovo on 2017-04-06.
  */
 @Named
-@RequestScoped
+@ViewScoped
 @SurveySystemLog
 public class SignInController implements Serializable {
 
@@ -40,25 +41,21 @@ public class SignInController implements Serializable {
     public String signIn(){
         //tikrinam, ar į abu laukus kas nors įrašyta
         if (expectedEmail == "" || expectedPassword == "") {
-            FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
-                    new FacesMessage("Įveskite el. paštą ir slaptažodį"));
+            sendMessage("Įveskite el. paštą ir slaptažodį");
             signInPerson.setLoggedInPerson(null);
             return null;
         }
         //tikrinam, ar toks email yra duomenų bazėj ir ar teisingas password
         else if (!isEmailInDatabase() || !isPasswordCorrect())
         {
-            FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
-                    new FacesMessage("Neteisingas el.paštas arba slaptažodis"));
+            sendMessage("Neteisingas el.paštas arba slaptažodis");
             signInPerson.setLoggedInPerson(null);
             return null;
         }
         //tikrinam, ar vartotojas nėra užblokuotas
         else if (signInPerson.getLoggedInPerson().isBlocked())
         {
-            FacesContext.getCurrentInstance().addMessage("signin-form:signin-error-message",
-                    new FacesMessage("Vartotojas užblokuotas"));
-            //loggedInPerson = null;
+            sendMessage("Vartotojas užblokuotas");
             signInPerson.setLoggedInPerson(null);
             return null;
         }
@@ -154,6 +151,12 @@ public class SignInController implements Serializable {
         if (isAdmin())
             return null;
         return "/index.xhtml";
+    }
+
+    private void sendMessage(String message)
+    {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, message, message));
     }
 
 }

@@ -161,3 +161,19 @@ body {
 .ui-messages-error ul {
     margin: 0 !important;
 }
+
+.error-message {
+    color: #F74356;
+}
+.confirm-message {
+    color: #29bf89;
+}
+
+.confirm-message li, .error-message li, li.error-message, li.confirm-message {
+    list-style-type: none;
+    margin-left: -40px;
+}
+
+.error-page .error-message {
+    color: #7e8d85;
+}

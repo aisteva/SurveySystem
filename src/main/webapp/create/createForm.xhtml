@@ -21,150 +21,22 @@
                      value="#{createFormController.survey.surveyID}"
                      validator="#{createFormController.validate}"/>
     </f:metadata>
-    <h:body style="background: linear-gradient(#29bf89, #0083BB);">
+    <h:body>
         <ui:include src="/header.xhtml"/>
         <div class="container">
             <h:form id="create_form">
-                <div class="box-shadow col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
-                    <div class="survey col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 30px;">
-                                <span class="required">* - Privaloma</span>
-                                <p:messages id="show-survey-message" autoUpdate="true"/>
-                            </div>
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <h3>
-                                    <a style="text-decoration: none; cursor: pointer;" type="button" class="text text-primary glyphicon glyphicon-open pull-right" data-toggle="modal" data-target="#import"/>
-                                </h3>
-                            </div>
-                            <div class="surveyTitle col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <h:inputText  label="Apklausos pavadinimas" value="#{createFormController.survey.title}" styleClass="onlyBottomBorder" a:placeholder="Apklausos pavadinimas">
-                                    <f:ajax render="@form"/>
-                                </h:inputText>
-                            </div>
-                            <div class="surveyDescription col-lg-12 col-md-12 col-sm-12 col-xs-12 input-group">
-                                <h:inputTextarea label="apibdinimas" value="#{createFormController.survey.description}" a:placeholder="Aprašymas" styleClass="form-control custom-control" rows="5" style="resize: none;">
-                                    <f:ajax render="@form"/>
-                                </h:inputTextarea>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                            <p:outputLabel for="startDate" value="Pradžios data * " />
-                                        </div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
-                                            <p:calendar  label="pradziosData" id="startDate" value="#{createFormController.survey.startDate}" pattern="yyyy-MM-dd">
-                                                <f:ajax render="@form" event="dateSelect"/>
-                                            </p:calendar>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                            <p:outputLabel for="endDate" value="Pabaigos data "/>
-                                        </div>
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                            <p:calendar label="pabaigosData" id="endDate" value="#{createFormController.survey.endDate}" pattern="yyyy-MM-dd">
-                                                <f:ajax render="@form" event="dateSelect"/>
-                                            </p:calendar>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 vertical-align">
-                                        <span style="padding-right: 10px;">Privati</span>
-                                        <label class="switch">
-                                            <h:selectBooleanCheckbox value="#{createFormController.survey.surveyPrivate}" label="privati">
-                                                <f:ajax render="@form"/>
-                                            </h:selectBooleanCheckbox>
-                                            <div class="slider round"></div>
-                                        </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-                            <h3>Puslapis nr. #{createFormController.page}</h3>
-                        </div>
-                    </div>
-                    <h:panelGroup id="survey" >
-                        <ui:repeat  value="#{createFormController.questions.get(createFormController.page)}" var="question" varStatus="questionStatus">
-                            <div class="one-question">
-                                <div class="row question-info">
-                                    <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
-                                        <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
-                                        <h:inputText disabled="#{createFormController.survey.submits > 0}"
-                                                     value="#{question.questionText}"
-                                                     a:placeholder="Klausimas" styleClass="onlyBottomBorder"
-                                                     required="#{createFormController.validateQuestionSize()}"
-                                                     requiredMessage="Privalomas bent vieno klausimo sukūrimas">
-                                            <f:ajax render="@form"/>
-                                        </h:inputText>
-                                    </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 text-right push-down">
-                                        <h:selectOneMenu value="#{question.newType}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
-                                            <f:selectItems value = "#{question.types}"/>
-                                            <f:ajax listener="#{createFormController.changeQuestionType(questionStatus.index)}" render="@form"/>
-                                        </h:selectOneMenu>
-                                    </div>
-                                </div>
-                                <div class="answers">
-                                   <h:panelGroup rendered="#{question.type == 'TEXT'}">
-                                        <ui:include src="text.xhtml"/>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{question.type == 'CHECKBOX' || question.type == 'MULTIPLECHOICE'}">
-                                        <ui:include src="checkboxAndMultipleChoice.xhtml"/>
-                                    </h:panelGroup>
-                                    <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                                        <ui:include src="scale.xhtml"/>
-                                    </h:panelGroup>
-                                </div>
-
-                                <div class="actions-with-question">
-                                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.moveQuestionUp(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                                            <div class="glyphicon glyphicon-triangle-top action-icon"></div>
-                                            <f:ajax render="@form"/>
-                                        </h:commandLink>
-                                    </div>
-                                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.moveQuestionDown(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                                            <div class="glyphicon glyphicon-triangle-bottom action-icon"></div>
-                                            <f:ajax render="@form"/>
-                                        </h:commandLink>
-                                    </div>
-                                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.removeQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                                            <div class="glyphicon glyphicon-trash action-icon"></div>
-                                            <f:ajax render="@form"/>
-                                        </h:commandLink>
-                                    </div>
-                                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                                        <h:commandLink action="#{createFormController.addQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                                            <div class="glyphicon glyphicon-plus action-icon"></div>
-                                            <f:ajax render="@form"/>
-                                        </h:commandLink>
-                                    </div>
-                                    <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4 vertical-align">
-                                        <span style="padding-right: 10px">Privalomas</span>
-                                        <label class="switch">
-                                            <h:selectBooleanCheckbox value="#{question.required}" disabled="#{createFormController.survey.submits > 0}">
-                                                <f:ajax render="@form"/>
-                                            </h:selectBooleanCheckbox>
-                                            <div class="slider round"></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </ui:repeat>
-                    </h:panelGroup>
+                <div class="box-shadow section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
+                    <ui:include src="surveyMainInfo.xhtml"/>
+                </div>
+                <div class="box-shadow section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
+                    <ui:include src="onePage.xhtml"/>
+                </div>
+                <div class="box-shadow section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
                     <div class="row navigation">
 
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-left">
                             <c:if test="#{createFormController.page > 1}">
-                                <h:commandLink action="#{createFormController.prevPage()}" disabled="#{createFormController.survey.submits > 0}">
+                                <h:commandLink actionListener="#{createFormController.prevPage()}" disabled="#{createFormController.survey.submits > 0}">
                                     <div class="glyphicon glyphicon-chevron-left action-icon"></div>
                                 </h:commandLink>
                             </c:if>
@@ -176,7 +48,7 @@
                                              ajax="false"/>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-right">
-                            <h:commandLink action="#{createFormController.nextPage()}" disabled="#{createFormController.survey.submits > 0}">
+                            <h:commandLink actionListener="#{createFormController.nextPage()}" disabled="#{createFormController.survey.submits > 0}">
                                 <div class="glyphicon glyphicon-chevron-right action-icon"></div>
                             </h:commandLink>
                         </div>
@@ -184,45 +56,8 @@
                     </div>
                     <p:messages globalOnly="true"/>
                 </div>
-
             </h:form>
-            <div id="import" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title text-center">Įkelti apklausą</h4>
-                        </div>
-                        <div class="modal-body">
-                            <p:messages  id="messages" autoUpdate="true"/>
-
-                            <!-- būtina palikt enctype, kitaip neveiks file upload. Mode paliekam advanced. -->
-                            <h:form id="uploadForm" enctype="multipart/form-data">
-                                <p:fileUpload fileUploadListener="#{createFormController.importExcelFile}"
-                                              invalidFileMessage="Neteisingo formato failas"
-                                              mode="advanced" update=":surveyImportResults"
-                                              uploadLabel="Įkelti"
-                                              cancelLabel="Atšaukti"
-                                              sizeLimit="100000" allowTypes="/(\.|\/)(xls|xlsx)$/"
-                                              label="Pasirinkti" />
-                            </h:form>
-                            <h:form id="surveyImportResults">
-                                <p:panel rendered="#{createFormController.imported}">
-                                    <p style="color: #29bf89;">Apklausa įkelta sėkmingai! Išsaugokite ir uždarykite</p>
-                                </p:panel>
-                            </h:form>
-                        </div>
-                        <div class="modal-footer">
-                            <h:form>
-                                <p:commandButton value="Išsaugoti ir uždaryti" styleClass="btn btn-primary" process="create_form @this" ajax="false">
-                                    <f:ajax execute="@form"/>
-                                </p:commandButton>
-                            </h:form>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+            <ui:include src="importSurvey.xhtml"/>
         </div>
         <ui:include src="/footer.xhtml"/>
     </h:body>

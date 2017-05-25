@@ -22,7 +22,7 @@
         <o:viewParam name="id" value="#{setPasswordByLinkController.person.inviteUrl}"
                     validator="#{setPasswordByLinkController.validateInvitationLink}"
                     required="true">
-            <o:viewParamValidationFailed sendError="400" message="Neteisingas URL" />
+            <o:viewParamValidationFailed sendRedirect="errorPage.html" message="Neteisingas URL" />
         </o:viewParam>
     </f:metadata>
     <h:body>
@@ -75,7 +75,6 @@
                     </div>
                 </div>
             </h:form>
-           <!--TODO čia šita pass ir confirmpass dalis kartojasi resetPassword.xhtml. Gal galima kaip nors čia includint šitą dalį, kad nesikartotų kodas?-->
         </div>
    </h:body>
 </html>

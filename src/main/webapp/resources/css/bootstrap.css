@@ -1478,11 +1478,11 @@ a.text-success:focus {
   color: #2b542c;
 }
 .text-info {
-  color: #31708f;
+  color: #7e8d85;
 }
 a.text-info:hover,
 a.text-info:focus {
-  color: #245269;
+  color: #64706a;
 }
 .text-warning {
   color: #8a6d3b;
@@ -4401,6 +4401,16 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   font-size: 18px;
   line-height: 20px;
 }
+/*.navbar-brand {*/
+  /*float: left;*/
+  /*height: 40px;*/
+  /*padding: 5px 40px 15px 25px;*/
+  /*font-size: 18px;*/
+  /*line-height: 20px;*/
+/*}*/
+/*.navbar-brand img {*/
+  /*height: 40px;*/
+/*}*/
 .navbar-brand:hover,
 .navbar-brand:focus {
   text-decoration: none;

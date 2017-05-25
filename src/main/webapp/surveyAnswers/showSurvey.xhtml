@@ -19,6 +19,7 @@
     <f:viewParam name="person" value="#{signInPerson.loggedInPerson.personID}" />
     <o:viewParam name="id" required="true" value="#{saveAnswersController.survey.surveyURL}"
                  validator="#{saveAnswersController.validate}">
+        <o:viewParamValidationFailed sendRedirect="errorPage.html" message="Neteisingas URL" />
     </o:viewParam>
     <f:viewAction action="#{saveAnswersController.init}" />
 
@@ -132,7 +133,7 @@
                             </h:panelGroup>
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-4 col-xs-12">
-                            <h:panelGroup rendered="#{saveAnswersController.questions.get(saveAnswersController.page).size() > 0}">
+                            <h:panelGroup rendered="#{saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <p:commandButton value="Kitas puslapis"
                                                  styleClass="btn btn-primary btn-lg text-center"
                                                  actionListener="#{saveAnswersController.nextPage()}"
@@ -143,7 +144,7 @@
                         </div>
 
                         <div class="col-lg-8 col-md-8 col-sm-4 col-xs-12">
-                            <h:panelGroup rendered="#{saveAnswersController.questions.get(saveAnswersController.page).size() == 0}">
+                            <h:panelGroup rendered="#{!saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <h:commandButton value="Siųsti atsakymą"
                                                  styleClass="btn btn-primary btn-lg text-center"
                                                  action="#{saveAnswersController.saveAnswer()}"
