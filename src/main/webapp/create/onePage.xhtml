@@ -6,76 +6,103 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
         xmlns:c="http://java.sun.com/jsp/jstl/core">
-    <div class="row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-            <h3>Puslapis nr. #{createFormController.page}</h3>
+    <div class="one-question">
+        <div class="row question-info">
+            <h:panelGroup rendered="#{question.type == 'CHECKBOX' || question.type == 'MULTIPLECHOICE'}">
+                <div class="question-text col-lg-8 col-md-8 col-sm-7 col-xs-12">
+                    <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
+                    <h:inputText disabled="#{createFormController.survey.submits > 0}" value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
+                        <f:ajax render="@form"/>
+                    </h:inputText>
+                </div>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{question.type != 'CHECKBOX' and question.type != 'MULTIPLECHOICE'}">
+                <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                    <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
+                    <h:inputText disabled="#{createFormController.survey.submits > 0}" value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
+                        <f:ajax render="@form"/>
+                    </h:inputText>
+                </div>
+            </h:panelGroup>
+            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-11 text-right push-down">
+                <h:selectOneMenu value="#{question.newType}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
+                    <f:selectItems value = "#{question.types}"/>
+                    <f:ajax listener="#{createFormController.changeQuestionType(questionStatus.index)}" render="@form"/>
+                </h:selectOneMenu>
+            </div>
+            <h:panelGroup rendered="#{question.type == 'CHECKBOX' || question.type == 'MULTIPLECHOICE'}">
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                    <h:panelGroup rendered="#{not question.showQuestionsByAnswer}">
+                        <div data-toggle="tooltip" title="Pridėti klausimus pagal atsakymus" data-placement="right">
+                            <h:outputScript>
+                                $('[data-toggle="tooltip"]').tooltip();
+                            </h:outputScript>
+                            <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-plus"
+                                           style="text-decoration: none;"
+                                           actionListener="#{createFormController.setHasAnswersByQuestion(questionStatus.index, loopPage)}"
+                                           disabled="#{createFormController.survey.submits > 0}"/>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{question.showQuestionsByAnswer}">
+                        <div data-toggle="tooltip" title="Išjungti klausimus pagal atsakymus" data-placement="right">
+                            <h:outputScript>
+                                $('[data-toggle="tooltip"]').tooltip();
+                            </h:outputScript>
+                            <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-minus"
+                                           style="text-decoration: none;"
+                                           actionListener="#{createFormController.setHasAnswersByQuestion(questionStatus.index, loopPage)}"
+                                           disabled="#{createFormController.survey.submits > 0}"/>
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </h:panelGroup>
+        </div>
+        <div class="answers">
+            <h:panelGroup rendered="#{question.type == 'TEXT'}">
+                <ui:include src="text.xhtml"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{question.type == 'CHECKBOX' || question.type == 'MULTIPLECHOICE'}">
+                <ui:include src="checkboxAndMultipleChoice.xhtml"/>
+            </h:panelGroup>
+            <h:panelGroup rendered="#{question.type == 'SCALE'}">
+                <ui:include src="scale.xhtml"/>
+            </h:panelGroup>
+        </div>
+
+        <div class="actions-with-question">
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                <h:commandLink action="#{createFormController.addQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
+                    <div class="glyphicon glyphicon-plus action-icon"></div>
+                    <f:ajax render="@form"/>
+                </h:commandLink>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                <h:commandLink action="#{createFormController.removeQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
+                    <div class="glyphicon glyphicon-trash action-icon"></div>
+                    <f:ajax render="@form"/>
+                </h:commandLink>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                <h:commandLink action="#{createFormController.moveQuestionUp(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
+                    <div class="glyphicon glyphicon-triangle-top action-icon"></div>
+                    <f:ajax render="@form"/>
+                </h:commandLink>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                <h:commandLink action="#{createFormController.moveQuestionDown(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
+                    <div class="glyphicon glyphicon-triangle-bottom action-icon"></div>
+                    <f:ajax render="@form"/>
+                </h:commandLink>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4 vertical-align">
+                <span style="padding-right: 10px">Privalomas</span>
+                <label class="switch">
+                    <h:selectBooleanCheckbox value="#{question.required}" disabled="#{createFormController.survey.submits > 0}">
+                        <f:ajax render="@form"/>
+                    </h:selectBooleanCheckbox>
+                    <div class="slider round"></div>
+                </label>
+            </div>
         </div>
     </div>
-    <h:panelGroup id="survey" >
-        <ui:repeat  value="#{createFormController.questions.get(createFormController.page)}" var="question" varStatus="questionStatus">
-            <div class="one-question">
-                <div class="row question-info">
-                    <div class="question-text col-lg-9 col-md-9 col-sm-8 col-xs-12">
-                        <h:outputLabel value="#{createFormController.getQuestionParentMessage(questionStatus.index)}"/>
-                        <h:inputText disabled="#{createFormController.survey.submits > 0}" value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
-                            <f:ajax render="@form"/>
-                        </h:inputText>
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12 text-right push-down">
-                        <h:selectOneMenu value="#{question.newType}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
-                            <f:selectItems value = "#{question.types}"/>
-                            <f:ajax listener="#{createFormController.changeQuestionType(questionStatus.index)}" render="@form"/>
-                        </h:selectOneMenu>
-                    </div>
-                </div>
-                <div class="answers">
-                    <h:panelGroup rendered="#{question.type == 'TEXT'}">
-                        <ui:include src="text.xhtml"/>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{question.type == 'CHECKBOX' || question.type == 'MULTIPLECHOICE'}">
-                        <ui:include src="checkboxAndMultipleChoice.xhtml"/>
-                    </h:panelGroup>
-                    <h:panelGroup rendered="#{question.type == 'SCALE'}">
-                        <ui:include src="scale.xhtml"/>
-                    </h:panelGroup>
-                </div>
-
-                <div class="actions-with-question">
-                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                        <h:commandLink action="#{createFormController.moveQuestionUp(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                            <div class="glyphicon glyphicon-triangle-top action-icon"></div>
-                            <f:ajax render="@form"/>
-                        </h:commandLink>
-                    </div>
-                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                        <h:commandLink action="#{createFormController.moveQuestionDown(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                            <div class="glyphicon glyphicon-triangle-bottom action-icon"></div>
-                            <f:ajax render="@form"/>
-                        </h:commandLink>
-                    </div>
-                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                        <h:commandLink action="#{createFormController.removeQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                            <div class="glyphicon glyphicon-trash action-icon"></div>
-                            <f:ajax render="@form"/>
-                        </h:commandLink>
-                    </div>
-                    <div class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
-                        <h:commandLink action="#{createFormController.addQuestion(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
-                            <div class="glyphicon glyphicon-plus action-icon"></div>
-                            <f:ajax render="@form"/>
-                        </h:commandLink>
-                    </div>
-                    <div class="col-lg-5 col-md-5 col-sm-4 col-xs-4 vertical-align">
-                        <span style="padding-right: 10px">Privalomas</span>
-                        <label class="switch">
-                            <h:selectBooleanCheckbox value="#{question.required}" disabled="#{createFormController.survey.submits > 0}">
-                                <f:ajax render="@form"/>
-                            </h:selectBooleanCheckbox>
-                            <div class="slider round"></div>
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </ui:repeat>
-    </h:panelGroup>
 </ui:composition>

@@ -31,7 +31,7 @@ import java.util.*;
 @Slf4j
 @Named
 @ConversationScoped
-//@SurveySystemLog
+@SurveySystemLog
 public class SaveAnswersController implements Serializable{
 
     @Inject
