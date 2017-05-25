@@ -33,6 +33,12 @@ public class LinkSenderController implements Serializable
     private final String passwordResetText = " Noredami pasikeisti slaptazodi, spauskite sia nuoroda: " +
             "http://localhost:8080/signin/resetPassword.html?id=%s";
 
+    private static final String REGISTRATION_SUCCESSFUL = "Registracijos laiškas išsiųstas. " +
+            "Tęskite registraciją paspaudę nuorodą el. laiške.";
+
+    private static final String PASSWORD_REMINDER_SUCCESSFUL = "Slaptažodžio priminimo laiškas išsiųstas." +
+            " Tęskite paspaudę nuorodą el. laiške";
+
 
     @Getter
     @Setter
@@ -69,7 +75,7 @@ public class LinkSenderController implements Serializable
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
             sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
-            sendMessage(FacesMessage.SEVERITY_INFO, "Registracijos laiškas išsiųstas");
+            sendMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
             return null; //TODO kur redirectinam?
         }
         return null;
@@ -90,7 +96,7 @@ public class LinkSenderController implements Serializable
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
                 sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
-                sendMessage(FacesMessage.SEVERITY_INFO, "Slaptažodžio priminimo laiškas išsiųstas");
+                sendMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
                 return null; //TODO kur redirectinam?
             }
         }
@@ -117,7 +123,6 @@ public class LinkSenderController implements Serializable
             {
                 throw re;
             }
-
         }
     }
 

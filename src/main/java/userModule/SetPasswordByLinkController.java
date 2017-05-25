@@ -132,13 +132,14 @@ public class SetPasswordByLinkController implements Serializable
 
 
 
-    //Funkcija HTTP 400 Error kvietimui
+    //Funkcija redirectinti į klaidos langą
     private void set400(FacesContext context, String message)
     {
         try
         {
-            context.getExternalContext().responseSendError(400, message);
-        } catch (IOException e)
+            context.getExternalContext().redirect("/errorPage.html");
+        }
+        catch (IOException e)
         {
             e.printStackTrace();
         }
