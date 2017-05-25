@@ -10,6 +10,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
+import services.MessageCreator;
 import services.excel.ExcelSurveyExport;
 
 import javax.faces.component.UIComponent;
@@ -50,6 +51,9 @@ public class SurveyInfoController implements Serializable{
 
     @Getter
     private Map<Long, QuestionStats> questionStatsMap = new HashMap<>();
+
+    @Inject
+    private MessageCreator mesg;
 
     public class QuestionStats{
         public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa){
@@ -150,7 +154,7 @@ public class SurveyInfoController implements Serializable{
         }
         //jei neranda apklausos, išmeta errora
         else {
-            context.getExternalContext().redirect("/errorPage.html");
+            mesg.redirectToErrorPage("Tokios apklausos ataskaitos nėra");
         }
     }
 
