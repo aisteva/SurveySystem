@@ -16,7 +16,26 @@
             <div class="row">
             </div>
             <div class="action-with-survey">
-                <div class="col-lg-1 col-lg-offset-10 col-md-1 col-md-offset-10 col-sm-1 col-sm-offset-10 col-xs-1 col-xs-offset-10">
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
+                    <h:panelGroup rendered="#{signInPerson.loggedInPerson.personID == survey.personID.personID or signInPerson.loggedInPerson.userType == 'ADMIN'}">
+                        <div class="row" style="border: 1px solid #bdbdbe; padding: 10px 0;">
+                            <div class="col-lg-11 col-sm-11 col-xs-11 col-md-11">
+                                <p style="word-wrap: break-word;">http://localhost:8080/surveyAnswers/showSurvey.html?id=#{survey.surveyURL}</p>
+                            </div>
+                            <div class="col-lg-1 col-sm-1 col-xs-1 col-md-1 text-center" style="padding: 0px;">
+                                <a class="text text-info glyphicon glyphicon-copy link-copy"
+                                   style="margin-left: 10px;
+                                          text-decoration: none;
+                                          cursor: pointer;
+                                          width: 100%;
+                                          margin: 0;
+                                          margin-top: 10px;"
+                                   data-clipboard-text="http://localhost:8080/surveyAnswers/showSurvey.html?id=#{survey.surveyURL}"></a>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                     <h:panelGroup rendered="#{survey.personID.personID == signInPerson.loggedInPerson.personID and survey.submits == 0}">
                         <h:link outcome="/create/createForm.html?id=#{survey.surveyID}">
                             <div class="glyphicon glyphicon-pencil"></div>
