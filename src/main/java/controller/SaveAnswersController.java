@@ -194,9 +194,11 @@ public class SaveAnswersController implements Serializable{
         //iteruoja per mapą ir ištrina, jei atsakymas yra tuščias, kadangi prieš tai visiems atsakymas liste buvo užsetintas id
         for(Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext();) {
             Map.Entry<Long, Answer> entry = it.next();
-            System.out.println(entry.getValue());
             if(entry.getValue().getText() == null)
-                it.remove();
+            {
+               // it.remove();
+            }
+
         }
 
         //jei neatsakyta nei i viena klausima metama zinute
@@ -222,11 +224,11 @@ public class SaveAnswersController implements Serializable{
                     a.setSessionID(session);
                     //nustato, kad i apklausa baigta atsakineti
                     a.setFinished(true);
-                    answerDAO.save(a);
                 }
                 else {
                     OfferedAnswer of = a.getOfferedAnswerID();
                     of.getAnswerList().remove(a);
+                    a.setOfferedAnswerID(null);
                 }
             }
 
@@ -238,7 +240,6 @@ public class SaveAnswersController implements Serializable{
                         a.setSessionID(session);
                         //nustato, kad i apklausa baigta atsakineti
                         a.setFinished(true);
-                        answerDAO.save(a);
                     }
                 }
             }
