@@ -17,7 +17,6 @@
 </h:head>
 <f:metadata>
     <f:viewParam name="person" value="#{signInPerson.loggedInPerson.personID}" />
-    <f:viewAction action="#{signInController.isSigned}" />
     <o:viewParam name="id" required="true" value="#{saveAnswersController.survey.surveyURL}"
                  validator="#{saveAnswersController.validate}">
     </o:viewParam>
