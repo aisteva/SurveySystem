@@ -207,7 +207,7 @@ public class SaveAnswersController implements Serializable{
                     new FacesMessage("Nepavyko išsaugoti atsakymų"));
         } finally {
             //NEISTRINTI, reikalinga optimistiniui ir submitams
-            //self.increaseSubmits();         //iskvieciamas metodas padidinti submitams per self injecta
+            self.increaseSubmits();         //iskvieciamas metodas padidinti submitams per self injecta
             conversation.end();
             return "/index.xhtml";
         }
