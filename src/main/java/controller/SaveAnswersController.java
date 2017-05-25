@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
+import services.MessageCreator;
+import services.SaltGenerator;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
@@ -88,6 +90,12 @@ public class SaveAnswersController implements Serializable{
 
     @Inject
     private SaveAnswersController self;
+
+    @Inject
+    private MessageCreator mesg;
+
+    @Inject
+    private SaltGenerator sg;
 
     @Getter @Setter
     Map<OfferedAnswer, Boolean> selections = new HashMap<>();
@@ -180,15 +188,45 @@ public class SaveAnswersController implements Serializable{
         }
     }
 
-    @Transactional
-    public String saveAnswer() {
+    //patikrina, ar yra atsakytą nors į vieną klausimą
+    public String saveAnswer(){
+
+        //iteruoja per mapą ir ištrina, jei atsakymas yra tuščias, kadangi prieš tai visiems atsakymas liste buvo užsetintas id
+        for(Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<Long, Answer> entry = it.next();
+            System.out.println(entry.getValue());
+            if(entry.getValue().getText() == null)
+                it.remove();
+        }
+
+        //jei neatsakyta nei i viena klausima metama zinute
+        if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty())){
+            mesg.sendMessage(FacesMessage.SEVERITY_INFO, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
+            log.error("Niekas neišsaugota");
+            return null;
+        }
+        else{
+            self.saveAnswerTransaction();
+            return "/index.xhtml?faces-redirect=true";
+        }
+    }
+
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    public void saveAnswerTransaction() {
         try {
+            String session = sg.getRandomString(15);
             for (Long l : textAndScaleAnswersList.keySet()) {
                 Answer a = textAndScaleAnswersList.get(l);
-                if (a.getText() != null && !a.getText().isEmpty()) {
+                if (a.getText() != null && a.getText() != "") {
+                    //nusetina sesijos id
+                    a.setSessionID(session);
+                    //nustato, kad i apklausa baigta atsakineti
+                    a.setFinished(true);
                     answerDAO.save(a);
-                }else {
-                    log.info("Empty answer");
+                }
+                else {
+                    OfferedAnswer of = a.getOfferedAnswerID();
+                    of.getAnswerList().remove(a);
                 }
             }
 
@@ -196,21 +234,23 @@ public class SaveAnswersController implements Serializable{
                 List<Answer> answerList = checkboxAndMultipleAnswersList.get(l);
                 for (Answer a : answerList) {
                     if (a.getOfferedAnswerID() != null) {
+                        //nusetina sesijos id
+                        a.setSessionID(session);
+                        //nustato, kad i apklausa baigta atsakineti
+                        a.setFinished(true);
                         answerDAO.save(a);
                     }
                 }
             }
 
-            if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty()))
-                log.error("Niekas neišsaugota");
+            self.increaseSubmits();
+
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage("show-survey-form:show-survey-message",
-                    new FacesMessage("Nepavyko išsaugoti atsakymų"));
+            mesg.redirectToErrorPage("Nepavyko išsaugoti apklausos");
         } finally {
             //NEISTRINTI, reikalinga optimistiniui ir submitams
-            self.increaseSubmits();         //iskvieciamas metodas padidinti submitams per self injecta
+                     //iskvieciamas metodas padidinti submitams per self injecta
             conversation.end();
-            return "/index.xhtml?faces-redirect=true";
         }
     }
 
@@ -247,7 +287,8 @@ public class SaveAnswersController implements Serializable{
                 min = Integer.parseInt(scanner.next());
                 max = Integer.parseInt(scanner.next());
             } else {
-                FacesContext.getCurrentInstance().getExternalContext().redirect("/errorPage.html");
+
+                mesg.redirectToErrorPage("Nepavyko atvaizduoti apklausos");
 
             }
         }
@@ -259,13 +300,15 @@ public class SaveAnswersController implements Serializable{
         try {
             survey = surveyDAO.getSurveyByUrl((String) object);
             if (survey == null) {
-                context.getExternalContext().redirect("/errorPage.html");
+                mesg.redirectToErrorPage("Tokios apklausos nėra");
             }
         } catch (Exception e) {
-            context.getExternalContext().redirect("/errorPage.html");
-            context.responseComplete();
+           mesg.redirectToErrorPage("Tokios apklausos nėra");
         }
     }
+
+
+
 
     //Funkcija HTTP 400 Error kvietimui
     private void setCode(FacesContext context, String message, int code) {
