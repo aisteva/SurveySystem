@@ -236,7 +236,7 @@ public class SaveAnswersController implements Serializable{
     }
 
     //isparsina gautus scale skacius
-    public ScaleLimits processLine(List<OfferedAnswer> list) {
+    public ScaleLimits processLine(List<OfferedAnswer> list) throws IOException {
         min = 0; max=0;
         if (!list.isEmpty()) {
             String aLine = list.get(0).getText();
@@ -246,22 +246,22 @@ public class SaveAnswersController implements Serializable{
                 min = Integer.parseInt(scanner.next());
                 max = Integer.parseInt(scanner.next());
             } else {
-                setCode(FacesContext.getCurrentInstance(), "Nepavyko atvaizduoti apklausos", 400);
+                FacesContext.getCurrentInstance().getExternalContext().redirect("/errorPage.html");
 
             }
         }
         return new ScaleLimits(min, max);
     }
 
-    public void validate(FacesContext context, UIComponent component, Object object) {
+    public void validate(FacesContext context, UIComponent component, Object object) throws IOException {
         //surandam apklausą pagal url
         try {
             survey = surveyDAO.getSurveyByUrl((String) object);
             if (survey == null) {
-                setCode(context, "Nėra tokios apklausos", 400);
+                context.getExternalContext().redirect("/errorPage.html");
             }
         } catch (Exception e) {
-            context.getExternalContext().setResponseStatus(404);
+            context.getExternalContext().redirect("/errorPage.html");
             context.responseComplete();
         }
     }
