@@ -114,9 +114,6 @@ public class SaveAnswersController implements Serializable{
 
     public void nextPage() {
         page++;
-        if (questions.containsKey(page)==false){
-            questions.put(page, new ArrayList<>());
-        }
     }
 
     public void prevPage() {
