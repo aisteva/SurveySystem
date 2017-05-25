@@ -8,16 +8,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
+import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.FileUploadEvent;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.text.DateFormat;
@@ -28,7 +28,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by vdeiv on 2017-04-07.
  */
-@ManagedBean
+@Named
 @ViewScoped
 @Getter
 @SurveySystemLog
