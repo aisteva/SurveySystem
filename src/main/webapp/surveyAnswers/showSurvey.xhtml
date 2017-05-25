@@ -55,40 +55,33 @@
                                                      required="#{question.required} and not empty param.nextPage}"
                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
-                                                     a:placeholder="Atsakymas"/>
+                                                     a:placeholder="Atsakymas">
+                                        <f:ajax render="@form"/>
+                                        </h:inputText>
                                     </div>
                                 </div>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                                #{saveAnswersController.setTempQuestionId(question.questionID)}
-                                <h:selectManyCheckbox id="multiple"
-                                                      value="#{saveAnswersController.selectedOfferedAnswers}"
-                                                      layout="pageDirection"
-                                                      converter="omnifaces.SelectItemsIndexConverter"
-                                                      required="#{not empty param.nextPage and question.required}"
-                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
-                                    <p:ajax listener="#{saveAnswersController.selectedOfferedAnswers}" update="@form" ></p:ajax>
-                                    <f:selectItems value="#{question.offeredAnswerList}"
-                                                   var="offeredAnswer"
-                                                   itemLabel="#{offeredAnswer.text}"
-                                                   itemValue="#{offeredAnswer}"/>
-                                </h:selectManyCheckbox>
+                                    <ui:repeat  value="#{question.offeredAnswerList}" var="offered">
+                                        <label>
+                                            <p:selectBooleanButton onLabel="" offLabel="" value="#{saveAnswersController.selections.get(offered)}" valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:20px">
+                                                <f:ajax render="@form" />
+                                            </p:selectBooleanButton>
+                                            #{offered.text}
+                                        </label>
+                                        <br></br>
+                                    </ui:repeat>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
-                                #{saveAnswersController.setTempQuestionId(question.questionID)}
-                                <h:selectOneRadio id="oneMeniu"
-                                                  layout="pageDirection"
-                                                  value="#{saveAnswersController.selectedOfferedAnswer}"
-                                                  converter="omnifaces.SelectItemsConverter"
-                                                  required="#{question.required} and not empty param.nextPage}"
-                                                  requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
-                                    <p:ajax listener="#{saveAnswersController.selectedOfferedAnswer}" update="@form" ></p:ajax>
-                                    <f:selectItems  styleClass="radio"
-                                                    value="#{question.offeredAnswerList}"
-                                                    var="offeredAnswer"
-                                                    itemLabel="#{offeredAnswer.text}"
-                                                    itemValue="#{offeredAnswer}"/>
-                                </h:selectOneRadio>
+                                <ui:repeat  value="#{question.offeredAnswerList}" var="offered">
+                                    <label>
+                                        <p:selectBooleanButton onLabel="RADIO" offLabel="RADIO" value="#{saveAnswersController.selections.get(offered)}" valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:20px">
+                                            <f:ajax render="@form" />
+                                        </p:selectBooleanButton>
+                                        #{offered.text}
+                                    </label>
+                                    <br></br>
+                                </ui:repeat>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'SCALE'}">
                                 <h4>Įveskite skaičių tarp #{saveAnswersController.processLine(question.getOfferedAnswerList()).min} ir #{saveAnswersController.processLine(question.getOfferedAnswerList()).max}</h4>
@@ -109,6 +102,7 @@
                                                                  validatorMessage="Klausime nr. #{question.questionNumber} skaičius turi būti tarp #{saveAnswersController.processLine(question.getOfferedAnswerList()).min} ir #{saveAnswersController.processLine(question.getOfferedAnswerList()).max}"
                                                                  requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                                  styleClass="onlyBottomBorder">
+                                                        <f:ajax render="@form"/>
                                                         <!--SVARBU sitoj vietoj pakeiciau f:validateLongRange i o validator!!!!!!-->
                                                         <o:validator validatorId="javax.faces.LongRange"
                                                                      minimum="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"

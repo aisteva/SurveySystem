@@ -86,17 +86,14 @@ public class SaveAnswersController implements Serializable{
     @Inject
     private SurveyDAO surveyDAO;
 
-    private Long tempQuestionId;
-
     @Inject
     private SaveAnswersController self;
 
-    public void setTempQuestionId(Long tempQuestionId) {
-        this.tempQuestionId = tempQuestionId;
-    }
+    @Getter @Setter
+    Map<OfferedAnswer, Boolean> selections = new HashMap<>();
 
     public void init() {
-        //prasideda conversation, kai atidaromas puslapis
+        // Prasideda conversation, kai atidaromas puslapis
         conversation.begin();
         for (Question q : survey.getQuestionList()) {
             if (!questions.containsKey(q.getPage())) {
@@ -104,6 +101,12 @@ public class SaveAnswersController implements Serializable{
             }
             if (q.getAnswerConnectionList().size() == 0) { //Add only parent questions
                 questions.get(q.getPage()).add(q);
+            }
+            if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString()) ||
+                    q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString()) ){
+                for (OfferedAnswer o: q.getOfferedAnswerList()){
+                    selections.put(o, false);
+                }
             }
             addToTextAndScaleAnswerList(q);
         }
@@ -124,131 +127,41 @@ public class SaveAnswersController implements Serializable{
 //        String action = params.get("action");
     }
 
-    //Checkbox question - several answers
-    public void setSelectedOfferedAnswers(OfferedAnswer[] offered) {
-        Long tempId = tempQuestionId;
-        if (offered.length != 0){
-            tempId = offered[0].getQuestionID().getQuestionID();
-        }
-        List<Question> toRemove = new ArrayList<>();
-        List<Question> exist = new ArrayList<>();
-        for (Question q : questions.get(page)) {
-            for (AnswerConnection ac : q.getAnswerConnectionList()) {
-                // If Father question == editing question
-                if (ac.getOfferedAnswerID().getQuestionID().getQuestionID() == tempId) {
-                    toRemove.add(q);
-                    for (OfferedAnswer o : offered) {
-                        // Question's answerConnection has offeredAnswer which is in offered array.
-                        if (ac.getOfferedAnswerID().getOfferedAnswerID() == o.getOfferedAnswerID()) {
-                            toRemove.remove(q);
-                            exist.add(q);
-                            break;
-                        }
-                    }
+
+    public void changeCheckBoxOrMultipleValue(Question q, OfferedAnswer o){
+        if (selections.get(o)==true){
+            selections.put(o, false);
+            Iterator<Answer> i = checkboxAndMultipleAnswersList.get(q.getQuestionID()).iterator();
+            while (i.hasNext()){
+                if (i.next().getOfferedAnswerID().getOfferedAnswerID() == o.getOfferedAnswerID()){
+                    i.remove();
+                    break;
                 }
             }
-        }
-        for (Question q : toRemove) {
-            if (textAndScaleAnswersList.containsKey(q.getQuestionID())){
-                textAndScaleAnswersList.remove(q.getQuestionID());
+            for (AnswerConnection ac : o.getAnswerConnectionList()) {
+                questions.get(page).remove(ac.getQuestionID());
+                checkboxAndMultipleAnswersList.get(q.getQuestionID()).clear();
+                if (textAndScaleAnswersList.containsKey(q.getQuestionID())){
+                    textAndScaleAnswersList.remove(q.getQuestionID());
+                }
             }
-            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())){
-                checkboxAndMultipleAnswersList.remove(q.getQuestionID());
-            }
-            questions.get(page).remove(q);
-        }
-        if (offered.length == 0){
-            textAndScaleAnswersList.remove(tempId);
-            checkboxAndMultipleAnswersList.get(tempId).clear();
-            return;
-        }
-
-        if (checkboxAndMultipleAnswersList.containsKey(tempId) == false) {
-            checkboxAndMultipleAnswersList.put(tempId, new ArrayList<>());
-        }
-
-        for (OfferedAnswer o : offered) {
+        } else {
+            selections.put(o, true);
             Answer answer = new Answer();
             answer.setOfferedAnswerID(o);
             answer.setSessionID(null);
             o.getAnswerList().add(answer);
-
-            List<Answer> removeUnselected = new ArrayList<>();
-            boolean addNewSelected = true;
-            for (Answer a : checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID())){
-                if (Arrays.asList(offered).contains(a.getOfferedAnswerID()) == false){
-                    removeUnselected.add(a);
-                }
-                if (a.getOfferedAnswerID() == answer.getOfferedAnswerID()){
-                    addNewSelected = false;
-                }
+            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())==false){
+                checkboxAndMultipleAnswersList.put(q.getQuestionID(), new ArrayList<>());
             }
-            for (Answer a : removeUnselected){
-                Iterator<Answer> i = checkboxAndMultipleAnswersList.get(tempId).iterator();
-                while (i.hasNext()){
-                    if (i.next().getOfferedAnswerID().getOfferedAnswerID() == a.getOfferedAnswerID().getOfferedAnswerID()){
-                        i.remove();
-                    }
-                }
-            }
-            if (addNewSelected == true){
-                checkboxAndMultipleAnswersList.get(tempId).add(answer);
-            }
+            checkboxAndMultipleAnswersList.get(q.getQuestionID()).add(answer);
 
             for (AnswerConnection ac : o.getAnswerConnectionList()) {
-                Question q = ac.getQuestionID();
-                if (exist.contains(q)) continue;
-                questions.get(page).add(questions.get(page).indexOf(o.getQuestionID())+1,q); //
+                Question question = ac.getQuestionID();
+                questions.get(page).add(questions.get(page).indexOf(o.getQuestionID())+1, question); //
                 addToTextAndScaleAnswerList(q);
             }
         }
-    }
-
-    public OfferedAnswer[] getSelectedOfferedAnswers() {
-        List<OfferedAnswer> offeredList = new ArrayList<>();
-        if (checkboxAndMultipleAnswersList.containsKey(tempQuestionId)) {
-            for (Answer a : checkboxAndMultipleAnswersList.get(tempQuestionId)) {
-                offeredList.add(a.getOfferedAnswerID());
-            }
-        }
-        return offeredList.toArray(new OfferedAnswer[offeredList.size()]);
-    }
-
-    // Multiple question - Only one answer
-    public void setSelectedOfferedAnswer(OfferedAnswer offered) {
-        if (offered == null){ // Null only in the beginning when checkboxAndMultipleAnswersList is empty
-            return;
-        }
-
-        OfferedAnswer oldOfferedAnswer; // Removes child question under old offered answer
-        if (checkboxAndMultipleAnswersList.containsKey(offered.getQuestionID().getQuestionID())) {
-            oldOfferedAnswer = checkboxAndMultipleAnswersList.get(offered.getQuestionID().getQuestionID()).get(0).getOfferedAnswerID();
-            for (AnswerConnection ac : oldOfferedAnswer.getAnswerConnectionList()) {
-                questions.get(page).remove(ac.getQuestionID());
-            }
-        }
-
-        Answer answer = new Answer();
-        answer.setOfferedAnswerID(offered);
-        answer.setSessionID(null);
-        offered.getAnswerList().add(answer);
-
-        checkboxAndMultipleAnswersList.put(offered.getQuestionID().getQuestionID(), new ArrayList<>());
-        checkboxAndMultipleAnswersList.get(offered.getQuestionID().getQuestionID()).add(answer);
-
-        for (AnswerConnection ac : offered.getAnswerConnectionList()) {
-            Question q = ac.getQuestionID();
-            questions.get(page).add(questions.get(page).indexOf(offered.getQuestionID())+1, q); //
-            addToTextAndScaleAnswerList(q);
-        }
-    }
-
-    public OfferedAnswer getSelectedOfferedAnswer() {
-        if (checkboxAndMultipleAnswersList.containsKey(tempQuestionId)) {
-            if (checkboxAndMultipleAnswersList.get(tempQuestionId).size() != 0)
-                return checkboxAndMultipleAnswersList.get(tempQuestionId).get(0).getOfferedAnswerID();
-        }
-        return null;
     }
 
     private void addToTextAndScaleAnswerList(Question q){
@@ -272,7 +185,6 @@ public class SaveAnswersController implements Serializable{
 
     @Transactional
     public String saveAnswer() {
-
         try {
             for (Long l : textAndScaleAnswersList.keySet()) {
                 Answer aa = textAndScaleAnswersList.get(l);
