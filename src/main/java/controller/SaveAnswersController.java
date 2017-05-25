@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import services.MessageCreator;
+import services.SaltGenerator;
 
 import javax.enterprise.context.Conversation;
 import javax.enterprise.context.ConversationScoped;
@@ -92,6 +93,9 @@ public class SaveAnswersController implements Serializable{
 
     @Inject
     private MessageCreator mesg;
+
+    @Inject
+    private SaltGenerator sg;
 
     @Getter @Setter
     Map<OfferedAnswer, Boolean> selections = new HashMap<>();
@@ -210,10 +214,14 @@ public class SaveAnswersController implements Serializable{
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void saveAnswerTransaction() {
         try {
+            String session = sg.getRandomString(15);
             for (Long l : textAndScaleAnswersList.keySet()) {
                 Answer a = textAndScaleAnswersList.get(l);
                 if (a.getText() != null && a.getText() != "") {
-                    System.out.println(a);
+                    //nusetina sesijos id
+                    a.setSessionID(session);
+                    //nustato, kad i apklausa baigta atsakineti
+                    a.setFinished(true);
                     answerDAO.save(a);
                 }
                 else {
@@ -225,8 +233,13 @@ public class SaveAnswersController implements Serializable{
             for (Long l : checkboxAndMultipleAnswersList.keySet()) {
                 List<Answer> answerList = checkboxAndMultipleAnswersList.get(l);
                 for (Answer a : answerList) {
-                    if (a.getOfferedAnswerID() != null)
+                    if (a.getOfferedAnswerID() != null) {
+                        //nusetina sesijos id
+                        a.setSessionID(session);
+                        //nustato, kad i apklausa baigta atsakineti
+                        a.setFinished(true);
                         answerDAO.save(a);
+                    }
                 }
             }
 
