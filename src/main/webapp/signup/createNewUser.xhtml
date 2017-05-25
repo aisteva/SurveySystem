@@ -8,7 +8,7 @@
       xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
       xmlns:f="http://java.sun.com/jsf/core">
     <h:head>
-        <title>Užbaigti registraciją</title>
+        <title>Registracija</title>
         <h:outputStylesheet name="/css/bootstrap.css"/>
         <h:outputScript name="/js/jquery-3.2.1.min.js"/>
         <h:outputScript name="/js/bootstrap.min.js"/>
@@ -21,6 +21,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12 box-shadow" style="padding-top: 40px">
+                        <h2 class="text-center">Registracija</h2>
+                        <p class="text-center">Norėdami užsiregistruoti, įveskite el. pašto adresą. Registracija galima tik jei jūsų el. pašto adresas yra leistinų el. pašto adresų sąraše.</p>
                         <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.email}"/>
                         <div><h:messages id="createUser-message" errorClass="error-message" infoClass="confirm-message" globalOnly="true" autoUpdate="true"/></div>
                         <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
