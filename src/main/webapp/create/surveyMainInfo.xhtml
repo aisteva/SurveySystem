@@ -1,0 +1,63 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+        xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <div class="survey col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h3>
+                    <a style="text-decoration: none; cursor: pointer;" type="button" class="text text-info glyphicon glyphicon-open pull-right" data-toggle="modal" data-target="#import"/>
+                </h3>
+            </div>
+            <div class="surveyTitle col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h:inputText value="#{createFormController.survey.title}" styleClass="onlyBottomBorder" a:placeholder="Apklausos pavadinimas">
+                    <f:ajax render="@form"/>
+                </h:inputText>
+            </div>
+            <div class="surveyDescription col-lg-12 col-md-12 col-sm-12 col-xs-12 input-group">
+                <h:inputTextarea value="#{createFormController.survey.description}" a:placeholder="Aprašymas" styleClass="form-control custom-control" rows="5" style="resize: none;">
+                    <f:ajax render="@form"/>
+                </h:inputTextarea>
+            </div>
+            <div class="row">
+                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <p:outputLabel for="startDate" value="Pradžios data * "/>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <p:calendar id="startDate" value="#{createFormController.survey.startDate}" pattern="yyyy-MM-dd">
+                                <f:ajax render="@form" event="dateSelect"/>
+                            </p:calendar>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <p:outputLabel for="endDate" value="Pabaigos data "/>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <p:calendar id="endDate" value="#{createFormController.survey.endDate}" pattern="yyyy-MM-dd">
+                                <f:ajax render="@form" event="dateSelect"/>
+                            </p:calendar>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-6 col-xs-12 vertical-align">
+                    <span style="padding-right: 10px;">Privati</span>
+                    <label class="switch">
+                        <h:selectBooleanCheckbox value="#{createFormController.survey.surveyPrivate}">
+                            <f:ajax render="@form"/>
+                        </h:selectBooleanCheckbox>
+                        <div class="slider round"></div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+</ui:composition>
