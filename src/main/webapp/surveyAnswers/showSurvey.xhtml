@@ -19,6 +19,7 @@
     <f:viewParam name="person" value="#{signInPerson.loggedInPerson.personID}" />
     <o:viewParam name="id" required="true" value="#{saveAnswersController.survey.surveyURL}"
                  validator="#{saveAnswersController.validate}">
+        <o:viewParamValidationFailed sendRedirect="errorPage.html" message="Neteisingas URL" />
     </o:viewParam>
     <f:viewAction action="#{saveAnswersController.init}" />
 
