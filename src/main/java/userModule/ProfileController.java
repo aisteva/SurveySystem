@@ -4,11 +4,13 @@ import DAO.Implementations.PersonDAO;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
+import services.MessageCreator;
 import services.PasswordHash;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.OptimisticLockException;
@@ -19,7 +21,7 @@ import java.io.Serializable;
  * Created by arturas on 2017-05-21.
  */
 @Named
-@RequestScoped
+@ViewScoped
 @SurveySystemLog
 public class ProfileController implements Serializable
 {
@@ -33,6 +35,9 @@ public class ProfileController implements Serializable
     String unhashedPassword = null, confirmPassword = null;
     @Inject
     PersonDAO personDAO;
+
+    @Inject
+    MessageCreator mc;
 
     public void setNewPassword()
     {
@@ -51,15 +56,11 @@ public class ProfileController implements Serializable
         try
         {
             personDAO.updateAndFlush(signInPerson.getLoggedInPerson());
-            signInController.reload();
-            FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage("Paskyros redagavimas sėkmingas"));
+            mc.sendMessage(FacesMessage.SEVERITY_INFO, "Paskyros redagavimas sėkmingas");
         }
         catch(OptimisticLockException ole)
         {
-            System.out.println(ole.getMessage());
-            FacesContext.getCurrentInstance().addMessage("profile-form:firstname",
-                    new FacesMessage("Profilis buvo pakoreguotas prieš šiuos pakeitimus"));
+            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Profilis buvo pakoreguotas prieš šiuos pakeitimus");
         }
     }
 

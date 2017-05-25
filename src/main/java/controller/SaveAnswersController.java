@@ -184,16 +184,20 @@ public class SaveAnswersController implements Serializable{
     public String saveAnswer() {
         try {
             for (Long l : textAndScaleAnswersList.keySet()) {
-                Answer aa = textAndScaleAnswersList.get(l);
-                if (aa.getText() != "")
-                    answerDAO.save(aa);
+                Answer a = textAndScaleAnswersList.get(l);
+                if (a.getText() != null && !a.getText().isEmpty()) {
+                    answerDAO.save(a);
+                }else {
+                    log.info("Empty answer");
+                }
             }
 
             for (Long l : checkboxAndMultipleAnswersList.keySet()) {
                 List<Answer> answerList = checkboxAndMultipleAnswersList.get(l);
                 for (Answer a : answerList) {
-                    if (a.getText() != "")
+                    if (a.getOfferedAnswerID() != null) {
                         answerDAO.save(a);
+                    }
                 }
             }
 

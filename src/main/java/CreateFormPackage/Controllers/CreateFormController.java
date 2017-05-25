@@ -46,7 +46,6 @@ public class CreateFormController implements Serializable {
     @Inject
     private SurveyDAO surveyDAO;
 
-    @Getter
     private Map<Integer, List<Question>> questions = new HashMap<>();
 
     private File excelFile;
@@ -251,6 +250,7 @@ public class CreateFormController implements Serializable {
             if (isZeroQuestions) return false;
             survey.getQuestionList().addAll(lst);
         }
+
         return true;
     }
 
@@ -310,6 +310,13 @@ public class CreateFormController implements Serializable {
             }
 
         }
+    }
+
+    public boolean validateQuestionSize(){
+        int questionListSize = questions.values().size();
+        if(questionListSize == 1)
+            return true;
+        else return false;
     }
 
 }

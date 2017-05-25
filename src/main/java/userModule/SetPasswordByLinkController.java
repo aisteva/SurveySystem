@@ -5,6 +5,7 @@ import entitiesJPA.Person;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
+import services.MessageCreator;
 import services.PasswordHash;
 import services.SaltGenerator;
 
@@ -35,6 +36,7 @@ public class SetPasswordByLinkController implements Serializable
 
     @Inject PasswordHash ph;
     @Inject SaltGenerator sg;
+    @Inject MessageCreator mc;
 
     public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {
@@ -45,18 +47,18 @@ public class SetPasswordByLinkController implements Serializable
             //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
             if(person.getPassword() != null)
             {
-                redirectToErrorPage(context, "Vartotojas jau užsiregistravo");
+                mc.redirectToErrorPage("Neteisingas URL");
             }
             //tikrinam, ar yra invite expiration data ir kiek galioja
             if(!isDateValid())
             {
-                redirectToErrorPage(context, "Nuoroda nebegalioja");
+                mc.redirectToErrorPage("Nuoroda nebegalioja");
             }
 
         }
         else
         {
-            redirectToErrorPage(context, "Neteisingas URL");
+            mc.redirectToErrorPage("Neteisingas URL");
         }
     }
 
@@ -70,18 +72,18 @@ public class SetPasswordByLinkController implements Serializable
             //tikrinam, ar vartotojas yra prisiregistraves
             if(person.getPassword() == null)
             {
-                redirectToErrorPage(context, "Vartotojas dar neužsiregistravo");
+                mc.redirectToErrorPage("Neteisingas URL");
             }
             //tikrinam, ar yra invite expiration data ir kiek galioja
             if(!isDateValid())
             {
-                redirectToErrorPage(context, "Nuoroda nebegalioja");
+                mc.redirectToErrorPage("Nuoroda nebegalioja");
             }
 
         }
         else
         {
-            redirectToErrorPage(context, "Neteisingas URL");
+            mc.redirectToErrorPage("Neteisingas URL");
         }
     }
 
@@ -127,31 +129,10 @@ public class SetPasswordByLinkController implements Serializable
     {
         person.setPassword(ph.hashPassword(unhashedPassword));
         person.setInviteExpiration(null);
+        person.setInviteUrl(null);
         personDAO.UpdateUser(person);
-        sendMessage(FacesMessage.SEVERITY_INFO, "Operacija sėkminga. Galite prisijungti.");
+        mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, "Operacija sėkminga. Galite prisijungti.");
         return "/signin/signin?faces-redirect=true";
     }
 
-
-
-    //Funkcija redirectinti į klaidos langą
-    private void redirectToErrorPage(FacesContext context, String message)
-    {
-        try
-        {
-            context.getExternalContext().redirect("/errorPage.html");
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        context.responseComplete();
-    }
-
-    private void sendMessage(FacesMessage.Severity severity, String message)
-    {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(severity, message, message));
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-    }
 }

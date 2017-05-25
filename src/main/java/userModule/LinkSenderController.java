@@ -6,6 +6,7 @@ import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import services.EmailService;
+import services.MessageCreator;
 import services.SaltGenerator;
 
 import javax.faces.application.FacesMessage;
@@ -55,19 +56,22 @@ public class LinkSenderController implements Serializable
     @Inject
     SaltGenerator sg;
 
+    @Inject
+    MessageCreator mc;
+
     public String checkEmailForNewRegistration()
     {
         person = personDAO.FindPersonByEmail(email);
         //jei nerandam vartotojo pagal email, vadinasi jo nera leistinu sarase
         if( person == null)
         {
-            sendMessage(FacesMessage.SEVERITY_ERROR, "Šio el. pašto nėra leistinų sąraše");
+            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Šio el. pašto nėra leistinų sąraše");
 
         }
         //jei vartotojas tokiu emailu jau turi nustatyta slaptazodi, reiskia jis jau prisiregistraves
         else if (person.getPassword() != null)
         {
-            sendMessage(FacesMessage.SEVERITY_ERROR, "Vartotojas su tokiu el. pašto adresu jau registruotas");
+            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Vartotojas su tokiu el. pašto adresu jau registruotas");
         }
         else
         {
@@ -75,7 +79,7 @@ public class LinkSenderController implements Serializable
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
             sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
-            sendMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
+            mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
             return "/signin/signin?faces-redirect=true";
         }
         return null;
@@ -88,7 +92,7 @@ public class LinkSenderController implements Serializable
         {
             if(person.getPassword() == null)
             {
-                sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
+                mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
             }
             else
             {
@@ -96,13 +100,13 @@ public class LinkSenderController implements Serializable
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
                 sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
-                sendMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
+                mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
                 return "/signin/signin?faces-redirect=true";
             }
         }
         else
         {
-            sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
+            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
         }
         return null;
     }
@@ -117,20 +121,13 @@ public class LinkSenderController implements Serializable
         {
             if (re.getCause() instanceof MessagingException)
             {
-                sendMessage(FacesMessage.SEVERITY_ERROR, "Nepavyko išsiųsti laiško");
+                mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Nepavyko išsiųsti laiško");
             }
             else
             {
                 throw re;
             }
         }
-    }
-
-    private void sendMessage(FacesMessage.Severity severity, String message)
-    {
-        FacesContext.getCurrentInstance().addMessage(null,
-                new FacesMessage(severity, message, message));
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
     }
 
 
