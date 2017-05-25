@@ -209,7 +209,7 @@ public class SaveAnswersController implements Serializable{
             //NEISTRINTI, reikalinga optimistiniui ir submitams
             self.increaseSubmits();         //iskvieciamas metodas padidinti submitams per self injecta
             conversation.end();
-            return "/index.xhtml";
+            return "/index.xhtml?faces-redirect=true";
         }
     }
 
