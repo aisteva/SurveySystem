@@ -156,7 +156,7 @@
 
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-left">
                             <c:if test="#{createFormController.page > 1}">
-                                <h:commandLink action="#{createFormController.prevPage()}" disabled="#{createFormController.survey.submits > 0}">
+                                <h:commandLink actionListener="#{createFormController.prevPage()}" disabled="#{createFormController.survey.submits > 0}">
                                     <div class="glyphicon glyphicon-chevron-left action-icon"></div>
                                 </h:commandLink>
                             </c:if>
@@ -168,7 +168,7 @@
                                              ajax="false"/>
                         </div>
                         <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 text-right">
-                            <h:commandLink action="#{createFormController.nextPage()}" disabled="#{createFormController.survey.submits > 0}">
+                            <h:commandLink actionListener="#{createFormController.nextPage()}" disabled="#{createFormController.survey.submits > 0}">
                                 <div class="glyphicon glyphicon-chevron-right action-icon"></div>
                             </h:commandLink>
                         </div>
