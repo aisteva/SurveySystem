@@ -8,6 +8,7 @@ import lombok.Setter;
 import services.PasswordHash;
 import services.SaltGenerator;
 
+import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -44,18 +45,18 @@ public class SetPasswordByLinkController implements Serializable
             //tikrinam, ar vartotojas tikrai dar nera prisiregistraves
             if(person.getPassword() != null)
             {
-                set400(context, "Vartotojas jau užsiregistravo");
+                redirectToErrorPage(context, "Vartotojas jau užsiregistravo");
             }
             //tikrinam, ar yra invite expiration data ir kiek galioja
             if(!isDateValid())
             {
-                set400(context, "Nuoroda nebegalioja");
+                redirectToErrorPage(context, "Nuoroda nebegalioja");
             }
 
         }
         else
         {
-            set400(context, "Neteisingas URL");
+            redirectToErrorPage(context, "Neteisingas URL");
         }
     }
 
@@ -69,18 +70,18 @@ public class SetPasswordByLinkController implements Serializable
             //tikrinam, ar vartotojas yra prisiregistraves
             if(person.getPassword() == null)
             {
-                set400(context, "Vartotojas dar neužsiregistravo");
+                redirectToErrorPage(context, "Vartotojas dar neužsiregistravo");
             }
             //tikrinam, ar yra invite expiration data ir kiek galioja
             if(!isDateValid())
             {
-                set400(context, "Nuoroda nebegalioja");
+                redirectToErrorPage(context, "Nuoroda nebegalioja");
             }
 
         }
         else
         {
-            set400(context, "Neteisingas URL");
+            redirectToErrorPage(context, "Neteisingas URL");
         }
     }
 
@@ -127,13 +128,14 @@ public class SetPasswordByLinkController implements Serializable
         person.setPassword(ph.hashPassword(unhashedPassword));
         person.setInviteExpiration(null);
         personDAO.UpdateUser(person);
+        sendMessage(FacesMessage.SEVERITY_INFO, "Operacija sėkminga. Galite prisijungti.");
         return "/signin/signin?faces-redirect=true";
     }
 
 
 
     //Funkcija redirectinti į klaidos langą
-    private void set400(FacesContext context, String message)
+    private void redirectToErrorPage(FacesContext context, String message)
     {
         try
         {
@@ -144,5 +146,12 @@ public class SetPasswordByLinkController implements Serializable
             e.printStackTrace();
         }
         context.responseComplete();
+    }
+
+    private void sendMessage(FacesMessage.Severity severity, String message)
+    {
+        FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(severity, message, message));
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
     }
 }

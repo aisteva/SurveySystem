@@ -76,7 +76,7 @@ public class LinkSenderController implements Serializable
             personDAO.UpdateUser(person);
             sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
             sendMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
-            return null; //TODO kur redirectinam?
+            return "/signin/signin?faces-redirect=true";
         }
         return null;
     }
@@ -97,7 +97,7 @@ public class LinkSenderController implements Serializable
                 personDAO.UpdateUser(person);
                 sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
                 sendMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
-                return null; //TODO kur redirectinam?
+                return "/signin/signin?faces-redirect=true";
             }
         }
         else
@@ -130,6 +130,8 @@ public class LinkSenderController implements Serializable
     {
         FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(severity, message, message));
+        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
     }
+
 
 }

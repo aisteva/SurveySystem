@@ -21,7 +21,7 @@
                 <div class="col-lg-4 col-lg-offset-4 col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-12 sign-in-form box-shadow">
                     <h1 class="text-center">Prisijunkite</h1>
                     <h:form id="signin-form">
-                        <p:messages id="signin-error-message" autoUpdate="true"/>
+                        <h:messages id="signin-error-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                         <p:inputText id="email" value="#{signInController.expectedEmail}" placeholder="El. paštas"/>
                         <p:password id="password" value="#{signInController.expectedPassword}" placeholder="Slaptažodis"/>
                         <h:commandButton value="Prisijungti"
