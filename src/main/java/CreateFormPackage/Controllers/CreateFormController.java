@@ -66,12 +66,13 @@ public class CreateFormController implements Serializable {
         return questions.get(page).get(questionIndex).getOfferedAnswerList();
     }
 
-    public void nextPage(){
-        page += 1;
-        if (!questions.containsKey(page)){
+    public void addPage(final int page){
+//        page += 1;
+        if (!questions.containsKey(page + 1)){
             questions.put(page, new ArrayList<>());
             addQuestion(-1);
         }
+        //TODO pridėt naują puslapį į vidurį. Teks perstumti puslapius per vieną. Paduodamas n puslapis, kuriam turi atsirasti n+1, o n+2,...,n+k turi tapti n+3, ... n+k+1
     }
 
     public void prevPage() {
@@ -111,7 +112,9 @@ public class CreateFormController implements Serializable {
         parentOfferedAnswer.getAnswerConnectionList().add(answerConnection);
         answerConnection.setOfferedAnswerID(parentOfferedAnswer);
     }
-
+    public int parseInt(String integer) {
+        return Integer.parseInt(integer);
+    }
     public void removeAnswer(int questionIndex, final int answerIndex){
         if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 1) {
             OfferedAnswer offeredAnswer = questions.get(page).get(questionIndex).getOfferedAnswerList().get(answerIndex);
@@ -121,7 +124,9 @@ public class CreateFormController implements Serializable {
             questions.get(page).get(questionIndex).getOfferedAnswerList().remove(answerIndex);
         }
     }
-
+    public void setHasAnswersByQuestion(final int questionIndex, final int page){
+        questions.get(page).get(questionIndex).setShowQuestionsByAnswer(!questions.get(page).get(questionIndex).isShowQuestionsByAnswer());
+    }
     public void addOfferedAnswer(final int questionIndex) {
         OfferedAnswer offeredAnswer = new OfferedAnswer();
         Question question = questions.get(page).get(questionIndex);

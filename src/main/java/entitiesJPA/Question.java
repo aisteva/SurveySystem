@@ -73,4 +73,7 @@ public class Question implements Serializable {
     @Transient
     private String newType;
 
+    @Transient
+    private boolean isShowQuestionsByAnswer = false;
+
 }
