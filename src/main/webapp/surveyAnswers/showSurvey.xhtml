@@ -55,7 +55,7 @@
                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
                                                      a:placeholder="Atsakymas">
-                                        <f:ajax render="@form"/>
+                                        <p:ajax update="@form"/>
                                         </h:inputText>
                                     </div>
                                 </div>
@@ -63,8 +63,11 @@
                             <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
                                     <ui:repeat  value="#{question.offeredAnswerList}" var="offered">
                                         <label>
-                                            <p:selectBooleanButton onLabel="" offLabel="" value="#{saveAnswersController.selections.get(offered)}" valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:20px">
-                                                <f:ajax render="@form" />
+                                            <p:selectBooleanButton onLabel="" offLabel="" value="#{saveAnswersController.selections.get(offered)}"
+                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}"
+                                                                   onIcon="ui-icon-check" offIcon="ui-icon-close"
+                                                                   style="width:20px">
+                                                <p:ajax update="@form" />
                                             </p:selectBooleanButton>
                                             #{offered.text}
                                         </label>
@@ -75,7 +78,7 @@
                                 <ui:repeat  value="#{question.offeredAnswerList}" var="offered">
                                     <label>
                                         <p:selectBooleanButton onLabel="RADIO" offLabel="RADIO" value="#{saveAnswersController.selections.get(offered)}" valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:20px">
-                                            <f:ajax render="@form" />
+                                            <p:ajax update="@form"/>
                                         </p:selectBooleanButton>
                                         #{offered.text}
                                     </label>
@@ -101,7 +104,7 @@
                                                                  validatorMessage="Klausime nr. #{question.questionNumber} skaičius turi būti tarp #{saveAnswersController.processLine(question.getOfferedAnswerList()).min} ir #{saveAnswersController.processLine(question.getOfferedAnswerList()).max}"
                                                                  requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                                  styleClass="onlyBottomBorder">
-                                                        <f:ajax render="@form"/>
+                                                        <p:ajax update="@form"/>
                                                         <!--SVARBU sitoj vietoj pakeiciau f:validateLongRange i o validator!!!!!!-->
                                                         <o:validator validatorId="javax.faces.LongRange"
                                                                      minimum="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
@@ -123,17 +126,16 @@
                             <h:panelGroup rendered="#{saveAnswersController.page > 1}">
                                 <p:commandButton value="Praeitas puslapis"
                                                  styleClass="btn btn-success btn-sm"
-                                                 action="#{saveAnswersController.prevPage()}"
+                                                 actionListener="#{saveAnswersController.prevPage()}"
                                                  update="@form">
                                 </p:commandButton>
                             </h:panelGroup>
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-4 col-xs-12">
-                            <h:panelGroup rendered="#{saveAnswersController.questions.get(saveAnswersController.page).size() > 0}">
+                            <h:panelGroup rendered="#{saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <p:commandButton value="Kitas puslapis"
                                                  styleClass="btn btn-primary btn-lg text-center"
-                                                 action="#{saveAnswersController.nextPage()}"
-                                                 ajax="false"
+                                                 actionListener="#{saveAnswersController.nextPage()}"
                                                  update="@form">
                                     <f:param name="nextPage" value="true"/>
                                 </p:commandButton>
@@ -141,12 +143,12 @@
                         </div>
 
                         <div class="col-lg-8 col-md-8 col-sm-4 col-xs-12">
-                            <h:panelGroup rendered="#{saveAnswersController.questions.get(saveAnswersController.page).size() == 0}">
+                            <h:panelGroup rendered="#{!saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <h:commandButton value="Siųsti atsakymą"
                                                  styleClass="btn btn-primary btn-lg text-center"
                                                  action="#{saveAnswersController.saveAnswer()}"
                                                  ajax="false">
-                                    <f:ajax execute="@form" render="@form"/>
+                                    <p:ajax execute="@form" render="@form"/>
                                 </h:commandButton>
                             </h:panelGroup>
                         </div>

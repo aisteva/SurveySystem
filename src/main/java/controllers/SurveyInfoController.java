@@ -140,17 +140,17 @@ public class SurveyInfoController implements Serializable{
         answerCounterMap.get(question.getQuestionID()).addAll(answerCounterList);
     }
 
-    public String load(FacesContext context, UIComponent component, Object object){
-        //Long ind = Long.parseLong(surveyId);
+    public void load(FacesContext context, UIComponent component, Object object) throws IOException {
         survey = surveyDao.getSurveyByUrl((String) object);
+        System.out.println(survey);
         if(survey!= null){
             for (Question q : survey.getQuestionList()){
                 addToAnswerCounterMap(q);
             }
-            return null;
         }
+        //jei neranda apklausos, išmeta errora
         else {
-            return "/errorPage.xhtml?faces-redirect=true";
+            context.getExternalContext().redirect("/errorPage.html");
         }
     }
 

@@ -8,18 +8,6 @@ input, .ui-inputfield {
     margin-bottom: 30px !important;
 }
 
-.error-message {
-    color: #F74356;
-}
-.confirm-message {
-    color: #29bf89;
-}
-
-.confirm-message li, li.error-message {
-    list-style-type: none;
-    margin-left: -40px;
-}
-
 input[readonly="readonly"] {
     background: #efefef;
 }
