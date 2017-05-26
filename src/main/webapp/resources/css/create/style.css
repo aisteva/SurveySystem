@@ -261,3 +261,27 @@ input:checked + .slider:before {
 .ui-fileupload .ui-fileupload-content .ui-fileupload-cancel {
     display: none;
 }
+.ui-selectbooleanbutton .ui-icon {
+    display:none;
+    opacity: 0;
+}
+.ui-selectbooleanbutton > .ui-helper-hidden-accessible {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    clip: inherit;
+}
+.ui-selectbooleanbutton > .ui-button-text,
+.ui-selectbooleanbutton.ui-state-active > .ui-button-text {
+    display: inline-block!important;
+    padding: 10px 0px!important;
+    color: #000000;
+    font-size: 16px;
+    border-bottom: 5px;
+}
+
+.ui-selectbooleanbutton {
+    padding: 0px!important;
+    background: transparent;
+    border: none;
+}

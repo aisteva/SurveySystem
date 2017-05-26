@@ -174,13 +174,15 @@ input[type="checkbox"]:checked {
   left: -9999px;
 }
 input[type="checkbox"]:not(:checked) + label,
-input[type="checkbox"]:checked + label {
+input[type="checkbox"]:checked + label,
+.checkbox .ui-selectbooleanbutton .ui-helper-hidden-accessible {
   position: relative;
   padding-left: 1.95em;
   cursor: pointer;
 }
 input[type="checkbox"]:not(:checked) + label:before,
-input[type="checkbox"]:checked + label:before {
+input[type="checkbox"]:checked + label:before,
+.checkbox .ui-selectbooleanbutton .ui-helper-hidden-accessible:before {
   content: '';
   position: absolute;
   left: 0;
@@ -192,7 +194,8 @@ input[type="checkbox"]:checked + label:before {
 }
 /* checked mark aspect */
 input[type="checkbox"]:not(:checked) + label:after,
-input[type="checkbox"]:checked + label:after {
+input[type="checkbox"]:checked + label:after,
+.checkbox .ui-selectbooleanbutton.ui-state-active .ui-helper-hidden-accessible:after {
   content: '✔';
   position: absolute;
   top: 0;
@@ -201,18 +204,20 @@ input[type="checkbox"]:checked + label:after {
   width: 20px;
   border-radius: 10%;
   padding: 2px 0 0 2px;
-  font-size: 1.3em;
+  font-size: 1.2em;
   line-height: 0.8;
   color: #ffffff;
   background: #0083BB;
-  transition: all .2s;
+    transition: all .2s;
 }
 /* checked mark aspect changes */
-input[type="checkbox"]:not(:checked) + label:after {
+input[type="checkbox"]:not(:checked) + label:after,
+.checkbox .ui-selectbooleanbutton .ui-helper-hidden-accessible:after {
   opacity: 0;
   transform: scale(0);
 }
-input[type="checkbox"]:checked + label:after {
+input[type="checkbox"]:checked + label:after,
+.checkbox .ui-selectbooleanbutton .ui-helper-hidden-accessible:after {
   opacity: 1;
   transform: scale(1);
 }
@@ -222,13 +227,15 @@ input[type="radio"]:checked {
   left: -9999px;
 }
 input[type="radio"]:not(:checked) + label,
-input[type="radio"]:checked + label {
+input[type="radio"]:checked + label,
+.radio .ui-selectbooleanbutton .ui-helper-hidden-accessible{
   position: relative;
   padding-left: 1.95em;
   cursor: pointer;
 }
 input[type="radio"]:not(:checked) + label:before,
-input[type="radio"]:checked + label:before {
+input[type="radio"]:checked + label:before,
+.radio .ui-selectbooleanbutton .ui-helper-hidden-accessible:before {
   content: '';
   position: absolute;
   left: 0;
@@ -240,7 +247,8 @@ input[type="radio"]:checked + label:before {
 }
 /* checked mark aspect */
 input[type="radio"]:not(:checked) + label:after,
-input[type="radio"]:checked + label:after {
+input[type="radio"]:checked + label:after,
+.radio .ui-selectbooleanbutton.ui-state-active .ui-helper-hidden-accessible:after{
   content: '';
   position: absolute;
   top: 4px;
@@ -254,16 +262,19 @@ input[type="radio"]:checked + label:after {
   transition: all .2s;
 }
 /* checked mark aspect changes */
-input[type="radio"]:not(:checked) + label:after {
+input[type="radio"]:not(:checked) + label:after,
+.radio .ui-selectbooleanbutton .ui-helper-hidden-accessible:after{
   opacity: 0;
   transform: scale(0);
 }
-input[type="radio"]:checked + label:after {
+input[type="radio"]:checked + label:after,
+.radio .ui-selectbooleanbutton.ui-state-active .ui-helper-hidden-accessible:after{
   opacity: 1;
   transform: scale(1);
 }
 /* hover style just for information */
-label:hover:before {
+label:hover:before,
+.ui-selectbooleanbutton:hover .ui-helper-hidden-accessible:before {
   border: 1px solid #0083BB!important;
 }
 input[type="number"]::-webkit-inner-spin-button,

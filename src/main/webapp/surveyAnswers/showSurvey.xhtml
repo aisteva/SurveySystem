@@ -63,27 +63,24 @@
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
                                     <ui:repeat  value="#{question.offeredAnswerList}" var="offered">
-                                        <label>
-                                            <p:selectBooleanButton onLabel="" offLabel="" value="#{saveAnswersController.selections.get(offered)}"
-                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}"
-                                                                   onIcon="ui-icon-check" offIcon="ui-icon-close"
-                                                                   style="width:20px">
+                                        <label class="checkbox">
+                                            <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
+                                                                   value="#{saveAnswersController.selections.get(offered)}"
+                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}">
                                                 <p:ajax update="@form" />
                                             </p:selectBooleanButton>
-                                            #{offered.text}
                                         </label>
-                                        <br></br>
                                     </ui:repeat>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
                                 <ui:repeat  value="#{question.offeredAnswerList}" var="offered">
-                                    <label>
-                                        <p:selectBooleanButton onLabel="RADIO" offLabel="RADIO" value="#{saveAnswersController.selections.get(offered)}" valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:20px">
+                                    <label class="radio">
+                                        <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
+                                                               value="#{saveAnswersController.selections.get(offered)}"
+                                                               valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}">
                                             <p:ajax update="@form"/>
                                         </p:selectBooleanButton>
-                                        #{offered.text}
                                     </label>
-                                    <br></br>
                                 </ui:repeat>
                             </h:panelGroup>
                             <h:panelGroup rendered="#{question.type == 'SCALE'}">
