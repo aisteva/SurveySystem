@@ -1,7 +1,7 @@
 .sign-in-form {
     background: #F7F7F7;
     padding: 30px !important;
-    margin-top: 20%;
+    margin-top: 10%;
 }
 
 @media (max-device-width: 480px) {
@@ -25,4 +25,74 @@ body {
     background: transparent;
     box-shadow: none!important;
     outline: 0;
+}
+/*@media (max-width: 767px)  {*/
+    /*.shaped {*/
+        /*width:70vw;*/
+    /*}*/
+/*}*/
+.logo {
+    width: 25vw;
+    margin-left: 10vw;
+    margin-top: 25vh;
+}
+.logo img {
+    width: 25vw;
+}
+.shaped h1 {
+    margin-top: 12vh;
+    font-size: 300%;
+    font-weight: 100;
+    margin-bottom: 10%;
+    text-transform: uppercase;
+}
+.shaped {
+    position: absolute;
+    height:100vh;
+    width:50vw;
+    right: 0;
+    top:0;
+    background-size:cover;
+    background-color: #f7f7f7;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%);
+}
+@media (min-width: 768px) and (max-width: 991px) {
+    .logo {
+        margin-left: 5vw;
+        margin-top: 25vh;
+    }
+    .shaped {
+        width: 70vw;
+    }
+    .shaped h1 {
+        font-size: 250%;
+    }
+}
+@media (max-width: 767px) {
+    .shaped h1 {
+        font-size: 250%;
+        margin-top: 1vh;
+    }
+    .logo {
+        width: 200px;
+        margin: 20px auto;
+    }
+    .logo img {
+        width: 200px;
+    }
+    .shaped {
+        width: 60vw;
+        height: 500px;
+        box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+        position: inherit;
+        margin: 0px auto;
+
+    }
+}
+@media (max-width: 480px)  {
+    .shaped {
+        width:100vw;
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
+    }
 }
