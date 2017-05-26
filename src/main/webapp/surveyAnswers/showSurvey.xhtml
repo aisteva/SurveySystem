@@ -16,7 +16,6 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
 </h:head>
 <f:metadata>
-    <f:viewParam name="person" value="#{signInPerson.loggedInPerson.personID}" />
     <o:viewParam name="id" required="true" value="#{saveAnswersController.survey.surveyURL}"
                  validator="#{saveAnswersController.validate}">
         <o:viewParamValidationFailed sendRedirect="errorPage.html" message="Neteisingas URL" />
@@ -129,7 +128,7 @@
                                 </p:commandButton>
                             </h:panelGroup>
                         </div>
-                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-right">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-r">
                             <h:panelGroup rendered="#{saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <p:commandButton value="Kitas puslapis"
                                                  styleClass="btn btn-primary btn-lg text-center"
