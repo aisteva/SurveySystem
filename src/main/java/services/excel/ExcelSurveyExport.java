@@ -96,7 +96,7 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
                     createNumericCell(questionRow, 4).setCellValue(Integer.parseInt(answers[1]));
                     break;
                 case "TEXT":
-                    questionRow.createCell(3).setCellValue("");
+                    questionRow.createCell(3).setCellType(CellType.BLANK);
                     //nerašomas joks option pagal reikalavimus
                     break;
             }

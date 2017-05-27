@@ -236,15 +236,40 @@ public class CreateFormController implements Serializable {
         }
     }
 
-    public void mapQuestions()
-    {
+    public void mapQuestions() {
         questions.clear();
-        for (Question q : survey.getQuestionList()){
-            if (questions.size()<q.getPage()){
+        questions.add(0, new ArrayList<>()); // Questions with page 0 empty.
+        for (Question q : survey.getQuestionList()) {
+            if (questions.size() - 1 < q.getPage()) {
                 questions.add(q.getPage(), new ArrayList<>());
             }
-            questions.get(q.getPage()).add(q.getQuestionNumber()-1, q);
+            questions.get(q.getPage()).add(q.getQuestionNumber() - 1, q);
+
+            if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
+                splitScaleAnswer(q);
+            }
         }
+    }
+
+    private void splitScaleAnswer(Question q){
+        String aLine = q.getOfferedAnswerList().get(0).getText();
+        Scanner scanner = new Scanner(aLine);
+        scanner.useDelimiter(";");
+        int min = 0;
+        int max = 0;
+        if (scanner.hasNext()) {
+            min = Integer.parseInt(scanner.next());
+            max = Integer.parseInt(scanner.next());
+        }
+        q.getOfferedAnswerList().clear();
+        OfferedAnswer offered = new OfferedAnswer();
+        offered.setText(Integer.toString(min));
+        offered.setQuestionID(q);
+        q.getOfferedAnswerList().add(offered);
+        offered = new OfferedAnswer();
+        offered.setText(Integer.toString(max));
+        offered.setQuestionID(q);
+        q.getOfferedAnswerList().add(offered);
     }
 
     @Transactional
