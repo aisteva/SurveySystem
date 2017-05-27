@@ -66,8 +66,6 @@ public class CreateFormController implements Serializable {
     @Setter
     boolean isEditMode = false;
 
-    private int surveyIndex;
-
     public CreateFormController() {
         pages.add(1);
         questions.add(new ArrayList<>()); //0 page is empty and not used.  // Pages starts from 1.
@@ -115,7 +113,7 @@ public class CreateFormController implements Serializable {
         }
         question.setType(type);
         question.setNewType(type);
-        question.setQuestionNumber(prevQuestionIndex + 1 + 1);  // (clicked) question index + starts with 1 + next question
+        //question.setQuestionNumber(prevQuestionIndex + 1 + 1);  // (clicked) question index + starts with 1 + next question
         question.setPage(page);
         questions.get(page).add(prevQuestionIndex + 1, question);
         addOfferedAnswer(prevQuestionIndex + 1, page);
@@ -128,13 +126,21 @@ public class CreateFormController implements Serializable {
         addQuestion(questionIndex, page);
         Question childQuestion = questions.get(page).get(questionIndex+1);
         childQuestion.getParentOfferedAnswers().add(oa);
+        oa.getChildQuestions().add(childQuestion);
     }
 
     public void removeAnswer(int questionIndex, final int answerIndex, final int page) {
         if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 1) {
             OfferedAnswer offeredAnswer = questions.get(page).get(questionIndex).getOfferedAnswerList().get(answerIndex);
             for (Question childQuestion : offeredAnswer.getChildQuestions()) {
-                questions.get(page).remove(childQuestion);
+                int i = 0;
+                for (Question q : questions.get(page)){
+                    if (q == childQuestion){
+                        break;
+                    }
+                    i++;
+                }
+                questions.get(page).remove(i);
             }
             questions.get(page).get(questionIndex).getOfferedAnswerList().remove(answerIndex);
         }
@@ -206,10 +212,11 @@ public class CreateFormController implements Serializable {
     }
 
     public String getQuestionParentMessage(Question question) {
-        String str = "Jeigu prieš tai buvo atsakyta ";
+        String str = "Prieš tai buvo atsakyta ";
         if (question.getParentOfferedAnswers().size() > 0) {
             for (OfferedAnswer oa : question.getParentOfferedAnswers()) {
-                str += oa.getText();
+                str = "Jei "+questions.get(oa.getQuestionID().getPage()).indexOf(oa.getQuestionID())+". "+
+                        oa.getQuestionID().getQuestionText() + " klausime buvo atsakyta "+oa.getText();
             }
             return str;
         } else {
@@ -293,7 +300,10 @@ public class CreateFormController implements Serializable {
                 zeroPage = false;
                 continue;
             }
+            int number = 1;
             for (Question q : lst) {
+                q.setQuestionNumber(number);
+                number++;
                 isZeroQuestions = false;
                 if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
                     OfferedAnswer offeredAnswer = new OfferedAnswer();

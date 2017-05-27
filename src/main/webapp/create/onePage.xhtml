@@ -11,7 +11,7 @@
                 <h:outputLabel value="#{createFormController.getQuestionParentMessage(question)}" />
             </div>
             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                <h:outputLabel styleClass="question-text" value="#{question.questionNumber}." />
+                <h:outputLabel styleClass="question-text" value="#{questionStatus.index+1}." />
             </div>
             <h:panelGroup rendered="#{question.type.equals('CHECKBOX') || question.type.equals('MULTIPLECHOICE')}">
                 <div class="question-text col-lg-7 col-md-7 col-sm-6 col-xs-11">
