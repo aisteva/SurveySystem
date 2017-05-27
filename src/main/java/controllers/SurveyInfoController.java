@@ -105,6 +105,7 @@ public class SurveyInfoController implements Serializable{
 
     private void calculateStats(Long questionId, List<AnswerCounter> answerCounterList){
         float mediana;
+        if (answerCounterList.size() == 0) return;
         if (answerCounterList.size() % 2 == 0){
             mediana = (float)(Integer.parseInt(answerCounterList.get(answerCounterList.size()/2-1).answerText) +
                     Integer.parseInt(answerCounterList.get(answerCounterList.size()/2).answerText))/2;
