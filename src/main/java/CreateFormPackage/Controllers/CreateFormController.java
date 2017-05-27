@@ -275,7 +275,7 @@ public class CreateFormController implements Serializable {
         survey.setSurveyURL(sg.getRandomString(8));
         person.getSurveyList().add(survey);
         personDAO.UpdateUser(person);
-        return "/create/formCreated.xhtml?faces-redirect=true&id=" + survey.getSurveyURL(); //TODO: not sure if correct navigation
+        return "/create/formCreated.xhtml?faces-redirect=true&id=" + survey.getSurveyURL();
     }
 
     private boolean surveyIsCorrect() {

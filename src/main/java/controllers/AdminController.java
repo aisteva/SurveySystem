@@ -138,7 +138,7 @@ public class AdminController implements Serializable {
 
     @Transactional
     public void addNewPendingPerson() {
-        personDao.CreateUser(newPendingPerson); //TODO: add regex and shit
+        personDao.CreateUser(newPendingPerson);
         newPendingPerson = new Person();
         reloadAll();
     }

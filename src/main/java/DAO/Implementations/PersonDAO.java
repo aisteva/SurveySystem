@@ -65,7 +65,7 @@ public class PersonDAO implements IPersonDAO
     @Transactional
     public void DeleteUser(Person person)
     {
-        Person per = entityManager.merge(person); //TODO: Managed entity vs unmanaged Maybe's needed to change
+        Person per = entityManager.merge(person);
         entityManager.remove(per);
     }
 
