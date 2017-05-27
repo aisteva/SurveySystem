@@ -6,7 +6,7 @@
     </context-param>
     <filter>
         <filter-name>EncodingFilter</filter-name>
-        <filter-class>UTF8Filter.EncodingFilter</filter-class>
+        <filter-class>webFilters.EncodingFilter</filter-class>
         <init-param>
             <param-name>requestEncoding</param-name>
             <param-value>UTF-8</param-value>

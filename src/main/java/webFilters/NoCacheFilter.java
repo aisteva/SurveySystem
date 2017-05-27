@@ -1,4 +1,4 @@
-package CacheFilter;
+package webFilters;
 
 import javax.faces.application.ResourceHandler;
 import javax.servlet.*;

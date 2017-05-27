@@ -1,4 +1,4 @@
-package UTF8Filter; /**
+package webFilters; /**
  * Created by vdeiv on 2017-05-22.
  */
 import java.io.IOException;
