@@ -1,37 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:f="http://java.sun.com/jsf/core">
-    <h:head>
-        <title>Registracija</title>
-        <h:outputStylesheet name="/css/bootstrap.css"/>
-        <h:outputScript name="/js/jquery-3.2.1.min.js"/>
-        <h:outputScript name="/js/bootstrap.min.js"/>
-        <h:outputStylesheet name="/css/style.css"/>
-        <h:outputStylesheet name="/css/signup/style.css"/>
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1"/>
-    </h:head>
-    <h:body>
-        <h:form id="createUserForm">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-sm-8 col-sm-offset-2 col-xs-12 box-shadow" style="padding-top: 40px">
-                        <h2 class="text-center">Registracija</h2>
-                        <p class="text-center">Norėdami užsiregistruoti, įveskite el. pašto adresą. Registracija galima tik jei jūsų el. pašto adresas yra leistinų el. pašto adresų sąraše.</p>
-                        <p:inputText a:placeholder="El. paštas" id="email" value="#{linkSenderController.email}"/>
-                        <div><h:messages id="createUser-message" errorClass="error-message" infoClass="confirm-message" globalOnly="true" autoUpdate="true"/></div>
-                        <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
-                                         action="#{linkSenderController.checkEmailForNewRegistration()}"
-                                         onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);">
-                        </h:commandButton>
-                    </div>
-                </div>
-            </div>
-        </h:form>
-    </h:body>
-</html>
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:form id="createUserForm">
+        <h1 class="text-center">Registracija</h1>
+        <p class="text-center">Norėdami užsiregistruoti, įveskite el. pašto adresą. Registracija galima tik jei jūsų el. pašto adresas yra leistinų el. pašto adresų sąraše.</p>
+        <h:messages id="createUser-message" errorClass="error-message" infoClass="confirm-message" globalOnly="true" autoUpdate="true"/>
+        <p:inputText placeholder="El. paštas" id="emailRegister" value="#{linkSenderController.email}"/>
+        <h:commandButton styleClass="btn btn-primary btn-lg text-center" value="Registruotis"
+                         action="#{linkSenderController.checkEmailForNewRegistration()}"
+                         onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);">
+        </h:commandButton>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center" style="padding-top: 5px;">
+            <h:commandLink styleClass="text-primary" value="Grįžti">
+                <f:setPropertyActionListener value="#{'false'}" target="#{signInController.showRegisterWindow}"/>
+            </h:commandLink>
+        </div>
+    </h:form>
+</ui:composition>

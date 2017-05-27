@@ -38,6 +38,11 @@ public class SignInController implements Serializable {
     @Inject
     PasswordHash ph;
 
+    @Getter @Setter
+    private boolean showRegisterWindow = false;
+    @Getter @Setter
+    private boolean showForgotPasswordWindow = false;
+
     public String signIn(){
         //tikrinam, ar į abu laukus kas nors įrašyta
         if (expectedEmail == "" || expectedPassword == "") {

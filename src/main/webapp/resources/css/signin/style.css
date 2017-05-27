@@ -39,11 +39,19 @@ body {
 .logo img {
     width: 25vw;
 }
-.shaped h1 {
+.shaped a {
+    text-decoration: none!important;
+}
+.shaped h1, .shaped .to-sign-in {
     margin-top: 12vh;
+    margin-bottom: 10%;
+}
+.shaped .to-sign-in {
+    font-size: 30px;
+}
+.shaped h1 {
     font-size: 300%;
     font-weight: 100;
-    margin-bottom: 10%;
     text-transform: uppercase;
 }
 .shaped {
