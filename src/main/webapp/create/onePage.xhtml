@@ -7,9 +7,11 @@
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <div class="one-question">
         <div class="row question-info">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h:outputLabel value="#{createFormController.getQuestionParentMessage(question)}" />
+            </div>
             <h:panelGroup rendered="#{question.type.equals('CHECKBOX') || question.type.equals('MULTIPLECHOICE')}">
                 <div class="question-text col-lg-8 col-md-8 col-sm-7 col-xs-12">
-                    <h:outputLabel value="#{createFormController.getQuestionParentMessage(question)}" />
                     <h:inputText disabled="#{createFormController.survey.submits > 0}" value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
                         <f:ajax render="@form"/>
                     </h:inputText>

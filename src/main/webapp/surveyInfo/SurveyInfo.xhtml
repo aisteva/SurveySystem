@@ -50,9 +50,8 @@
             <h1 class="text-center">#{surveyInfoController.survey.title}</h1>
             <h4 class="text-center">#{surveyInfoController.survey.description}</h4>
             <h4 class="text-center">Apklausos autorius: #{surveyInfoController.survey.personID.firstName} #{surveyInfoController.survey.personID.lastName}</h4>
+            <h4 class="text-center">Klausimų skaičius: #{surveyInfoController.survey.questionList.size()}</h4>
             <h4 class="text-center">Apklausos atsakymų sk.: #{surveyInfoController.survey.submits}</h4>
-            <br></br>
-            <h4 class="text-left">Klausimų skaičius: #{surveyInfoController.survey.questionList.size()}</h4>
             <h:outputScript>
                 window.onload = function () {
                     CanvasJS.addColorSet("colorSet",
