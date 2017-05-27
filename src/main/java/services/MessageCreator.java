@@ -17,13 +17,25 @@ public class MessageCreator
         try
         {
             sendRedirectableMessage(FacesMessage.SEVERITY_ERROR, message);
-            FacesContext.getCurrentInstance().getExternalContext().redirect("/errorPage.html");
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/errorPage.html?faces-redirect=true");
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
+    }
 
+    public void redirectToSuccessPage(String message)
+    {
+        try
+        {
+            sendRedirectableMessage(FacesMessage.SEVERITY_INFO, message);
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/successPage.html?faces-redirect=true");
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     //funkcija paprastos žinutės kūrimui tam pačiam lange

@@ -221,7 +221,9 @@ public class SaveAnswersController implements Serializable{
 
         }
 
+        //conversation.end();
         //jei neatsakyta nei i viena klausima metama zinute
+
         if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty())){
             mesg.sendMessage(FacesMessage.SEVERITY_INFO, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
             log.error("Niekas neišsaugota");
@@ -229,7 +231,9 @@ public class SaveAnswersController implements Serializable{
         }
         else{
             self.saveAnswerTransaction();
-            return "/index.xhtml?faces-redirect=true";
+
+            return null;
+            //return "/index.xhtml?faces-redirect=true";
         }
     }
 
@@ -263,15 +267,13 @@ public class SaveAnswersController implements Serializable{
                     }
                 }
             }
-
             self.increaseSubmits();
+            conversation.end();
+            mesg.redirectToSuccessPage("Apklausa išsaugota");
 
         } catch (Exception e) {
-            mesg.redirectToErrorPage("Nepavyko išsaugoti apklausos");
-        } finally {
-            //NEISTRINTI, reikalinga optimistiniui ir submitams
-                     //iskvieciamas metodas padidinti submitams per self injecta
             conversation.end();
+            mesg.redirectToErrorPage("Nepavyko išsaugoti apklausos");
         }
     }
 
@@ -285,7 +287,7 @@ public class SaveAnswersController implements Serializable{
         } catch (OptimisticLockException ole) {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
             //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
-           // self.solveSubmits();
+            self.solveSubmits();
         }
 
     }
