@@ -2,7 +2,10 @@ package CreateFormPackage.Controllers;
 
 import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
-import entitiesJPA.*;
+import entitiesJPA.OfferedAnswer;
+import entitiesJPA.Person;
+import entitiesJPA.Question;
+import entitiesJPA.Survey;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,14 +13,13 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
 import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.FileUploadEvent;
+import services.MessageCreator;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
@@ -26,7 +28,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -39,6 +40,9 @@ public class CreateFormController implements Serializable {
 
     @Inject
     private SaltGenerator sg;
+
+    @Inject
+    private MessageCreator msg;
 
     private Survey survey = new Survey();
 
@@ -313,17 +317,23 @@ public class CreateFormController implements Serializable {
                     q.getOfferedAnswerList().add(offeredAnswer);
                 }
                 if (q.getQuestionText() == null || q.getQuestionText().isEmpty()) {
+                    msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Klausimas yra nenurodytas");
                     return false;
                 }
                 for (OfferedAnswer o : q.getOfferedAnswerList()) {
                     if (o.getQuestionID().getType().equals(Question.QUESTION_TYPE.TEXT.toString()))
                         continue;
                     if (o.getText() == null || o.getText().isEmpty()) {
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Nenurodytas klausimo pasirinkimas");
                         return false;
                     }
                 }
             }
-            if (isZeroQuestions) return false;
+            if (isZeroQuestions) {
+                msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Reikalingas bent vieno klausimo pridėjimas");
+                return false;
+            }
+
             survey.getQuestionList().addAll(lst);
         }
 
