@@ -295,9 +295,10 @@ public class SaveAnswersController implements Serializable {
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void increaseSubmits() throws Exception {
         try {
+            //tikrinama, ar survey nebuvo ištrinta
             if(surveyDAO.getSurveyByUrl(survey.getSurveyURL())== null){
+                //exception metimas, kad būtų užbaigtas conversation
                 throw new Exception();
-
             }
 
             survey.setSubmits(survey.getSubmits() + 1);
