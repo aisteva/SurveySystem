@@ -62,7 +62,8 @@ public class CreateFormController implements Serializable {
     @Setter
     private boolean isImported;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     boolean isEditMode = false;
 
     private int surveyIndex;
@@ -97,6 +98,10 @@ public class CreateFormController implements Serializable {
 
     public void removeQuestion(final int questionIndex, final int page) {
         if (questions.get(page).size() != 1) {
+            Question q = questions.get(page).get(questionIndex);
+            for (OfferedAnswer o : q.getParentOfferedAnswers()) {
+                o.getChildQuestions().remove(q);
+            }
             questions.get(page).remove(questionIndex);
         }
     }
@@ -119,47 +124,18 @@ public class CreateFormController implements Serializable {
         }
     }
 
-    public void addChildQuestion(final int offeredAnswerIndex, final int prevQuestionIndex, final int page) {
-     /*   addQuestion(prevQuestionIndex, page);
-        Question question = questions.get(page).get(prevQuestionIndex + 1);
-
-        AnswerConnection answerConnection = new AnswerConnection();
-        question.getAnswerConnectionList().add(answerConnection);
-        answerConnection.setQuestionID(question);
-        OfferedAnswer parentOfferedAnswer = getOfferedAnswers(prevQuestionIndex, page).get(offeredAnswerIndex);
-        parentOfferedAnswer.getAnswerConnectionList().add(answerConnection);
-        answerConnection.setOfferedAnswerID(parentOfferedAnswer); */
-    }
-
-    public void setChildQuestions(OfferedAnswer offeredAnswer) {
-        for (Question q : offeredAnswer.getChildQuestions()) {
-           // AnswerConnection answerConnection = new AnswerConnection();
-           // answerConnection.setQuestionID(q);
-           // q.getAnswerConnectionList().add(answerConnection);
-           // offeredAnswer.getAnswerConnectionList().add(answerConnection);
-            //q.
-        }
-    }
-
-    @Getter
-    @Setter
-    private OfferedAnswer offer;
-
-    public void valueChangeMethod(ValueChangeEvent e) {
-        // Integer offeredAnswerId = (Integer) ((UIInput) e.getSource()).getAttributes().get("id");
-    }
-
-    public List<Question> getLowerQuestions(Question question) {
-        List<Question> lst = questions.get(question.getPage()).stream().filter(x -> x.getQuestionNumber() > question.getQuestionNumber()).collect(Collectors.toList());
-        return lst;
+    public void addChildQuestion(int questionIndex, int page, OfferedAnswer oa){
+        addQuestion(questionIndex, page);
+        Question childQuestion = questions.get(page).get(questionIndex+1);
+        childQuestion.getParentOfferedAnswers().add(oa);
     }
 
     public void removeAnswer(int questionIndex, final int answerIndex, final int page) {
         if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 1) {
             OfferedAnswer offeredAnswer = questions.get(page).get(questionIndex).getOfferedAnswerList().get(answerIndex);
-            /* for (AnswerConnection answerConnection : offeredAnswer.getAnswerConnectionList()) {
-                answerConnection.getQuestionID().getAnswerConnectionList().remove(answerConnection); // Deletes from question answerconnections
-            } */
+            for (Question childQuestion : offeredAnswer.getChildQuestions()) {
+                questions.get(page).remove(childQuestion);
+            }
             questions.get(page).get(questionIndex).getOfferedAnswerList().remove(answerIndex);
         }
     }
@@ -182,12 +158,15 @@ public class CreateFormController implements Serializable {
 
     public void moveQuestionUp(final int questionIndex, final int page) {
         if (questionIndex != 0) {
-          /*  if (questions.get(page).get(questionIndex).getAnswerConnectionList().size() > 0 &&
-                    questions.get(page).get(questionIndex).getAnswerConnectionList().get(0) // Can't be higher than parent question
-                            .getOfferedAnswerID().getQuestionID().getQuestionNumber() - 1 >= questionIndex - 1) {
-                return;
+            Question currentQuestion = questions.get(page).get(questionIndex);
+            if (currentQuestion.getParentOfferedAnswers().size() > 0) { // Can't be higher than offeredAnswer.
+                for (OfferedAnswer o : currentQuestion.getParentOfferedAnswers()) {
+                    if (o.getQuestionID().getQuestionNumber() + 1 >= currentQuestion.getQuestionNumber()) {
+                        return;
+                    }
+                }
             }
-            */
+
             questions.get(page).get(questionIndex).setQuestionNumber(questionIndex - 1 + 1);
             questions.get(page).get(questionIndex - 1).setQuestionNumber(questionIndex + 1);
             Collections.swap(questions.get(page), questionIndex, questionIndex - 1);
@@ -195,23 +174,23 @@ public class CreateFormController implements Serializable {
     }
 
     public void moveQuestionDown(final int questionIndex, final int page) {
-      /*  if (questionIndex != questions.get(page).size() - 1) {
-            if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 0) {
-                for (OfferedAnswer oa : questions.get(page).get(questionIndex).getOfferedAnswerList()) {
-                    if (oa.getAnswerConnectionList().size() > 0) {
-                        for (AnswerConnection ac : oa.getAnswerConnectionList()) {
-                            if (questionIndex + 1 >= ac.getQuestionID().getQuestionNumber() - 1) {
+        if (questionIndex != questions.get(page).size() - 1) {
+            Question currentQuestion = questions.get(page).get(questionIndex);
+            if (currentQuestion.getOfferedAnswerList().size() > 0) {
+                for (OfferedAnswer oa : currentQuestion.getOfferedAnswerList()) {
+                    if (oa.getChildQuestions().size() > 0) {
+                        for (Question lowerQuestion : oa.getChildQuestions()) {
+                            if (currentQuestion.getQuestionNumber() + 1 <= lowerQuestion.getQuestionNumber()) {
                                 return;
                             }
                         }
                     }
                 }
-            } */
+            }
             questions.get(page).get(questionIndex).setQuestionNumber(questionIndex + 1 + 1);
             questions.get(page).get(questionIndex + 1).setQuestionNumber(questionIndex + 1);
             Collections.swap(questions.get(page), questionIndex, questionIndex + 1);
-       // }
-
+        }
     }
 
     public void movePageUp(final int currentPage) {
@@ -226,16 +205,16 @@ public class CreateFormController implements Serializable {
         }
     }
 
-    public String getQuestionParentMessage(final int questionIndex, final int page) {
-       /* if (questionIndex != questions.get(page).size()) {
-            Question question = questions.get(page).get(questionIndex);
-            if (question.getAnswerConnectionList().size() > 0) {
-                return "Jeigu prieš tai buvo atsakyta " + question.getAnswerConnectionList().get(0).getOfferedAnswerID().getText();
-            } else {
-                return "";
+    public String getQuestionParentMessage(Question question) {
+        String str = "Jeigu prieš tai buvo atsakyta ";
+        if (question.getParentOfferedAnswers().size() > 0) {
+            for (OfferedAnswer oa : question.getParentOfferedAnswers()) {
+                str += oa.getText();
             }
-        } */
-        return "";
+            return str;
+        } else {
+            return "";
+        }
     }
 
     public void validate(FacesContext context, UIComponent component, Object object) {
@@ -266,7 +245,7 @@ public class CreateFormController implements Serializable {
         }
     }
 
-    private void splitScaleAnswer(Question q){
+    private void splitScaleAnswer(Question q) {
         String aLine = q.getOfferedAnswerList().get(0).getText();
         Scanner scanner = new Scanner(aLine);
         scanner.useDelimiter(";");

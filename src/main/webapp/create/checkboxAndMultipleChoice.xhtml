@@ -23,18 +23,10 @@
                         </h:inputText>
                      </div>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-11 text-right push-down">
-                     <p:selectCheckboxMenu styleClass="onlyBottomBorder" value="#{answer.childQuestions}"
-                                           converter="omnifaces.SelectItemsIndexConverter"
-                                           label="Klausimai:" updateLabel="true" mano="hey"
-                                           valueChangeListener="#{createFormController.valueChangeMethod}">
-                        <f:ajax>
-                           <f:setPropertyActionListener target="#{createFormController.offer}" value="#{answer}"/>
-                        </f:ajax>
-                        <f:attribute name="collectionType" value="java.util.ArrayList" />
-                        <f:selectItems value="#{createFormController.getLowerQuestions(question)}" var="lowerQuestion"
-                                       itemLabel="#{lowerQuestion.questionText}" itemValue="#{lowerQuestion}"/>
-                     </p:selectCheckboxMenu>
+                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-11 text-right">
+                     <h:commandLink action="#{createFormController.addChildQuestion(questionStatus.index, loopPage, answer)}" disabled="#{createFormController.survey.submits > 0}">
+                        <div class="glyphicon glyphicon-plus action-icon"></div>
+                     </h:commandLink>
                   </div>
                </h:panelGroup>
 
