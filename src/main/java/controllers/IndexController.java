@@ -4,6 +4,7 @@ import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Survey;
 import log.SurveySystemLog;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import userModule.SignInController;
 import userModule.SignInPerson;
@@ -12,6 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ import java.util.List;
 public class IndexController implements Serializable {
 
     @Inject
-    SurveyDAO surveyDao;
+    SurveyDAO surveyDAO;
 
     @Inject
     private SignInPerson signInPerson;
@@ -43,14 +45,25 @@ public class IndexController implements Serializable {
     @Getter
     List<Survey> personSurveys = new ArrayList<>();
 
+    @Setter
+    @Getter
+    private Survey selectedSurvey;
+
     @PostConstruct
     public void load() {
         personSurveys = signInPerson.getLoggedInPerson().getSurveyList();
-        publicSurveys = surveyDao.getAllSurveysByPrivate(false);
+        publicSurveys = surveyDAO.getAllSurveysByPrivate(false);
         publicSurveys.stream().filter(p -> !personSurveys.contains(p));
         if (signInController.isAdmin()) {
-            privateSurveys = surveyDao.getAllSurveysByPrivate(true);
+            privateSurveys = surveyDAO.getAllSurveysByPrivate(true);
             privateSurveys.stream().filter(p -> !personSurveys.contains(p));
+        }
+    }
+
+    @Transactional
+    public void deleteSurvey(){
+        if(signInController.isAdmin() || personSurveys.contains(selectedSurvey)){
+            surveyDAO.delete(selectedSurvey);
         }
     }
 

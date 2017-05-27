@@ -107,7 +107,7 @@ public class SaveAnswersController implements Serializable{
             if (!questions.containsKey(q.getPage())) {
                 questions.put(q.getPage(), new ArrayList<>());
             }
-            if (q.getAnswerConnectionList().size() == 0) { //Add only parent questions
+            if (q.getParentOfferedAnswers().size() == 0) { //Add only parent questions
                 questions.get(q.getPage()).add(q);
             }
             if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString()) ||
@@ -134,38 +134,58 @@ public class SaveAnswersController implements Serializable{
 
 
     public void changeCheckBoxOrMultipleValue(Question q, OfferedAnswer o){
-        if (selections.get(o)==true){
-            selections.put(o, false);
-            Iterator<Answer> i = checkboxAndMultipleAnswersList.get(q.getQuestionID()).iterator();
-            while (i.hasNext()){
-                if (i.next().getOfferedAnswerID().getOfferedAnswerID() == o.getOfferedAnswerID()){
-                    i.remove();
-                    break;
+        if (selections.get(o)==true){ // To false
+            if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX)) {
+                selections.put(o, false);
+                Iterator<Answer> i = checkboxAndMultipleAnswersList.get(q.getQuestionID()).iterator();
+                while (i.hasNext()) {
+                    if (i.next().getOfferedAnswerID().getOfferedAnswerID() == o.getOfferedAnswerID()) {
+                        i.remove();
+                        break;
+                    }
+                }/*
+                for (AnswerConnection ac : o.getAnswerConnectionList()) {
+                    questions.get(page).remove(ac.getQuestionID());
+                    checkboxAndMultipleAnswersList.get(q.getQuestionID()).clear();
+                    if (textAndScaleAnswersList.containsKey(q.getQuestionID())) {
+                        textAndScaleAnswersList.remove(q.getQuestionID());
+                    }
                 }
+                */
             }
-            for (AnswerConnection ac : o.getAnswerConnectionList()) {
-                questions.get(page).remove(ac.getQuestionID());
-                checkboxAndMultipleAnswersList.get(q.getQuestionID()).clear();
-                if (textAndScaleAnswersList.containsKey(q.getQuestionID())){
-                    textAndScaleAnswersList.remove(q.getQuestionID());
-                }
-            }
-        } else {
+        } else { // To true
             selections.put(o, true);
             Answer answer = new Answer();
             answer.setOfferedAnswerID(o);
             answer.setSessionID(null);
             o.getAnswerList().add(answer);
-            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())==false){
+            if (q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE)){
+                for (Answer a : checkboxAndMultipleAnswersList.get(q.getQuestionID())){
+                    OfferedAnswer oa = answer.getOfferedAnswerID();
+                    selections.put(oa, false);
+                    oa.getAnswerList().remove(a);
+                 /*   for (AnswerConnection ac : oa.getAnswerConnectionList()) {
+                        questions.get(page).remove(ac.getQuestionID());
+                        checkboxAndMultipleAnswersList.get(q.getQuestionID()).clear(); //
+                        if (textAndScaleAnswersList.containsKey(q.getQuestionID())) {
+                            textAndScaleAnswersList.remove(q.getQuestionID());
+                        }
+                    }
+                    */
+                }
+                checkboxAndMultipleAnswersList.get(q.getQuestionID()).clear();
+            }
+            if (q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE) || checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())==false){
                 checkboxAndMultipleAnswersList.put(q.getQuestionID(), new ArrayList<>());
             }
-            checkboxAndMultipleAnswersList.get(q.getQuestionID()).add(answer);
 
+            checkboxAndMultipleAnswersList.get(q.getQuestionID()).add(answer);
+/*
             for (AnswerConnection ac : o.getAnswerConnectionList()) {
                 Question question = ac.getQuestionID();
                 questions.get(page).add(questions.get(page).indexOf(o.getQuestionID())+1, question); //
                 addToTextAndScaleAnswerList(q);
-            }
+            } */
         }
     }
 
@@ -260,12 +280,12 @@ public class SaveAnswersController implements Serializable{
     public void increaseSubmits(){
         try {
             survey.setSubmits(survey.getSubmits()+1);
-            surveyDAO.update(survey);
+            //surveyDAO.update(survey);
             //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         } catch (OptimisticLockException ole) {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
             //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
-            self.solveSubmits();
+           // self.solveSubmits();
         }
 
     }

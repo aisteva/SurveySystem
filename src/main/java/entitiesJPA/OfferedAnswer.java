@@ -40,13 +40,13 @@ public class OfferedAnswer implements Serializable {
     private Question questionID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
     private List<Answer> answerList = new ArrayList<>();
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "offeredAnswerID")
-    private List<AnswerConnection> answerConnectionList = new ArrayList<>();
+    @JoinTable(name="answerconnection", joinColumns = {
+            @JoinColumn(name= "offeredAnswerID", referencedColumnName = "OfferedAnswerID")}, inverseJoinColumns = {
+            @JoinColumn(name= "questionID", referencedColumnName = "QuestionID")})
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Question> childQuestions = new ArrayList<>();
 
     //excel importui - su duomenų baze nesusiję
     @Transient
     private int answerNumber;
-
-    @Transient
-    private List<Question> childQuestions = new ArrayList<>();
 }
