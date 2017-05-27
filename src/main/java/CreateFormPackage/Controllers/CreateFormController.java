@@ -266,11 +266,11 @@ public class CreateFormController implements Serializable {
         Kadangi konstruktoriuje sukuriam pirmą klausimą, kuris yra tuščias, tai mapinam klausimus tik tokiu atveju, kai
         pirmas klausimas tuščias. Kitu atveju žinom, kad klausimai sumapinti, ir taip išvengiam galimų konfliktų.
          */
-        if(questions.get(1).get(0).getQuestionText() == "")
+        if(questions.get(1).get(0).getQuestionText().equals(""))
         {
-            questions = new ArrayList<>();
-            questions.add(0, new ArrayList<>()); // Questions with page 0 empty.
+            questions.get(1).remove(questions.get(1).size() - 1); //ištrinam naujai pridėtą klausimą, kurio reikia tik naujai kuriant apklausą
             for (Question q : survey.getQuestionList()) {
+                q.setNewType(q.getType()); //kadangi transient laukas, reikia nustatyti mapinant
                 if (questions.size() - 1 < q.getPage()) {
                     questions.add(q.getPage(), new ArrayList<>());
                 }

@@ -50,7 +50,7 @@ public class Question implements Serializable {
     @Basic(optional = false)
     @Column(name = "isRequired")
     private boolean isRequired;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID", fetch = FetchType.EAGER)
     private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "childQuestions")
     private List<OfferedAnswer> parentOfferedAnswers = new ArrayList<>();
