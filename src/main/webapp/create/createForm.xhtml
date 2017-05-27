@@ -6,8 +6,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
-      xmlns:c="http://java.sun.com/jsp/jstl/core">
+      xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <title>Nauja apklausa</title>
         <h:outputStylesheet name="/css/style.css" />
@@ -23,12 +22,13 @@
     </f:metadata>
     <h:body>
         <ui:include src="/header.xhtml"/>
+        <h:outputScript name="/js/clipboard.min.js"/>
         <div class="container">
             <h:form id="create_form">
                 <div class="box-shadow section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
                     <ui:include src="surveyMainInfo.xhtml"/>
                 </div>
-                <c:forEach begin="1" end="#{createFormController.questions.size()}" var="loopPage">
+                <ui:repeat var="loopPage" value="#{createFormController.pages}">
                     <div class="box-shadow section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
                         <div class="row">
                             <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 text-center">
@@ -36,7 +36,7 @@
                             </div>
                         </div>
                         <h:panelGroup id="survey#{loopPage}" >
-                            <ui:repeat  value="#{createFormController.questions.get(createFormController.parseInt(loopPage))}" var="question" varStatus="questionStatus">
+                            <ui:repeat  value="#{createFormController.questions.get(loopPage)}" var="question" varStatus="questionStatus">
                                 <ui:include src="onePage.xhtml"/>
                             </ui:repeat>
                         </h:panelGroup>
@@ -49,7 +49,7 @@
                                         </h:outputScript>
                                         <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-plus"
                                                        style="text-decoration: none;"
-                                                       actionListener="#{createFormController.addPage(createFormController.parseInt(loopPage))}"
+                                                       actionListener="#{createFormController.addPage(loopPage)}"
                                                        disabled="#{createFormController.survey.submits > 0}"/>
                                     </h3>
                                 </div>
@@ -58,10 +58,9 @@
                                         <h:outputScript>
                                             $('[data-toggle="tooltip"]').tooltip();
                                         </h:outputScript>
-                                        <!--TODO ištrinti puslapį-->
                                         <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-trash"
                                                        style="text-decoration: none;"
-                                                       actionListener="#{createFormController.addPage(createFormController.parseInt(loopPage))}"
+                                                       actionListener="#{createFormController.removePage(loopPage)}"
                                                        disabled="#{createFormController.survey.submits > 0}"/>
                                     </h3>
                                 </div>
@@ -70,10 +69,9 @@
                                         <h:outputScript>
                                             $('[data-toggle="tooltip"]').tooltip();
                                         </h:outputScript>
-                                        <!--TODO perkelti puslapį aukščiau-->
                                         <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-triangle-top"
                                                        style="text-decoration: none;"
-                                                       actionListener="#{createFormController.addPage(createFormController.parseInt(loopPage))}"
+                                                       actionListener="#{createFormController.movePageUp(loopPage)}"
                                                        disabled="#{createFormController.survey.submits > 0}"/>
                                     </h3>
                                 </div>
@@ -82,17 +80,16 @@
                                         <h:outputScript>
                                             $('[data-toggle="tooltip"]').tooltip();
                                         </h:outputScript>
-                                        <!--TODO perkelti puslapį žemiau-->
                                         <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-triangle-bottom"
                                                        style="text-decoration: none;"
-                                                       actionListener="#{createFormController.addPage(createFormController.parseInt(loopPage))}"
+                                                       actionListener="#{createFormController.movePageDown(loopPage)}"
                                                        disabled="#{createFormController.survey.submits > 0}"/>
                                     </h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </c:forEach>
+                </ui:repeat>
 
                 <div class="box-shadow section col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
                     <div class="row navigation">
