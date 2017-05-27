@@ -280,7 +280,7 @@ public class SaveAnswersController implements Serializable{
     public void increaseSubmits(){
         try {
             survey.setSubmits(survey.getSubmits()+1);
-            //surveyDAO.update(survey);
+            surveyDAO.update(survey);
             //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         } catch (OptimisticLockException ole) {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());

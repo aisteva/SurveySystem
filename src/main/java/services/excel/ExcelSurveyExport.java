@@ -67,13 +67,15 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
         }
 
         //iteruojamas klausimų sąrašas ir pagal klausimo tipą surašomas į workbook
+        int questionNumberExcludingPages = 0;
         for(Question question: survey.getQuestionList())
         {
             //sukuriama nauja eilutė, padidinamas skaitliukas
             Row questionRow = surveySheet.createRow(currentSurveyRowNumber++);
 
             //įrašomi privalomi klausimo atributai: klausimo nr, tekstas ir tipas
-            questionRow.createCell(0).setCellValue(question.getQuestionNumber());
+            question.setQuestionNumberExcludingPage(++questionNumberExcludingPages); //workaround: skaičiuojamas bendras klausimo nr, be puslapių
+            questionRow.createCell(0).setCellValue(question.getQuestionNumberExcludingPage());
             questionRow.createCell(1).setCellValue(question.getQuestionText());
             questionRow.createCell(2).setCellValue(question.getType());
 
@@ -178,10 +180,10 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
                 answerId++;
             }
             //jei pasikeitė klausimo numeris, kuriam naują eilutę
-            if(a.getOfferedAnswerID().getQuestionID().getQuestionNumber() != previousQuestionNumber)
+            if(a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage() != previousQuestionNumber)
             {
                 answerRow = answerSheet.createRow(currentAnswerRowNumber++);
-                previousQuestionNumber = a.getOfferedAnswerID().getQuestionID().getQuestionNumber();
+                previousQuestionNumber = a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage();
 
                 multipleChoiceCellNumber = 2;
             }
