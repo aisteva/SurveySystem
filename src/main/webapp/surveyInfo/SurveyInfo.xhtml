@@ -29,11 +29,21 @@
         <div class="box-shadow col-lg-8 col-lg-offset-2 col-lg-offset-2 col-md-10 col-md-offset-1 col-md-offset-1 col-sm-10 col-sm-offset-1 col-sm-offset-1 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-right">
                 <h:form>
-                    <h3><h:commandLink value=""
+                    <h3>
+                        <h:commandLink value=""
                                        style="text-decoration: none;"
                                      actionListener="#{surveyInfoController.exportSurvey()}"
-                                     styleClass="text text-primary glyphicon glyphicon-download-alt" >
-                    </h:commandLink></h3>
+                                     styleClass="text text-info glyphicon glyphicon-download-alt" >
+                        </h:commandLink>
+                        <h:panelGroup rendered="#{signInPerson.loggedInPerson.userType == 'ADMIN' or survey.personID.personID == signInPerson.loggedInPerson.personID}">
+                            <h:commandLink value=""
+                                           style="text-decoration: none; padding-left: 20px;"
+                                           actionListener="#{surveyInfoController.exportSurvey()}"
+                                           styleClass="text text-info glyphicon glyphicon-trash" >
+                            </h:commandLink>
+                        </h:panelGroup>
+                    </h3>
+
                 </h:form>
             </div>
             <!--<h:panelGroup rendered="#{surveyInfoController.survey.submits > 0}">-->
@@ -45,6 +55,15 @@
             <h4 class="text-left">Klausimų skaičius: #{surveyInfoController.survey.questionList.size()}</h4>
             <h:outputScript>
                 window.onload = function () {
+                    CanvasJS.addColorSet("colorSet",
+                        [
+                        "#0083bb",
+                        "#28bf93",
+                        "#12543c",
+                        "#29bf89",
+                        "#0e98a9",
+                        "#004766"
+                        ]);
                     <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                         if (#{question.type == 'TEXT'}){
                             var words#{question.questionID} = [
@@ -59,20 +78,29 @@
                             var finals#{question.questionID} = [
                                 <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
                                            var="answerCounter" varStatus="loop">
-                                    {label: "#{answerCounter.answerText} #{answerCounter.percentage} %", y:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
+                                    {label: "#{answerCounter.answerText}", y:#{answerCounter.countAnswers}, name:"#{answerCounter.percentage}%"}#{loop.last ? '' : ','}
                                 </ui:repeat>
                             ];
                             var chartType#{question.questionID};
-                            if (#{question.type == 'CHECKBOX'})
+                            var toolTip#{question.questionID};
+                            if (#{question.type == 'CHECKBOX'}) {
                                 chartType#{question.questionID} = "column";
-                            else if (#{question.type == 'MULTIPLECHOICE'})
+                                toolTip#{question.questionID} = "{label}: {y} ({name})";
+                            }
+                            else if (#{question.type == 'MULTIPLECHOICE'}) {
                                 chartType#{question.questionID} = "pie";
-                            else if (#{question.type == 'SCALE'})
+                                toolTip#{question.questionID} = "{label}: {y} (#percent%)";
+                            }
+                            else if (#{question.type == 'SCALE'}) {
                                 chartType#{question.questionID} = "column";
+                                toolTip#{question.questionID} = "Skaičius {label}: {y} ({name})";
+                            }
                             var chart#{question.questionID} = new CanvasJS.Chart("chartContainer#{question.questionID}", {
+                                colorSet: "colorSet",
                                 backgroundColor: "transparent",
                                 data: [{
                                     type: chartType#{question.questionID},
+                                    toolTipContent: toolTip#{question.questionID},
                                     dataPoints: finals#{question.questionID}
                                 }]
                             });
@@ -84,14 +112,24 @@
             <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 one-question">
                     <h3>#{question.questionNumber}. #{question.questionText}</h3>
-                    <div id="chartContainer#{question.questionID}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 300px"></div>
+                    <h:panelGroup rendered="#{not question.type.equals('SCALE')}">
+                        <div id="chartContainer#{question.questionID}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 300px"></div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{question.type.equals('SCALE')}">
+                        <div id="chartContainer#{question.questionID}" class="col-lg-8 col-md-8 col-sm-10 col-xs-12" style="height: 300px"></div>
+                    </h:panelGroup>
                     <p:outputPanel id ="stats" rendered="#{question.type.equals('SCALE')}">
-                        <p>Reikšmių vidurkis: #{surveyInfoController.questionStatsMap.get(question.questionID).avg}</p>
-                        <p>Mediana: #{surveyInfoController.questionStatsMap.get(question.questionID).mediana}</p>
-                        <ui:repeat  value="#{surveyInfoController.questionStatsMap.get(question.questionID).modaLst}" var="moda">
-                            <p>Moda: #{moda}</p>
-                        </ui:repeat>
-                        <p>Moda pasikartoja: #{surveyInfoController.questionStatsMap.get(question.questionID).modaRepeated} kartų</p>
+                        <div class="col-lg-4 col-md-4 col-sm-2 col-xs-12">
+                                <p><b>Reikšmių vidurkis:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).avg}</p>
+                                <p><b>Mediana:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).mediana}</p>
+                                <p>
+                                    <b>Moda:</b>
+                                    <ui:repeat  value="#{surveyInfoController.questionStatsMap.get(question.questionID).modaLst}" var="moda" varStatus="modaStatus">
+                                        #{moda} #{modaStatus.last ? '' : ', '}
+                                    </ui:repeat>
+                                </p>
+                                <p><b>Moda pasikartoja:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).modaRepeated} kartų</p>
+                        </div>
                     </p:outputPanel>
                 </div>
             </ui:repeat>
