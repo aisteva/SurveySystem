@@ -52,8 +52,8 @@ public class Question implements Serializable {
     private boolean isRequired;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
     private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID")
-    private List<AnswerConnection> answerConnectionList = new ArrayList<>();
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "childQuestions")
+    private List<OfferedAnswer> parentOfferedAnswers = new ArrayList<>();
     @JoinColumn(name = "SurveyID", referencedColumnName = "SurveyID")
     @ManyToOne(optional = false)
     private Survey surveyID;
@@ -75,8 +75,5 @@ public class Question implements Serializable {
 
     @Transient
     private boolean isShowQuestionsByAnswer = false;
-
-    @Transient
-    private List<OfferedAnswer> parentOfferedAnswers = new ArrayList<>();
 
 }
