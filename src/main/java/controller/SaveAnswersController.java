@@ -235,7 +235,7 @@ public class SaveAnswersController implements Serializable {
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<Long, Answer> entry = it.next();
             if (entry.getValue().getText() == null) {
-                // it.remove();
+                 it.remove();
             }
 
         }
