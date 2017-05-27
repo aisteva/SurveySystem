@@ -58,7 +58,7 @@ public class Survey implements Serializable {
     @Column(name = "OPT_LOCK_VERSION")
     private Integer optLockVersion;
     @Column(name = "Title")
-    private String title="";
+    private String title;
     @Column(name = "Description")
     private String description="";
     @Basic(optional = false)

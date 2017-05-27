@@ -218,7 +218,7 @@ public class SaveAnswersController implements Serializable{
             Map.Entry<Long, Answer> entry = it.next();
             if(entry.getValue().getText() == null)
             {
-               // it.remove();
+                it.remove();
             }
 
         }
