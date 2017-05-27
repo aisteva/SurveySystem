@@ -216,7 +216,7 @@ public class CreateFormController implements Serializable {
         String str = "Prieš tai buvo atsakyta ";
         if (question.getParentOfferedAnswers().size() > 0) {
             for (OfferedAnswer oa : question.getParentOfferedAnswers()) {
-                str = "Jei "+questions.get(oa.getQuestionID().getPage()).indexOf(oa.getQuestionID())+". "+
+                str = "Jei " + //TODO: add index
                         oa.getQuestionID().getQuestionText() + " klausime buvo atsakyta "+oa.getText();
             }
             return str;
