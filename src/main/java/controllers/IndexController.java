@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +59,6 @@ public class IndexController implements Serializable {
         }
     }
 
-    @Transactional
-    public void deleteSurvey(){
-        if(signInController.isAdmin() || personSurveys.contains(selectedSurvey)){
-            surveyDAO.delete(selectedSurvey);
-        }
-    }
+
 
 }

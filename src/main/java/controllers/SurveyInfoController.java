@@ -18,6 +18,8 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,6 +39,9 @@ public class SurveyInfoController implements Serializable{
     @Getter
     @Setter
     private String surveyUrl;
+
+    @Inject
+    private EntityManager em;
 
     @Getter
     private Survey survey;
@@ -151,7 +156,6 @@ public class SurveyInfoController implements Serializable{
 
     public void load(FacesContext context, UIComponent component, Object object) throws IOException {
         survey = surveyDao.getSurveyByUrl((String) object);
-        System.out.println(survey);
         if(survey!= null){
             for (Question q : survey.getQuestionList()){
                 addToAnswerCounterMap(q);
@@ -195,6 +199,15 @@ public class SurveyInfoController implements Serializable{
         {
             e.printStackTrace();
         }
+
+    }
+
+    @Transactional
+    public String deleteSurvey(){
+        Survey survey1 = surveyDao.getSurveyByUrl(survey.getSurveyURL());
+        surveyDao.delete(survey1);
+
+        return "/index.xhtml";
 
     }
 
