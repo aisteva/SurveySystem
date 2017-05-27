@@ -293,8 +293,13 @@ public class SaveAnswersController implements Serializable {
 
     //metodas padidinantis atsakytu apklausu skaiciu + survey submits optimistic locking
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void increaseSubmits() {
+    public void increaseSubmits() throws Exception {
         try {
+            if(surveyDAO.getSurveyByUrl(survey.getSurveyURL())== null){
+                throw new Exception();
+
+            }
+
             survey.setSubmits(survey.getSubmits() + 1);
             surveyDAO.update(survey);
             //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
@@ -308,7 +313,7 @@ public class SaveAnswersController implements Serializable {
 
     //metodas perraso naujai survey su konfliktuojancio submits skaiciaus survey versija
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void solveSubmits() {
+    public void solveSubmits() throws Exception {
         survey.setOptLockVersion(conflictingSurvey.getOptLockVersion());
         //System.out.println("priskirta: " +survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         increaseSubmits();
