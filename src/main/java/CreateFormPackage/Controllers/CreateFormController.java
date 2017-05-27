@@ -12,6 +12,7 @@ import org.primefaces.event.FileUploadEvent;
 import services.MessageCreator;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
+import userModule.SignInPerson;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -49,6 +50,9 @@ public class CreateFormController implements Serializable {
     private PersonDAO personDAO;
     @Inject
     private SurveyDAO surveyDAO;
+
+    @Inject
+    private SignInPerson person;
 
     private List<List<Question>> questions = new ArrayList<>();
 
@@ -230,6 +234,10 @@ public class CreateFormController implements Serializable {
         try {
             isEditMode = true;
             survey = surveyDAO.getSurveyByUrl((String) object);
+            if(!(survey.getPersonID()).equals(person.getLoggedInPerson())){
+               msg.redirectToErrorPage("Neturite teisių koreguoti apklausą");
+            }
+
             System.out.println(survey);
             //tikrinam, ar yra tokia survey
             if(survey == null) {
