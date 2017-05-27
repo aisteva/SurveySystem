@@ -32,6 +32,7 @@ public class SurveyDAO implements ISurveyDAO {
 
     public void delete(Survey survey){
         em.remove(survey);
+        em.flush();
     }
 
     public List<Survey> getAllSurveys() {

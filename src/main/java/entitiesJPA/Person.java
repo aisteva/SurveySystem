@@ -85,7 +85,7 @@ public class Person implements Serializable {
     @Basic(optional = false)
     @Column(name = "inviteURL")
     private String inviteUrl;
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "personID")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "personID")
     private List<Survey> surveyList = new ArrayList<>();
 
     public enum USER_TYPE {
