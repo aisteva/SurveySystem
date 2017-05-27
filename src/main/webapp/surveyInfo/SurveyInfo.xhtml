@@ -55,6 +55,15 @@
             <h4 class="text-left">Klausimų skaičius: #{surveyInfoController.survey.questionList.size()}</h4>
             <h:outputScript>
                 window.onload = function () {
+                    CanvasJS.addColorSet("colorSet",
+                        [
+                        "#0083bb",
+                        "#28bf93",
+                        "#12543c",
+                        "#29bf89",
+                        "#0e98a9",
+                        "#004766"
+                        ]);
                     <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                         if (#{question.type == 'TEXT'}){
                             var words#{question.questionID} = [
@@ -87,6 +96,7 @@
                                 toolTip#{question.questionID} = "Skaičius {label}: {y} ({name})";
                             }
                             var chart#{question.questionID} = new CanvasJS.Chart("chartContainer#{question.questionID}", {
+                                colorSet: "colorSet",
                                 backgroundColor: "transparent",
                                 data: [{
                                     type: chartType#{question.questionID},
@@ -112,9 +122,12 @@
                         <div class="col-lg-4 col-md-4 col-sm-2 col-xs-12">
                                 <p><b>Reikšmių vidurkis:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).avg}</p>
                                 <p><b>Mediana:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).mediana}</p>
-                                <ui:repeat  value="#{surveyInfoController.questionStatsMap.get(question.questionID).modaLst}" var="moda">
-                                    <p><b>Moda:</b> #{moda}</p>
-                                </ui:repeat>
+                                <p>
+                                    <b>Moda:</b>
+                                    <ui:repeat  value="#{surveyInfoController.questionStatsMap.get(question.questionID).modaLst}" var="moda" varStatus="modaStatus">
+                                        #{moda} #{modaStatus.last ? '' : ', '}
+                                    </ui:repeat>
+                                </p>
                                 <p><b>Moda pasikartoja:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).modaRepeated} kartų</p>
                         </div>
                     </p:outputPanel>
