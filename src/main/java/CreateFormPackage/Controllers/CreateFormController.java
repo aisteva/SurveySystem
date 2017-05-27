@@ -233,12 +233,14 @@ public class CreateFormController implements Serializable {
         //surandam apklausą pagal url
         try {
             isEditMode = true;
+
             survey = surveyDAO.getSurveyByUrl((String) object);
+
+            //tikrina, ar user yra kurejas
             if(!(survey.getPersonID()).equals(person.getLoggedInPerson())){
                msg.redirectToErrorPage("Neturite teisių koreguoti apklausą");
             }
 
-            System.out.println(survey);
             //tikrinam, ar yra tokia survey
             if(survey == null) {
                 msg.redirectToErrorPage("Tokios apklausos nėra");
