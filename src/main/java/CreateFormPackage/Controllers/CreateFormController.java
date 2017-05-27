@@ -10,6 +10,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
 import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.FileUploadEvent;
+import services.MessageCreator;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 
@@ -39,6 +40,9 @@ public class CreateFormController implements Serializable {
 
     @Inject
     private SaltGenerator sg;
+
+    @Inject
+    private MessageCreator msg;
 
     private Survey survey = new Survey();
 
@@ -228,8 +232,19 @@ public class CreateFormController implements Serializable {
         //surandam apklausą pagal url
         try {
             isEditMode = true;
-            survey = surveyDAO.getSurveyById((Long) object);
-            mapQuestions();
+            survey = surveyDAO.getSurveyByUrl((String) object);
+            System.out.println(survey);
+            //tikrinam, ar yra tokia survey
+            if(survey == null) {
+                msg.redirectToErrorPage("Tokios apklausos nėra");
+            }
+            else{
+                //tikrinam ar jau yra atsakyta
+                if (survey.getSubmits() != 0)
+                    msg.redirectToErrorPage("Į apklausą jau yra atsakymų, todėl jos redaguoti negalima");
+                else
+                    mapQuestions();
+            }
 
         } catch (Exception e) {
             context.getExternalContext().setResponseStatus(404);
