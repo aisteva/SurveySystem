@@ -310,6 +310,10 @@ public class CreateFormController implements Serializable {
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
         }
+        if(survey.getTitle().equals(""))
+        {
+            survey.setTitle("Be pavadinimo");
+        }
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
         boolean zeroPage = true;
