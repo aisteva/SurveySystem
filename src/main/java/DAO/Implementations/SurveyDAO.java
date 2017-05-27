@@ -30,6 +30,10 @@ public class SurveyDAO implements ISurveyDAO {
         em.flush();
     }
 
+    public void delete(Survey survey){
+        em.remove(survey);
+    }
+
     public List<Survey> getAllSurveys() {
         return em.createNamedQuery("Survey.findAll", Survey.class).getResultList();
     }
