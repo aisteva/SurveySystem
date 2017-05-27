@@ -202,12 +202,12 @@ public class SurveyInfoController implements Serializable{
 
     }
 
+    //Metodas ištrinantis apklausą
     @Transactional
-    public String deleteSurvey(){
+    public void deleteSurvey(){
         Survey survey1 = surveyDao.getSurveyByUrl(survey.getSurveyURL());
         surveyDao.delete(survey1);
-
-        return "/index?faces-redirect=true";
+        mesg.redirectToSuccessPage("Apklausa sėkmingai ištrinta");
 
     }
 

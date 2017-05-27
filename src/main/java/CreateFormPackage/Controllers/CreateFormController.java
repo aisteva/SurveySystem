@@ -220,7 +220,7 @@ public class CreateFormController implements Serializable {
         String str = "Prieš tai buvo atsakyta ";
         if (question.getParentOfferedAnswers().size() > 0) {
             for (OfferedAnswer oa : question.getParentOfferedAnswers()) {
-                str = "Jei "+questions.get(oa.getQuestionID().getPage()).indexOf(oa.getQuestionID())+". "+
+                str = "Jei " + //TODO: add index
                         oa.getQuestionID().getQuestionText() + " klausime buvo atsakyta "+oa.getText();
             }
             return str;
@@ -318,6 +318,10 @@ public class CreateFormController implements Serializable {
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
         }
+        if(survey.getTitle().equals(""))
+        {
+            survey.setTitle("Be pavadinimo");
+        }
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
         boolean zeroPage = true;
@@ -339,17 +343,23 @@ public class CreateFormController implements Serializable {
                     q.getOfferedAnswerList().add(offeredAnswer);
                 }
                 if (q.getQuestionText() == null || q.getQuestionText().isEmpty()) {
+                    msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Klausimas yra nenurodytas");
                     return false;
                 }
                 for (OfferedAnswer o : q.getOfferedAnswerList()) {
                     if (o.getQuestionID().getType().equals(Question.QUESTION_TYPE.TEXT.toString()))
                         continue;
                     if (o.getText() == null || o.getText().isEmpty()) {
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Nenurodytas klausimo pasirinkimas");
                         return false;
                     }
                 }
             }
-            if (isZeroQuestions) return false;
+            if (isZeroQuestions) {
+                msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Reikalingas bent vieno klausimo pridėjimas");
+                return false;
+            }
+
             survey.getQuestionList().addAll(lst);
         }
 
