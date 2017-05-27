@@ -40,9 +40,6 @@ public class CustomExceptionHandler extends ExceptionHandlerWrapper {
 
                 FacesContext context = FacesContext.getCurrentInstance();
                 NavigationHandler nav = context.getApplication().getNavigationHandler();
-                context.addMessage(null,
-                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Įvyko klaida", "Įvyko klaida"));
-                context.getExternalContext().getFlash().setKeepMessages(true);
                 nav.handleNavigation(context, null, "/errorPage");
                 context.renderResponse();
 
