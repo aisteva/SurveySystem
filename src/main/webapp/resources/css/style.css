@@ -174,6 +174,6 @@ body {
     margin-left: -40px;
 }
 
-.error-page .error-message {
+.error-page .error-message, .success-page .confirm-message {
     color: #7e8d85;
 }
