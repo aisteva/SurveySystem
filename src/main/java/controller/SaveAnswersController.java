@@ -22,6 +22,8 @@ import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -322,11 +324,20 @@ public class SaveAnswersController implements Serializable{
         //surandam apklausą pagal url
         try {
             survey = surveyDAO.getSurveyByUrl((String) object);
+            //gaunam šiandien dienos datą
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Date date = new Date();
+            System.out.println(dateFormat.format(date));
+            //tikrinam ar apklausa dar galioja
+            if(survey.getEndDate() != null) {
+                if(survey.getEndDate().before(date))
+                    mesg.redirectToErrorPage("Apklausa nebegalioja");
+            }
             if (survey == null) {
                 mesg.redirectToErrorPage("Tokios apklausos nėra");
             }
         } catch (Exception e) {
-           mesg.redirectToErrorPage("Tokios apklausos nėra");
+           mesg.redirectToErrorPage("Kažkas nutiko...");
         }
     }
 
