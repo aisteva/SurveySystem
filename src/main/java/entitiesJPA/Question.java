@@ -76,4 +76,8 @@ public class Question implements Serializable {
     @Transient
     private boolean isShowQuestionsByAnswer = false;
 
+    //Excel exportui - sunumeruoti klausimus nepriklausomai nuo puslapių
+    @Transient
+    private int questionNumberExcludingPage;
+
 }
