@@ -50,13 +50,17 @@ public class IndexController implements Serializable {
 
     @PostConstruct
     public void load() {
-        personSurveys = signInPerson.getLoggedInPerson().getSurveyList();
-        publicSurveys = surveyDAO.getAllSurveysByPrivate(false);
-        publicSurveys.stream().filter(p -> !personSurveys.contains(p));
-        if (signInController.isAdmin()) {
-            privateSurveys = surveyDAO.getAllSurveysByPrivate(true);
-            privateSurveys.stream().filter(p -> !personSurveys.contains(p));
+        if(signInPerson.getLoggedInPerson() != null)
+        {
+            personSurveys = signInPerson.getLoggedInPerson().getSurveyList();
+            publicSurveys = surveyDAO.getAllSurveysByPrivate(false);
+            publicSurveys.stream().filter(p -> !personSurveys.contains(p));
+            if (signInController.isAdmin()) {
+                privateSurveys = surveyDAO.getAllSurveysByPrivate(true);
+                privateSurveys.stream().filter(p -> !personSurveys.contains(p));
+            }
         }
+
     }
 
 
