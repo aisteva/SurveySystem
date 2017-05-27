@@ -207,7 +207,7 @@ public class SurveyInfoController implements Serializable{
         Survey survey1 = surveyDao.getSurveyByUrl(survey.getSurveyURL());
         surveyDao.delete(survey1);
 
-        return "/index.xhtml";
+        return "/index?faces-redirect=true";
 
     }
 

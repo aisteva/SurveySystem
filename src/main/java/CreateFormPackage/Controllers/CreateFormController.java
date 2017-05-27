@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
-import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.FileUploadEvent;
 import services.MessageCreator;
 import services.SaltGenerator;
@@ -16,9 +15,8 @@ import services.excel.IExcelSurveyImport;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ValueChangeEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
@@ -27,7 +25,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -242,8 +239,10 @@ public class CreateFormController implements Serializable {
                 //tikrinam ar jau yra atsakyta
                 if (survey.getSubmits() != 0)
                     msg.redirectToErrorPage("Į apklausą jau yra atsakymų, todėl jos redaguoti negalima");
-                else
+                else{
                     mapQuestions();
+                    survey.getQuestionList().clear();
+                }
             }
 
         } catch (Exception e) {
@@ -292,11 +291,15 @@ public class CreateFormController implements Serializable {
     public String createForm(final String personEmail) {
         //Merging scale offeredAnswer
         if (!surveyIsCorrect()) return null; //TODO: pagal įdėją turėtų būti kažkokie messagai jei blogai.
-        Person person = personDAO.FindPersonByEmail(personEmail);
-        survey.setPersonID(person);
-        survey.setSurveyURL(sg.getRandomString(8));
-        person.getSurveyList().add(survey);
-        personDAO.UpdateUser(person);
+        if (!isEditMode) {
+            Person person = personDAO.FindPersonByEmail(personEmail);
+            survey.setPersonID(person);
+            survey.setSurveyURL(sg.getRandomString(8));
+            person.getSurveyList().add(survey);
+            personDAO.UpdateUser(person);
+        } else {
+            surveyDAO.update(survey);
+        }
         return "/create/formCreated.xhtml?faces-redirect=true&id=" + survey.getSurveyURL();
     }
 
