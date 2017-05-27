@@ -235,10 +235,13 @@ public class SaveAnswersController implements Serializable {
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); ) {
             Map.Entry<Long, Answer> entry = it.next();
             if (entry.getValue().getText() == null) {
+                OfferedAnswer of = entry.getValue().getOfferedAnswerID();
+                of.getAnswerList().remove(entry.getValue());
                  it.remove();
             }
 
         }
+        System.out.println(textAndScaleAnswersList.toString());
 
         //conversation.end();
         //jei neatsakyta nei i viena klausima metama zinute
@@ -255,12 +258,13 @@ public class SaveAnswersController implements Serializable {
         }
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
+    @Transactional
     public void saveAnswerTransaction() {
         try {
             String session = sg.getRandomString(15);
             for (Long l : textAndScaleAnswersList.keySet()) {
                 Answer a = textAndScaleAnswersList.get(l);
+                System.out.println(a.toString());
                 if (a.getText() != null && a.getText() != "") {
                     //nusetina sesijos id
                     a.setSessionID(session);
