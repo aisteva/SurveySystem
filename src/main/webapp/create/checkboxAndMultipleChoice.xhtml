@@ -6,7 +6,7 @@
         xmlns:p="http://primefaces.org/ui"
         xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
    <div class="row">
-      <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers(questionStatus.index)}" varStatus="answerStatus">
+      <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers(questionStatus.index, loopPage)}" varStatus="answerStatus">
          <div class="row">
             <div class="answer-text col-lg-12 col-md-12 col-sm-12 col-xs-12">
                <h:panelGroup rendered="#{question.showQuestionsByAnswer}">
@@ -24,11 +24,17 @@
                      </div>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-4 col-xs-11 text-right push-down">
-                     <!--TODO gauti klausimus kurie yra tame pačiame puslapyje, bet žemiau ir atkomentuoti-->
-                     <!--<h:selectOneMenu value="" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">-->
-                        <!--<f:selectItems value = ""/>-->
-                        <!--<f:ajax listener="" render="@form"/>-->
-                     <!--</h:selectOneMenu>-->
+                     <p:selectCheckboxMenu styleClass="onlyBottomBorder" value="#{answer.childQuestions}"
+                                           converter="omnifaces.SelectItemsIndexConverter"
+                                           label="Klausimai:" updateLabel="true" mano="hey"
+                                           valueChangeListener="#{createFormController.valueChangeMethod}">
+                        <f:ajax>
+                           <f:setPropertyActionListener target="#{createFormController.offer}" value="#{answer}"/>
+                        </f:ajax>
+                        <f:attribute name="collectionType" value="java.util.ArrayList" />
+                        <f:selectItems value="#{createFormController.getLowerQuestions(question)}" var="lowerQuestion"
+                                       itemLabel="#{lowerQuestion.questionText}" itemValue="#{lowerQuestion}"/>
+                     </p:selectCheckboxMenu>
                   </div>
                </h:panelGroup>
 
@@ -48,7 +54,7 @@
                   </div>
                </h:panelGroup>
                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
-                  <h:commandLink action="#{createFormController.removeAnswer(questionStatus.index, answerStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
+                  <h:commandLink action="#{createFormController.removeAnswer(questionStatus.index, answerStatus.index, loopPage)}" disabled="#{createFormController.survey.submits > 0}">
                      <div class="glyphicon glyphicon-remove action-icon"></div>
                      <f:ajax render="@form"/>
                   </h:commandLink>
@@ -65,7 +71,7 @@
                <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
                   <div class="circle"/>
                </h:panelGroup>
-               <h:commandLink value="Pridėti atsakymą" action="#{createFormController.addOfferedAnswer(questionStatus.index)}" disabled="#{createFormController.survey.submits > 0}">
+               <h:commandLink value="Pridėti atsakymą" action="#{createFormController.addOfferedAnswer(questionStatus.index, loopPage)}" disabled="#{createFormController.survey.submits > 0}">
                   <f:ajax render="@form"/>
                </h:commandLink>
             </div>

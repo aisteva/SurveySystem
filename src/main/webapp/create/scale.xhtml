@@ -4,11 +4,10 @@
         xmlns:h="http://xmlns.jcp.org/jsf/html"
         xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
         xmlns:p="http://primefaces.org/ui"
-        xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
-        xmlns:c="http://java.sun.com/jsp/jstl/core">
+        xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
     <div class="row">
         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5 text-center">
-            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}"
+            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index, loopPage).get(0).text}"
                            a:placeholder="Nuo"
                            decimalPlaces="0"
                            thousandSeparator=""
@@ -20,11 +19,11 @@
             ―
         </div>
         <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
-            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index).get(1).text}"
+            <p:inputNumber value="#{createFormController.getOfferedAnswers(questionStatus.index, loopPage).get(1).text}"
                            a:placeholder="Iki"
                            decimalPlaces="0"
                            thousandSeparator=""
-                           minValue="#{createFormController.getOfferedAnswers(questionStatus.index).get(0).text}"
+                           minValue="#{createFormController.getOfferedAnswers(questionStatus.index, loopPage).get(0).text}"
                            disabled="#{createFormController.survey.submits > 0}">
                 <f:ajax update="@form" render="@none"/>
             </p:inputNumber>

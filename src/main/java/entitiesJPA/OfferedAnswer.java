@@ -46,4 +46,7 @@ public class OfferedAnswer implements Serializable {
     //excel importui - su duomenų baze nesusiję
     @Transient
     private int answerNumber;
+
+    @Transient
+    private List<Question> childQuestions = new ArrayList<>();
 }

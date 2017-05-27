@@ -15,7 +15,9 @@ import services.excel.IExcelSurveyImport;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
@@ -24,6 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * Created by vdeiv on 2017-04-07.
@@ -46,9 +49,11 @@ public class CreateFormController implements Serializable {
     @Inject
     private SurveyDAO surveyDAO;
 
-    private Map<Integer, List<Question>> questions = new HashMap<>();
+    private List<List<Question>> questions = new ArrayList<>();
 
     private File excelFile;
+
+    List<Integer> pages = new ArrayList<>(); // Starts from 0. But first value is 1.
 
     @Inject
     IExcelSurveyImport excelSurveyImport;
@@ -57,64 +62,90 @@ public class CreateFormController implements Serializable {
     boolean isImported;
 
     public CreateFormController(){
-        questions.put(1, new ArrayList<>());
-        addQuestion(-1);
+        pages.add(1);
+        questions.add(new ArrayList<>()); //0 page is empty and not used.  // Pages starts from 1.
+        questions.add(new ArrayList<>());
+        addQuestion(-1, 1);
     }
 
-    public List<OfferedAnswer> getOfferedAnswers(final int questionIndex) {
+    public List<OfferedAnswer> getOfferedAnswers(final int questionIndex, final int page) {
         return questions.get(page).get(questionIndex).getOfferedAnswerList();
     }
 
-    public void addPage(final int page){
-//        page += 1;
-        if (!questions.containsKey(page + 1)){
-            questions.put(page, new ArrayList<>());
-            addQuestion(-1);
+    public void addPage(final int currentpage){
+        questions.add(currentpage+1, new ArrayList<>());
+        pages.add(pages.size()+1);
+        for (int i=0; i < pages.size(); i++){
+            pages.set(i, i+1);
         }
-        //TODO pridėt naują puslapį į vidurį. Teks perstumti puslapius per vieną. Paduodamas n puslapis, kuriam turi atsirasti n+1, o n+2,...,n+k turi tapti n+3, ... n+k+1
+        addQuestion(-1, currentpage+1);
     }
 
-    public void prevPage() {
-        page -= 1;
+    public void removePage(final int currentPage){
+        questions.remove(currentPage);
+        pages.remove(pages.size()-1);
+        for (int i=0; i < pages.size(); i++){
+            pages.set(i, i+1);
+        }
     }
 
-    public void removeQuestion(final int questionIndex) {
-        questions.get(page).remove(questionIndex);
+    public void removeQuestion(final int questionIndex, final int page) {
+        if (questions.get(page).size() != 1) {
+            questions.get(page).remove(questionIndex);
+        }
     }
 
-    public void addQuestion(final int prevQuestionIndex) {
+    public void addQuestion(final int prevQuestionIndex, final int page) {
         Question question = new Question();
         question.setSurveyID(survey);
         String type = Question.QUESTION_TYPE.TEXT.toString();
         if (prevQuestionIndex >= 0) {
             type = questions.get(page).get(prevQuestionIndex).getType();
-        };
+        }
         question.setType(type);
         question.setNewType(type);
         question.setQuestionNumber(prevQuestionIndex + 1 + 1);  // (clicked) question index + starts with 1 + next question
         question.setPage(page);
         questions.get(page).add(prevQuestionIndex+1, question);
-        addOfferedAnswer(prevQuestionIndex+1);
+        addOfferedAnswer(prevQuestionIndex+1, page);
         if (type.equals(Question.QUESTION_TYPE.SCALE.toString())){
-            addOfferedAnswer(prevQuestionIndex+1);
+            addOfferedAnswer(prevQuestionIndex+1, page);
         }
     }
 
-    public void addChildQuestion(final int offeredAnswerIndex, final int prevQuestionIndex) {
-        addQuestion(prevQuestionIndex);
+    public void addChildQuestion(final int offeredAnswerIndex, final int prevQuestionIndex, final int page) {
+        addQuestion(prevQuestionIndex, page);
         Question question = questions.get(page).get(prevQuestionIndex+1);
 
         AnswerConnection answerConnection = new AnswerConnection();
         question.getAnswerConnectionList().add(answerConnection);
         answerConnection.setQuestionID(question);
-        OfferedAnswer parentOfferedAnswer = getOfferedAnswers(prevQuestionIndex).get(offeredAnswerIndex);
+        OfferedAnswer parentOfferedAnswer = getOfferedAnswers(prevQuestionIndex, page).get(offeredAnswerIndex);
         parentOfferedAnswer.getAnswerConnectionList().add(answerConnection);
         answerConnection.setOfferedAnswerID(parentOfferedAnswer);
     }
-    public int parseInt(String integer) {
-        return Integer.parseInt(integer);
+
+    public void setChildQuestions(OfferedAnswer offeredAnswer) {
+        for (Question q : offeredAnswer.getChildQuestions()){
+            AnswerConnection answerConnection = new AnswerConnection();
+            answerConnection.setQuestionID(q);
+            q.getAnswerConnectionList().add(answerConnection);
+            offeredAnswer.getAnswerConnectionList().add(answerConnection);
+            //q.
+        }
     }
-    public void removeAnswer(int questionIndex, final int answerIndex){
+
+    @Getter @Setter private OfferedAnswer offer;
+    public void valueChangeMethod(ValueChangeEvent e){
+       // Integer offeredAnswerId = (Integer) ((UIInput) e.getSource()).getAttributes().get("id");
+    }
+
+    public List<Question> getLowerQuestions(Question question){
+        List<Question> lst = questions.get(question.getPage()).stream().filter(x->x.getQuestionNumber() > question.getQuestionNumber()).collect(Collectors.toList());
+        return lst;
+    }
+
+    public void removeAnswer(int questionIndex, final int answerIndex, final int page){
         if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 1) {
             OfferedAnswer offeredAnswer = questions.get(page).get(questionIndex).getOfferedAnswerList().get(answerIndex);
             for (AnswerConnection answerConnection : offeredAnswer.getAnswerConnectionList()) {
@@ -126,7 +157,7 @@ public class CreateFormController implements Serializable {
     public void setHasAnswersByQuestion(final int questionIndex, final int page){
         questions.get(page).get(questionIndex).setShowQuestionsByAnswer(!questions.get(page).get(questionIndex).isShowQuestionsByAnswer());
     }
-    public void addOfferedAnswer(final int questionIndex) {
+    public void addOfferedAnswer(final int questionIndex, final int page) {
         OfferedAnswer offeredAnswer = new OfferedAnswer();
         Question question = questions.get(page).get(questionIndex);
 
@@ -134,11 +165,11 @@ public class CreateFormController implements Serializable {
         question.getOfferedAnswerList().add(offeredAnswer);
     }
 
-    public void removeAllOfferedAnswers(final int questionIndex) {
+    public void removeAllOfferedAnswers(final int questionIndex, final int page) {
         questions.get(page).get(questionIndex).getOfferedAnswerList().clear();
     }
 
-    public void moveQuestionUp(final int questionIndex) {
+    public void moveQuestionUp(final int questionIndex, final int page) {
         if (questionIndex != 0) {
             if (questions.get(page).get(questionIndex).getAnswerConnectionList().size() > 0 &&
                     questions.get(page).get(questionIndex).getAnswerConnectionList().get(0) // Can't be higher than parent question
@@ -150,7 +181,7 @@ public class CreateFormController implements Serializable {
             Collections.swap(questions.get(page), questionIndex, questionIndex - 1);
         }
     }
-    public void moveQuestionDown(final int questionIndex) {
+    public void moveQuestionDown(final int questionIndex, final int page) {
         if (questionIndex != questions.get(page).size()-1){
             if (questions.get(page).get(questionIndex).getOfferedAnswerList().size()> 0){
                 for (OfferedAnswer oa : questions.get(page).get(questionIndex).getOfferedAnswerList()) {
@@ -169,7 +200,19 @@ public class CreateFormController implements Serializable {
         }
     }
 
-    public String getQuestionParentMessage(final int questionIndex){
+    public void movePageUp(final int currentPage){
+        if (currentPage > 1) {
+            Collections.swap(questions, currentPage, currentPage - 1);
+        }
+    }
+
+    public void movePageDown(final int currentPage){
+        if (currentPage < questions.size()){
+            Collections.swap(questions, currentPage, currentPage +1);
+        }
+    }
+
+    public String getQuestionParentMessage(final int questionIndex, final int page){
         if (questionIndex != questions.get(page).size()) {
             Question question = questions.get(page).get(questionIndex);
             if (question.getAnswerConnectionList().size() > 0){
@@ -197,8 +240,8 @@ public class CreateFormController implements Serializable {
     {
         questions.clear();
         for (Question q : survey.getQuestionList()){
-            if (!questions.containsKey(q.getPage())){
-                questions.put(q.getPage(), new ArrayList<>());
+            if (questions.size()<q.getPage()){
+                questions.add(q.getPage(), new ArrayList<>());
             }
             questions.get(q.getPage()).add(q.getQuestionNumber()-1, q);
         }
@@ -225,8 +268,12 @@ public class CreateFormController implements Serializable {
         }
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
-        for (Integer page : questions.keySet()) {
-            List<Question> lst = questions.get(page);
+        boolean zeroPage = true;
+        for (List<Question> lst : questions) {
+            if (zeroPage){
+                zeroPage = false;
+                continue;
+            }
             for (Question q : lst){
                 isZeroQuestions = false;
                 if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){
@@ -254,28 +301,28 @@ public class CreateFormController implements Serializable {
         return true;
     }
 
-    public void changeQuestionType(final int questionIndex){
+    public void changeQuestionType(final int questionIndex, final int page){
         Question question = questions.get(page).get(questionIndex);
         if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())){ //If was text
             if (question.getNewType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
-                addOfferedAnswer(questionIndex);
+                addOfferedAnswer(questionIndex, page);
             }
         }
         else if (question.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString()) //If was checkbox or multiple
                 || question.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())){
             if (question.getNewType().equals(Question.QUESTION_TYPE.TEXT.toString())) {
-                removeAllOfferedAnswers(questionIndex);
-                addOfferedAnswer(questionIndex);
+                removeAllOfferedAnswers(questionIndex, page);
+                addOfferedAnswer(questionIndex, page);
             }
             else if (question.getNewType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
-                removeAllOfferedAnswers(questionIndex);
-                addOfferedAnswer(questionIndex);
-                addOfferedAnswer(questionIndex);
+                removeAllOfferedAnswers(questionIndex, page);
+                addOfferedAnswer(questionIndex, page);
+                addOfferedAnswer(questionIndex, page);
             }
         }
         else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ //If was scale
-            removeAllOfferedAnswers(questionIndex);
-            addOfferedAnswer(questionIndex);
+            removeAllOfferedAnswers(questionIndex, page);
+            addOfferedAnswer(questionIndex, page);
         }
         question.setType(question.getNewType());
     }
@@ -310,13 +357,6 @@ public class CreateFormController implements Serializable {
             }
 
         }
-    }
-
-    public boolean validateQuestionSize(){
-        int questionListSize = questions.values().size();
-        if(questionListSize == 1)
-            return true;
-        else return false;
     }
 
 }

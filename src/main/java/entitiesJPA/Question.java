@@ -38,7 +38,7 @@ public class Question implements Serializable {
     private Long questionID;
     @Basic(optional = false)
     @Column(name = "QuestionText")
-    private String questionText;
+    private String questionText="";
     @Basic(optional = false)
     @Column(name = "QuestionNumber")
     private int questionNumber;
@@ -75,5 +75,8 @@ public class Question implements Serializable {
 
     @Transient
     private boolean isShowQuestionsByAnswer = false;
+
+    @Transient
+    private List<OfferedAnswer> parentOfferedAnswers = new ArrayList<>();
 
 }
