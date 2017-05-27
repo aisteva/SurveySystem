@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                     <h:panelGroup rendered="#{survey.personID.personID == signInPerson.loggedInPerson.personID and survey.submits == 0}">
-                        <h:link outcome="/create/createForm.html?id=#{survey.surveyID}">
+                        <h:link outcome="/create/createForm.html?id=#{survey.surveyURL}">
                             <div class="glyphicon glyphicon-pencil"></div>
                         </h:link>
                     </h:panelGroup>

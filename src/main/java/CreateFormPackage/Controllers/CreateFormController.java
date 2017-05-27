@@ -2,16 +2,12 @@ package CreateFormPackage.Controllers;
 
 import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
-import entitiesJPA.OfferedAnswer;
-import entitiesJPA.Person;
-import entitiesJPA.Question;
-import entitiesJPA.Survey;
+import entitiesJPA.*;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
-import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.event.FileUploadEvent;
 import services.MessageCreator;
 import services.SaltGenerator;
@@ -20,6 +16,7 @@ import services.excel.IExcelSurveyImport;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
@@ -219,7 +216,7 @@ public class CreateFormController implements Serializable {
         String str = "Prieš tai buvo atsakyta ";
         if (question.getParentOfferedAnswers().size() > 0) {
             for (OfferedAnswer oa : question.getParentOfferedAnswers()) {
-                str = "Jei "+questions.get(oa.getQuestionID().getPage()).indexOf(oa.getQuestionID())+". "+
+                str = "Jei " + //TODO: add index
                         oa.getQuestionID().getQuestionText() + " klausime buvo atsakyta "+oa.getText();
             }
             return str;
@@ -232,8 +229,21 @@ public class CreateFormController implements Serializable {
         //surandam apklausą pagal url
         try {
             isEditMode = true;
-            survey = surveyDAO.getSurveyById((Long) object);
-            mapQuestions();
+            survey = surveyDAO.getSurveyByUrl((String) object);
+            System.out.println(survey);
+            //tikrinam, ar yra tokia survey
+            if(survey == null) {
+                msg.redirectToErrorPage("Tokios apklausos nėra");
+            }
+            else{
+                //tikrinam ar jau yra atsakyta
+                if (survey.getSubmits() != 0)
+                    msg.redirectToErrorPage("Į apklausą jau yra atsakymų, todėl jos redaguoti negalima");
+                else{
+                    mapQuestions();
+                    survey.getQuestionList().clear();
+                }
+            }
 
         } catch (Exception e) {
             context.getExternalContext().setResponseStatus(404);
@@ -281,11 +291,15 @@ public class CreateFormController implements Serializable {
     public String createForm(final String personEmail) {
         //Merging scale offeredAnswer
         if (!surveyIsCorrect()) return null; //TODO: pagal įdėją turėtų būti kažkokie messagai jei blogai.
-        Person person = personDAO.FindPersonByEmail(personEmail);
-        survey.setPersonID(person);
-        survey.setSurveyURL(sg.getRandomString(8));
-        person.getSurveyList().add(survey);
-        personDAO.UpdateUser(person);
+        if (!isEditMode) {
+            Person person = personDAO.FindPersonByEmail(personEmail);
+            survey.setPersonID(person);
+            survey.setSurveyURL(sg.getRandomString(8));
+            person.getSurveyList().add(survey);
+            personDAO.UpdateUser(person);
+        } else {
+            surveyDAO.update(survey);
+        }
         return "/create/formCreated.xhtml?faces-redirect=true&id=" + survey.getSurveyURL();
     }
 
