@@ -65,7 +65,7 @@
                                         <label class="checkbox">
                                             <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                    value="#{saveAnswersController.selections.get(offered)}"
-                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}">
+                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}">
                                                 <p:ajax update="@form" />
                                             </p:selectBooleanButton>
                                         </label>
@@ -76,7 +76,7 @@
                                     <label class="radio">
                                         <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                value="#{saveAnswersController.selections.get(offered)}"
-                                                               valueChangeListener="#{saveAnswersController.changeCheckBoxOrMultipleValue(question, offered)}">
+                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}">
                                             <p:ajax update="@form"/>
                                         </p:selectBooleanButton>
                                     </label>
