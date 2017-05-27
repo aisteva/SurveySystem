@@ -122,29 +122,30 @@ public class SaveAnswersController implements Serializable {
         prevPage = true;
     }
 
+    private void deleteChildAndTheirChildQuestions(OfferedAnswer offeredAnswer){
+        for (Question childQuestion : offeredAnswer.getChildQuestions()){
+            questions.get(childQuestion.getPage()).remove(childQuestion);
+            for (OfferedAnswer oa : childQuestion.getOfferedAnswerList()){
+                deleteChildAndTheirChildQuestions(oa);
+                selections.remove(oa);
+            }
+            if (checkboxAndMultipleAnswersList.containsKey(childQuestion.getQuestionID())){
+                checkboxAndMultipleAnswersList.remove(childQuestion.getQuestionID());
+            }
+            if (textAndScaleAnswersList.containsKey(childQuestion.getQuestionID())){
+                textAndScaleAnswersList.remove(childQuestion.getQuestionID());
+            }
+        }
+    }
+
     public void changeCheckBoxValue(Question q, OfferedAnswer o) {
         if (selections.get(o) == true) { // To false
             selections.put(o, false);
             // Remove old choice
-            Iterator<Answer> i = checkboxAndMultipleAnswersList.get(q.getQuestionID()).iterator();
-            while (i.hasNext()) {
-                if (i.next().getOfferedAnswerID().getOfferedAnswerID() == o.getOfferedAnswerID()) {
-                    i.remove();
-                    break;
-                }
+            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())){
+                checkboxAndMultipleAnswersList.get(q.getQuestionID()).remove(o);
             }
-            for (Question childQuestion : o.getChildQuestions()){
-                questions.get(childQuestion.getPage()).remove(childQuestion);
-                for (OfferedAnswer oa : childQuestion.getOfferedAnswerList()){
-                    selections.remove(oa);
-                }
-                if (checkboxAndMultipleAnswersList.containsKey(childQuestion.getQuestionID())){
-                    checkboxAndMultipleAnswersList.remove(childQuestion.getQuestionID());
-                }
-                if (textAndScaleAnswersList.containsKey(childQuestion.getQuestionID())){
-                    textAndScaleAnswersList.remove(childQuestion.getQuestionID());
-                }
-            }
+            deleteChildAndTheirChildQuestions(o);
 
         } else { // To true
             selections.put(o, true);
@@ -158,7 +159,9 @@ public class SaveAnswersController implements Serializable {
             checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).add(answer);
             for (Question childQuestion : o.getChildQuestions()){
                 questions.get(childQuestion.getPage()).add(childQuestion);
-                selections.put(o, false);
+                for (OfferedAnswer oo : childQuestion.getOfferedAnswerList()){
+                    selections.put(oo, false);
+                }
                 addToTextAndScaleAnswerList(childQuestion);
             }
         }
@@ -181,18 +184,8 @@ public class SaveAnswersController implements Serializable {
                 oldOfferedAnswer.getAnswerList().remove(oldAnswer);
 
                 // Removes old child questions
-                for (Question oldChildQuestion : oldOfferedAnswer.getChildQuestions()) {
-                    for (OfferedAnswer oo : oldChildQuestion.getOfferedAnswerList()) {
-                        selections.remove(oo);
-                    }
-                    questions.get(oldChildQuestion.getPage()).remove(oldChildQuestion);
-                    if (textAndScaleAnswersList.containsKey(oldChildQuestion.getQuestionID())) {
-                        textAndScaleAnswersList.remove(oldChildQuestion.getQuestionID());
-                    }
-                    if (checkboxAndMultipleAnswersList.containsKey(oldChildQuestion.getQuestionID())) {
-                        checkboxAndMultipleAnswersList.remove(oldChildQuestion.getQuestionID());
-                    }
-                }
+                deleteChildAndTheirChildQuestions(oldOfferedAnswer);
+
             } else {
                 checkboxAndMultipleAnswersList.put(q.getQuestionID(), new ArrayList<>());
                 checkboxAndMultipleAnswersList.get(q.getQuestionID()).add(answer);
@@ -355,7 +348,7 @@ public class SaveAnswersController implements Serializable {
             }
         } catch (Exception e) {
            mesg.redirectToErrorPage("Kažkas nutiko...");
-            mesg.redirectToErrorPage("Tokios apklausos nėra");
+           mesg.redirectToErrorPage("Tokios apklausos nėra");
         }
     }
 
