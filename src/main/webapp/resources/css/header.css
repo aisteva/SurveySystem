@@ -29,3 +29,7 @@
 .navbar-toggle.collapsed .bottom-bar {
     transform: rotate(0);
 }
+
+.navbar-brand > img {
+    height: 30px;
+}
