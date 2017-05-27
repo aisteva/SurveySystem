@@ -252,16 +252,23 @@ public class CreateFormController implements Serializable {
     }
 
     public void mapQuestions() {
-        questions.clear();
-        questions.add(0, new ArrayList<>()); // Questions with page 0 empty.
-        for (Question q : survey.getQuestionList()) {
-            if (questions.size() - 1 < q.getPage()) {
-                questions.add(q.getPage(), new ArrayList<>());
-            }
-            questions.get(q.getPage()).add(q.getQuestionNumber() - 1, q);
+        /*
+        Kadangi konstruktoriuje sukuriam pirmą klausimą, kuris yra tuščias, tai mapinam klausimus tik tokiu atveju, kai
+        pirmas klausimas tuščias. Kitu atveju žinom, kad klausimai sumapinti, ir taip išvengiam galimų konfliktų.
+         */
+        if(questions.get(1).get(0).getQuestionText() == "")
+        {
+            questions = new ArrayList<>();
+            questions.add(0, new ArrayList<>()); // Questions with page 0 empty.
+            for (Question q : survey.getQuestionList()) {
+                if (questions.size() - 1 < q.getPage()) {
+                    questions.add(q.getPage(), new ArrayList<>());
+                }
+                questions.get(q.getPage()).add(q.getQuestionNumber() - 1, q);
 
-            if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
-                splitScaleAnswer(q);
+                if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
+                    splitScaleAnswer(q);
+                }
             }
         }
     }
