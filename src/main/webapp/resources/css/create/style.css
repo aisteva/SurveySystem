@@ -285,3 +285,8 @@ input:checked + .slider:before {
     background: transparent;
     border: none;
 }
+
+*:disabled {
+    color: #bdbdbe;
+    background: transparent;
+}
