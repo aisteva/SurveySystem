@@ -1,4 +1,4 @@
-package Controllers.Implementations;
+package Controllers;
 
 import Controllers.Interfaces.IIndexController;
 import DAO.Implementations.SurveyDAO;

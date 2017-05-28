@@ -1,4 +1,4 @@
-package Controllers.Implementations;
+package Controllers;
 
 import Controllers.Interfaces.ICreateFormController;
 import DAO.Implementations.PersonDAO;

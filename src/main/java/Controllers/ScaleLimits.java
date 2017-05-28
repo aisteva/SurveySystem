@@ -1,4 +1,4 @@
-package Controllers.Implementations;
+package Controllers;
 
 import lombok.Getter;
 import lombok.Setter;

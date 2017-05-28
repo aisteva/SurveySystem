@@ -1,6 +1,6 @@
 package Controllers.Interfaces;
 
-import Controllers.Implementations.ScaleLimits;
+import Controllers.ScaleLimits;
 import entitiesJPA.OfferedAnswer;
 import entitiesJPA.Question;
 

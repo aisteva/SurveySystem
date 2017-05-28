@@ -1,4 +1,4 @@
-package Controllers.Implementations;
+package Controllers;
 
 import Controllers.Interfaces.ISurveyInfoController;
 import DAO.Implementations.SurveyDAO;
