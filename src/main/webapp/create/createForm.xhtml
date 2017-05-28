@@ -40,54 +40,7 @@
                                 <ui:include src="onePage.xhtml"/>
                             </ui:repeat>
                         </h:panelGroup>
-                        <div class="row">
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                                    <h3 data-toggle="tooltip" title="Pridėti naują puslapį" data-placement="right">
-                                        <h:outputScript>
-                                            $('[data-toggle="tooltip"]').tooltip();
-                                        </h:outputScript>
-                                        <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-plus"
-                                                       style="text-decoration: none;"
-                                                       actionListener="#{createFormController.addPage(loopPage)}"
-                                                       disabled="#{createFormController.survey.submits > 0}"/>
-                                    </h3>
-                                </div>
-                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                                    <h3 data-toggle="tooltip" title="Ištrinti puslapį" data-placement="right">
-                                        <h:outputScript>
-                                            $('[data-toggle="tooltip"]').tooltip();
-                                        </h:outputScript>
-                                        <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-trash"
-                                                       style="text-decoration: none;"
-                                                       actionListener="#{createFormController.removePage(loopPage)}"
-                                                       disabled="#{createFormController.survey.submits > 0}"/>
-                                    </h3>
-                                </div>
-                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                                    <h3 data-toggle="tooltip" title="Aukštyn" data-placement="right">
-                                        <h:outputScript>
-                                            $('[data-toggle="tooltip"]').tooltip();
-                                        </h:outputScript>
-                                        <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-triangle-top"
-                                                       style="text-decoration: none;"
-                                                       actionListener="#{createFormController.movePageUp(loopPage)}"
-                                                       disabled="#{createFormController.survey.submits > 0}"/>
-                                    </h3>
-                                </div>
-                                <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
-                                    <h3 data-toggle="tooltip" title="Žemyn" data-placement="right">
-                                        <h:outputScript>
-                                            $('[data-toggle="tooltip"]').tooltip();
-                                        </h:outputScript>
-                                        <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-triangle-bottom"
-                                                       style="text-decoration: none;"
-                                                       actionListener="#{createFormController.movePageDown(loopPage)}"
-                                                       disabled="#{createFormController.survey.submits > 0}"/>
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
+                        <ui:include src="actionsWithPage.xhtml"/>
                     </div>
                 </ui:repeat>
 
