@@ -6,7 +6,7 @@ import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import userModule.SignInController;
+import userModule.SignInInterface;
 import userModule.SignInPerson;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +37,7 @@ public class IndexController implements Serializable {
     private SignInPerson signInPerson;
 
     @Inject
-    private SignInController signInController;
+    private SignInInterface signInController;
 
     @Getter
     List<Survey> publicSurveys = new ArrayList<>();

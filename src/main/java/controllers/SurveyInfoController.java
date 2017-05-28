@@ -10,7 +10,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
-import services.MessageCreator;
+import services.MessageGenerator;
 import services.excel.ExcelSurveyExport;
 import userModule.SignInPerson;
 
@@ -63,7 +63,7 @@ public class SurveyInfoController implements Serializable {
     private Map<Long, QuestionStats> questionStatsMap = new HashMap<>();
 
     @Inject
-    private MessageCreator mesg;
+    private MessageGenerator mesg;
 
     public class QuestionStats {
         public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa) {

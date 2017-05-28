@@ -5,8 +5,8 @@ import entitiesJPA.Person;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
-import services.MessageCreator;
-import services.PasswordHash;
+import services.MessageGenerator;
+import services.PasswordHasher;
 import services.SaltGenerator;
 
 import javax.faces.application.FacesMessage;
@@ -26,7 +26,7 @@ import java.util.Date;
 @Named
 @javax.faces.view.ViewScoped
 @SurveySystemLog
-public class SetPasswordByLinkController implements Serializable
+public class SetPasswordByLinkController implements Serializable, PasswordSetterInterface
 {
     @Inject private PersonDAO personDAO;
     @Getter @Setter Person person = new Person();
@@ -34,9 +34,11 @@ public class SetPasswordByLinkController implements Serializable
     @Setter @Getter private String unhashedPassword = null;
     @Getter @Setter private String confirmPassword = null;
 
-    @Inject PasswordHash ph;
+    @Inject
+    PasswordHasher ph;
     @Inject SaltGenerator sg;
-    @Inject MessageCreator mc;
+    @Inject
+    MessageGenerator mc;
 
     public void validateInvitationLink(FacesContext context, UIComponent component, Object object)
     {

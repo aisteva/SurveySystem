@@ -7,9 +7,10 @@ import java.io.IOException;
 
 /**
  * Created by arturas on 2017-05-25.
+ * Message creator
  */
 @RequestScoped
-public class MessageCreator
+public class MessageCreator implements MessageGenerator
 {
     //Funkcija žinutės sukūrimui ir redirectinimui į error langą
     public void redirectToErrorPage(String message)

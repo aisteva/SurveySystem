@@ -9,7 +9,7 @@ import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
 import org.primefaces.event.FileUploadEvent;
-import services.MessageCreator;
+import services.MessageGenerator;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 import userModule.SignInPerson;
@@ -40,7 +40,7 @@ public class CreateFormController implements Serializable {
     private SaltGenerator sg;
 
     @Inject
-    private MessageCreator msg;
+    private MessageGenerator msg;
 
     private Survey survey = new Survey();
 

@@ -16,7 +16,7 @@ import sun.misc.BASE64Encoder;
  * Slaptažodžių hash + salt kūrimo klasė
  */
 @ApplicationScoped
-public class PasswordHash
+public class PasswordHash implements PasswordHasher
 {
     @Inject
     SaltGenerator sg;

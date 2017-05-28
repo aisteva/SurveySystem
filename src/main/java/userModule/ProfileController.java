@@ -4,12 +4,10 @@ import DAO.Implementations.PersonDAO;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
-import services.MessageCreator;
-import services.PasswordHash;
+import services.MessageGenerator;
+import services.PasswordHasher;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,21 +21,21 @@ import java.io.Serializable;
 @Named
 @ViewScoped
 @SurveySystemLog
-public class ProfileController implements Serializable
+public class ProfileController implements Serializable, ProfileInterface
 {
     @Inject
     SignInController signInController;
     @Inject @Getter
     SignInPerson signInPerson;
     @Inject
-    PasswordHash ph;
+    PasswordHasher ph;
     @Getter @Setter
     String unhashedPassword = null, confirmPassword = null;
     @Inject
     PersonDAO personDAO;
 
     @Inject
-    MessageCreator mc;
+    MessageGenerator message;
 
     public void setNewPassword()
     {
@@ -56,11 +54,11 @@ public class ProfileController implements Serializable
         try
         {
             personDAO.updateAndFlush(signInPerson.getLoggedInPerson());
-            mc.sendMessage(FacesMessage.SEVERITY_INFO, "Paskyros redagavimas sėkmingas");
+            message.sendMessage(FacesMessage.SEVERITY_INFO, "Paskyros redagavimas sėkmingas");
         }
         catch(OptimisticLockException ole)
         {
-            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Profilis buvo pakoreguotas prieš šiuos pakeitimus");
+            message.sendMessage(FacesMessage.SEVERITY_ERROR, "Profilis buvo pakoreguotas prieš šiuos pakeitimus");
         }
     }
 

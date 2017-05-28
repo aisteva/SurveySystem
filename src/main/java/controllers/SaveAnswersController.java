@@ -12,7 +12,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import services.EmailService;
-import services.MessageCreator;
+import services.MessageGenerator;
 import services.SaltGenerator;
 
 import javax.enterprise.context.Conversation;
@@ -89,7 +89,7 @@ public class SaveAnswersController implements Serializable
     private SaveAnswersController self;
 
     @Inject
-    private MessageCreator mesg;
+    private MessageGenerator mesg;
 
     @Inject
     private SaltGenerator sg;

@@ -6,11 +6,10 @@ import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import services.EmailService;
-import services.MessageCreator;
+import services.MessageGenerator;
 import services.SaltGenerator;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -24,7 +23,7 @@ import java.util.Date;
 @Named
 @ViewScoped
 @SurveySystemLog
-public class LinkSenderController implements Serializable
+public class LinkSenderController implements Serializable, LinkSenderInterface
 {
 
     private final String registrationText = "Laba diena, jus buvote pakviesti prisijungti prie apklausu sistemos." +
@@ -61,7 +60,7 @@ public class LinkSenderController implements Serializable
     SaltGenerator sg;
 
     @Inject
-    MessageCreator mc;
+    MessageGenerator message;
 
     public String checkEmailForNewRegistration()
     {
@@ -69,13 +68,13 @@ public class LinkSenderController implements Serializable
         //jei nerandam vartotojo pagal email, vadinasi jo nera leistinu sarase
         if( person == null)
         {
-            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Šio el. pašto nėra leistinų sąraše");
+            message.sendMessage(FacesMessage.SEVERITY_ERROR, "Šio el. pašto nėra leistinų sąraše");
 
         }
         //jei vartotojas tokiu emailu jau turi nustatyta slaptazodi, reiskia jis jau prisiregistraves
         else if (person.getPassword() != null)
         {
-            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Vartotojas su tokiu el. pašto adresu jau registruotas");
+            message.sendMessage(FacesMessage.SEVERITY_ERROR, "Vartotojas su tokiu el. pašto adresu jau registruotas");
         }
         else
         {
@@ -83,7 +82,7 @@ public class LinkSenderController implements Serializable
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
             sendEmailWithText(registrationSubject, String.format(registrationText, person.getInviteUrl()));
-            mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
+            message.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
             return "/signin/signin?faces-redirect=true";
         }
         return null;
@@ -96,7 +95,7 @@ public class LinkSenderController implements Serializable
         {
             if(person.getPassword() == null)
             {
-                mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
+                message.sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
             }
             else
             {
@@ -104,13 +103,13 @@ public class LinkSenderController implements Serializable
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
                 sendEmailWithText(passwordResetSubject, String.format(passwordResetText, person.getInviteUrl()));
-                mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
+                message.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
                 return "/signin/signin?faces-redirect=true";
             }
         }
         else
         {
-            mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
+            message.sendMessage(FacesMessage.SEVERITY_ERROR, "Šis vartotojas nėra užsiregistravęs");
         }
         return null;
     }
@@ -125,7 +124,7 @@ public class LinkSenderController implements Serializable
         {
             if (re.getCause() instanceof MessagingException)
             {
-                mc.sendMessage(FacesMessage.SEVERITY_ERROR, "Nepavyko išsiųsti laiško");
+                message.sendMessage(FacesMessage.SEVERITY_ERROR, "Nepavyko išsiųsti laiško");
             }
             else
             {
