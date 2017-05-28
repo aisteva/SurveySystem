@@ -23,7 +23,7 @@ public class JPAResources {
     }
 
     @Produces
-    @RescueOrAsync // Savo susikurta anotacija (Qualifier), skirta: 1. Asinchroniniams komponentams 2. JPA klaidoms apdoroti (pvz.: OptimisticLockException)
+    @RescueOrAsync
     @Dependent
     private EntityManager createJTATransactionalEntityManager() {
         return emf.createEntityManager(SynchronizationType.SYNCHRONIZED);
