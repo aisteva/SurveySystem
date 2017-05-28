@@ -1,5 +1,6 @@
-package controllers;
+package Controllers.Implementations;
 
+import Controllers.Interfaces.IIndexController;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Survey;
 import log.SurveySystemLog;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 @RequestScoped
 @Slf4j
 @SurveySystemLog
-public class IndexController implements Serializable {
+public class IndexController implements IIndexController, Serializable {
 
     @Inject
     SurveyDAO surveyDAO;

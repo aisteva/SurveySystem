@@ -1,5 +1,6 @@
-package controllers;
+package Controllers.Implementations;
 
+import Controllers.Interfaces.ISaveAnswersController;
 import DAO.Implementations.AnswerDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Answer;
@@ -39,7 +40,7 @@ import java.util.*;
 @Named
 @ConversationScoped
 @SurveySystemLog
-public class SaveAnswersController implements Serializable
+public class SaveAnswersController implements ISaveAnswersController, Serializable
 {
 
     @Inject
@@ -550,8 +551,6 @@ public class SaveAnswersController implements Serializable
         }
 
     }
-
-
 
 }
 

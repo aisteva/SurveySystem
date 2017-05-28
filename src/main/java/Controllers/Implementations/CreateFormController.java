@@ -1,5 +1,6 @@
-package controllers;
+package Controllers.Implementations;
 
+import Controllers.Interfaces.ICreateFormController;
 import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.*;
@@ -34,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 @ViewScoped
 @Getter
 @SurveySystemLog
-public class CreateFormController implements Serializable {
+public class CreateFormController implements ICreateFormController, Serializable {
 
     @Inject
     private SaltGenerator sg;
@@ -323,7 +324,7 @@ public class CreateFormController implements Serializable {
         if (!isEditMode) {
             Person person = personDAO.FindPersonByEmail(personEmail);
             survey.setPersonID(person);
-            survey.setSurveyURL(sg.getRandomString(8));
+            survey.setSurveyURL(sg.getRandomString(15));
             person.getSurveyList().add(survey);
             personDAO.UpdateUser(person);
         } else {

@@ -1,5 +1,6 @@
-package controllers;
+package Controllers.Implementations;
 
+import Controllers.Interfaces.ISurveyInfoController;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
@@ -35,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 @Named
 @ViewScoped
 @Slf4j
-public class SurveyInfoController implements Serializable {
+public class SurveyInfoController implements ISurveyInfoController, Serializable {
 
     @Getter
     @Setter
