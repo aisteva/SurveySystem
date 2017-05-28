@@ -92,10 +92,12 @@ public class CreateFormController implements Serializable {
     }
 
     public void removePage(final int currentPage) {
-        questions.remove(currentPage);
-        pages.remove(pages.size() - 1);
-        for (int i = 0; i < pages.size(); i++) {
-            pages.set(i, i + 1);
+        if (currentPage > 1) {
+            questions.remove(currentPage);
+            pages.remove(pages.size() - 1);
+            for (int i = 0; i < pages.size(); i++) {
+                pages.set(i, i + 1);
+            }
         }
     }
 
