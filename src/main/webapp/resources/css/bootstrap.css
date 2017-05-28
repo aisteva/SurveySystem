@@ -69,6 +69,10 @@ mark {
   color: #000;
   background: #ff0;
 }
+*::selection {
+  background: #29bf89;
+  color: #ffffff;
+}
 small {
   font-size: 80%;
 }
