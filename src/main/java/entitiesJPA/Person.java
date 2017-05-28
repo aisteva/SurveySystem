@@ -12,9 +12,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "person")
@@ -92,6 +90,13 @@ public class Person implements Serializable {
         ADMIN,
         USER
     };
+    public Map<USER_TYPE, String> getUserTypesWithLabels() {
+        Map<USER_TYPE, String> questionTypesWithLabels = new LinkedHashMap<USER_TYPE, String>();
+        questionTypesWithLabels.put(USER_TYPE.ADMIN, "Administratorius");
+        questionTypesWithLabels.put(USER_TYPE.USER, "Naudotojas");
+        return questionTypesWithLabels;
+    }
+
 
     public USER_TYPE[] getUserTypesEnum(){
         return USER_TYPE.values();

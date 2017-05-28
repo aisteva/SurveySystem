@@ -25,7 +25,10 @@
                                     <td>
                                         <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}" required="true">
                                             <p:ajax update=":form2:pending" listener="#{adminController.updateUserType(person, true)}" />
-                                            <f:selectItems value = "#{person.getUserTypesEnum()}"/>
+                                            <f:selectItems value = "#{person.getUserTypesWithLabels().entrySet()}"
+                                                           var="user"
+                                                           itemLabel="#{user.value}"
+                                                           itemValue="#{user.key}"/>
                                         </h:selectOneMenu>
                                     </td>
                                     <td>
@@ -39,7 +42,10 @@
                                 <td><h:inputText value="#{adminController.newPendingPerson.email}" a:placeholder="El. paštas" styleClass="onlyBottomBorder"></h:inputText></td>
                                 <td colspan="2">
                                     <h:selectOneMenu style="font-size: 100%;" id="user-type-input" value="#{adminController.newPendingPerson.userType}" required="true" styleClass="onlyBottomBorder">
-                                        <f:selectItems value = "#{adminController.newPendingPerson.getUserTypesEnum()}"/>
+                                        <f:selectItems value = "#{adminController.newPendingPerson.getUserTypesWithLabels().entrySet()}"
+                                                       var="user"
+                                                       itemLabel="#{user.value}"
+                                                       itemValue="#{user.key}"/>
                                     </h:selectOneMenu>
                                 </td>
                             </tr>

@@ -29,7 +29,10 @@
                                 <td>
                                     <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}" required="true">
                                         <p:ajax listener="#{adminController.updateUserType(person)}" />
-                                        <f:selectItems value = "#{person.getUserTypesEnum()}"/>
+                                        <f:selectItems value = "#{person.getUserTypesWithLabels().entrySet()}"
+                                                       var="user"
+                                                       itemLabel="#{user.value}"
+                                                       itemValue="#{user.key}"/>
                                     </h:selectOneMenu>
                                 </td>
                                 <td>
