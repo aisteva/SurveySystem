@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
+import services.EmailService;
 import services.MessageCreator;
 import services.SaltGenerator;
 
@@ -19,6 +20,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.OptimisticLockException;
+import javax.print.attribute.standard.Severity;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.Serializable;
@@ -90,9 +92,21 @@ public class SaveAnswersController implements Serializable
     @Inject
     private SaltGenerator sg;
 
+    @Inject
+    private EmailService es;
+
+    private final String emailText = "Laba diena, jums atsiusta nebaigtos pildyti apklausos nuoroda" +
+            " Noredami uzbaigti pildyti apklausa spauskite sia nuoroda: " +
+            "http://localhost:8080/surveyAnswers/showSurvey.html?id=%s";
+
+    private final String emailSubject = "Survey System: Nebaigta pildyti apklausa";
+
     @Getter
     @Setter
-    private String sessionId;
+    private String sessionId="";
+
+    @Getter @Setter
+    private String email;
 
     @Getter @Setter private List<Answer> sessionAnswerList = new ArrayList<>();
 
@@ -317,7 +331,7 @@ public class SaveAnswersController implements Serializable
     }
 
     //patikrina, ar yra atsakytą nors į vieną klausimą
-    public void saveAnswer()
+    public void saveAnswer(boolean isFinished)
     {
 
         //iteruoja per mapą ir ištrina, jei atsakymas yra tuščias, kadangi prieš tai visiems atsakymas liste buvo užsetintas id
@@ -342,7 +356,8 @@ public class SaveAnswersController implements Serializable
             log.error("Niekas neišsaugota");
         } else
         {
-            self.saveAnswerTransaction(true);
+            self.saveAnswerTransaction(isFinished);
+            conversation.end();
         }
     }
 
@@ -352,23 +367,21 @@ public class SaveAnswersController implements Serializable
     {
         try
         {
-            String session;
-            if(sessionId != "") session = sessionId;
-            else session = sg.getRandomString(15);
+            if(sessionId == "") sessionId = sg.getRandomString(15);
             for (Long l : textAndScaleAnswersList.keySet())
             {
                 Answer a = textAndScaleAnswersList.get(l);
                 if (a.getText() != null && a.getText() != "")
                 {
                     //nusetina sesijos id
-                    a.setSessionID(session);
+                    a.setSessionID(sessionId);
                     //nustato, kad i apklausa baigta atsakineti
                     a.setFinished(isFinished);
                 } else
                 {
                     OfferedAnswer of = a.getOfferedAnswerID();
                     of.getAnswerList().remove(a);
-                    a.setOfferedAnswerID(null);
+                    //a.setOfferedAnswerID(null);
                 }
             }
 
@@ -380,19 +393,20 @@ public class SaveAnswersController implements Serializable
                     if (a.getOfferedAnswerID() != null)
                     {
                         //nusetina sesijos id
-                        a.setSessionID(session);
+                        a.setSessionID(sessionId);
                         //nustato, kad i apklausa baigta atsakineti
                         a.setFinished(isFinished);
                     }
                 }
             }
-            self.increaseSubmits();
-            conversation.end();
+            if(isFinished == true)
+                self.increaseSubmits();
+            //conversation.end();
             mesg.redirectToSuccessPage("Apklausa išsaugota");
 
         } catch (Exception e)
         {
-            conversation.end();
+            //conversation.end();
             mesg.redirectToErrorPage("Nepavyko išsaugoti apklausos");
         }
     }
@@ -481,18 +495,20 @@ public class SaveAnswersController implements Serializable
         }
     }
 
+    //tikrina pagla sessionID, jei norima atsakyti i nebaigta apklausa
     public void validateSession(FacesContext context, UIComponent component, Object object)
     {
         try
         {
             if (!object.equals(""))
             {
+                //gauna pagal sesija
                 sessionAnswerList = answerDAO.getSessionAnswers((String) object);
                 if (sessionAnswerList.isEmpty())
                 {
                     mesg.redirectToErrorPage("Tokios apklausos nėra");
                 } else
-                {
+                {   //patikrina, ar nebaigti atsakyti
                     for (Answer answer : sessionAnswerList)
                     {
                         if (answer.isFinished())
@@ -504,13 +520,34 @@ public class SaveAnswersController implements Serializable
                 }
             }
 
-
         } catch (Exception e)
         {
             context.getExternalContext().setResponseStatus(404);
             context.responseComplete();
         }
     }
+
+    public void sendUnfinishedSurvey(){
+
+        try{
+            saveAnswer(false);
+            String text = String.format(emailText, survey.getSurveyURL());
+            String lastText = text+"&sessionId=%s";
+            System.out.println(sessionId);
+            if(email!= null)
+                //System.out.println(lastText);
+                es.sendEmail(email, emailSubject, String.format(lastText, sessionId));
+            else{
+                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neįvestas email adresas");
+            }
+
+        }catch (Exception e){
+
+        }
+
+    }
+
+
 
 }
 

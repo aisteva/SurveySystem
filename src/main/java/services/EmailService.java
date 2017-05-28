@@ -21,7 +21,7 @@ public class EmailService
     protected String username = "";
     protected String password = "";
 
-    public void sendEmail(String to, String text)
+    public void sendEmail(String to, String subject, String text)
     {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -52,7 +52,7 @@ public class EmailService
                     InternetAddress.parse(to));
 
             // Set Subject: header field
-            message.setSubject("SurveySystem");
+            message.setSubject(subject);
 
             // Now set the actual message
             message.setText(text);

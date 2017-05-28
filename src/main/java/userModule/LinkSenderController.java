@@ -31,8 +31,12 @@ public class LinkSenderController implements Serializable
             " Noredami uzbaigti registracija spauskite sia nuoroda: " +
             "http://localhost:8080/signup/completeRegistration.html?id=%s";
 
+    private final String registrationSubject = "Survey System: Registracijos nuoroda";
+
     private final String passwordResetText = " Noredami pasikeisti slaptazodi, spauskite sia nuoroda: " +
             "http://localhost:8080/signin/resetPassword.html?id=%s";
+
+    private final String passwordResetSubject ="Survey System: Slaptažodžio keitimas";
 
     private static final String REGISTRATION_SUCCESSFUL = "Registracijos laiškas išsiųstas. " +
             "Tęskite registraciją paspaudę nuorodą el. laiške.";
@@ -78,7 +82,7 @@ public class LinkSenderController implements Serializable
             person.setInviteExpiration(new Date());
             person.setInviteUrl(sg.getRandomString(8));
             personDAO.UpdateUser(person);
-            sendEmailWithText(String.format(registrationText, person.getInviteUrl()));
+            sendEmailWithText(registrationSubject, String.format(registrationText, person.getInviteUrl()));
             mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, REGISTRATION_SUCCESSFUL);
             return "/signin/signin?faces-redirect=true";
         }
@@ -99,7 +103,7 @@ public class LinkSenderController implements Serializable
                 person.setInviteUrl(sg.getRandomString(8));
                 person.setInviteExpiration(new Date());
                 personDAO.UpdateUser(person);
-                sendEmailWithText(String.format(passwordResetText, person.getInviteUrl()));
+                sendEmailWithText(passwordResetSubject, String.format(passwordResetText, person.getInviteUrl()));
                 mc.sendRedirectableMessage(FacesMessage.SEVERITY_INFO, PASSWORD_REMINDER_SUCCESSFUL);
                 return "/signin/signin?faces-redirect=true";
             }
@@ -111,11 +115,11 @@ public class LinkSenderController implements Serializable
         return null;
     }
 
-    private void sendEmailWithText(String text)
+    private void sendEmailWithText(String subject, String text)
     {
         try
         {
-            es.sendEmail(person.getEmail(), text);
+            es.sendEmail(person.getEmail(), subject, text);
         }
         catch(RuntimeException re)
         {

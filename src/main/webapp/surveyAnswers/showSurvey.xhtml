@@ -146,11 +146,23 @@
                             <h:panelGroup rendered="#{!saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <h:commandButton value="Siųsti atsakymą"
                                                  styleClass="btn btn-primary btn-lg text-center"
-                                                 action="#{saveAnswersController.saveAnswer()}"
+                                                 action="#{saveAnswersController.saveAnswer(true)}"
                                                  ajax="false">
                                     <p:ajax execute="@form" render="@form"/>
                                 </h:commandButton>
                             </h:panelGroup>
+                        </div>
+
+                        <p:inputText id="email1" value="#{saveAnswersController.email}"/>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
+                            <h:commandButton value="Išsisiųsti nebaigtą pildyti apklausą el.paštu"
+                                             styleClass="btn btn-primary btn-lg text-center"
+                                             id = "unfinished"
+                                             action="#{saveAnswersController.sendUnfinishedSurvey()}">
+                                <!--onclick="initDialog(); return false;">-->
+
+                                <!--<f:ajax execute="@form" render="@form"/>-->
+                            </h:commandButton>
                         </div>
                     </div>
 
