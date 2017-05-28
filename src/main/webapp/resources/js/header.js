@@ -13,6 +13,11 @@ $(document).ready(function() {
         placement: 'bottom'
     });
 
+    $('.action-with-survey').click(function () {
+       $('.action-with-survey.active').removeClass('active');
+       $(this).addClass('active');
+    });
+
     function setTooltip(btn, message) {
         btn.tooltip('hide')
             .attr('data-original-title', message)
