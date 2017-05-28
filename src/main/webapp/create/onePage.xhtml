@@ -22,7 +22,6 @@
             </h:panelGroup>
             <h:panelGroup rendered="#{!question.type.equals('CHECKBOX') and !question.type.equals('MULTIPLECHOICE')}">
                 <div class="question-text col-lg-8 col-md-8 col-sm-7 col-xs-11">
-                    <h:outputLabel value="#{createFormController.getQuestionParentMessage(question)}" />
                     <h:inputText disabled="#{createFormController.survey.submits > 0}" value="#{question.questionText}" a:placeholder="Klausimas" styleClass="onlyBottomBorder">
                         <f:ajax render="@form"/>
                     </h:inputText>
@@ -44,7 +43,9 @@
                             <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-plus"
                                            style="text-decoration: none;"
                                            actionListener="#{createFormController.setHasAnswersByQuestion(questionStatus.index, loopPage)}"
-                                           disabled="#{createFormController.survey.submits > 0}"/>
+                                           disabled="#{createFormController.survey.submits > 0}">
+                                <f:ajax render="@form"/>
+                            </h:commandLink>
                         </div>
                     </h:panelGroup>
                     <h:panelGroup rendered="#{question.showQuestionsByAnswer}">
@@ -55,7 +56,9 @@
                             <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-minus"
                                            style="text-decoration: none;"
                                            actionListener="#{createFormController.setHasAnswersByQuestion(questionStatus.index, loopPage)}"
-                                           disabled="#{createFormController.survey.submits > 0}"/>
+                                           disabled="#{createFormController.survey.submits > 0}">
+                                <f:ajax render="@form"/>
+                            </h:commandLink>
                         </div>
                     </h:panelGroup>
                 </div>

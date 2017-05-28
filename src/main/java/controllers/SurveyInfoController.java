@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
 import services.MessageCreator;
 import services.excel.ExcelSurveyExport;
+import userModule.SignInPerson;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -34,7 +35,7 @@ import java.util.concurrent.ExecutionException;
 @Named
 @ViewScoped
 @Slf4j
-public class SurveyInfoController implements Serializable{
+public class SurveyInfoController implements Serializable {
 
     @Getter
     @Setter
@@ -45,6 +46,9 @@ public class SurveyInfoController implements Serializable{
 
     @Getter
     private Survey survey;
+
+    @Inject
+    private SignInPerson signInPerson;
 
     @Inject
     private SurveyDAO surveyDao;
@@ -61,8 +65,8 @@ public class SurveyInfoController implements Serializable{
     @Inject
     private MessageCreator mesg;
 
-    public class QuestionStats{
-        public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa){
+    public class QuestionStats {
+        public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa) {
             this.avg = avg;
             this.mediana = mediana;
             this.modaLst = modaLst;
@@ -75,7 +79,7 @@ public class SurveyInfoController implements Serializable{
     }
 
     public class AnswerCounter {
-        public AnswerCounter(String answerText, int countAnswers){
+        public AnswerCounter(String answerText, int countAnswers) {
             this.answerText = answerText;
             this.countAnswers = countAnswers;
         }
@@ -83,18 +87,21 @@ public class SurveyInfoController implements Serializable{
         @Getter private int countAnswers;
         @Getter @Setter private String percentage;
 
-        public void addToCountAnswers(){
+        public void addToCountAnswers() {
             countAnswers++;
         }
     }
 
-    private void addOnlyUnique(List<Answer> lst, List<AnswerCounter> rez){
+    private void addOnlyUnique(List<Answer> lst, List<AnswerCounter> rez) {
         Set<String> texts = new HashSet<>();
         for (Answer a : lst) {
+            if (!a.isFinished()) {
+                continue;
+            }
             if (a.getText() == null || a.getText().isEmpty()) {
                 a.setText("-666");  // Impossible but in case
             }
-            if (texts.contains(a.getText())){
+            if (texts.contains(a.getText())) {
                 rez.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();
             } else {
                 texts.add(a.getText());
@@ -103,52 +110,58 @@ public class SurveyInfoController implements Serializable{
         }
     }
 
-    private void calculateStats(Long questionId, List<AnswerCounter> answerCounterList){
+    private void calculateStats(Long questionId, List<AnswerCounter> answerCounterList) {
         float mediana;
         if (answerCounterList.size() == 0) return;
-        if (answerCounterList.size() % 2 == 0){
-            mediana = (float)(Integer.parseInt(answerCounterList.get(answerCounterList.size()/2-1).answerText) +
-                    Integer.parseInt(answerCounterList.get(answerCounterList.size()/2).answerText))/2;
+        if (answerCounterList.size() % 2 == 0) {
+            mediana = (float) (Integer.parseInt(answerCounterList.get(answerCounterList.size() / 2 - 1).answerText) +
+                    Integer.parseInt(answerCounterList.get(answerCounterList.size() / 2).answerText)) / 2;
         } else {
-            mediana = Integer.parseInt(answerCounterList.get(answerCounterList.size()/2).answerText);
+            mediana = Integer.parseInt(answerCounterList.get(answerCounterList.size() / 2).answerText);
         }
-        float sum =0, n = 0;
+        float sum = 0, n = 0;
         List<Integer> modaLst = new ArrayList<>();
         int maxModa = -1;
-        for (AnswerCounter ac : answerCounterList){
-            sum += Integer.parseInt(ac.getAnswerText())*ac.countAnswers;
+        for (AnswerCounter ac : answerCounterList) {
+            sum += Integer.parseInt(ac.getAnswerText()) * ac.countAnswers;
             n += ac.countAnswers;
-            if (modaLst.isEmpty()){
+            if (modaLst.isEmpty()) {
                 modaLst.add(Integer.parseInt(ac.getAnswerText()));
                 maxModa = ac.countAnswers;
-            } else if (maxModa == ac.countAnswers){
+            } else if (maxModa == ac.countAnswers) {
                 modaLst.add(Integer.parseInt(ac.getAnswerText()));
-            } else if (maxModa < ac.countAnswers){
+            } else if (maxModa < ac.countAnswers) {
                 modaLst.clear();
                 modaLst.add(Integer.parseInt(ac.getAnswerText()));
                 maxModa = ac.countAnswers;
             }
         }
-        questionStatsMap.put(questionId, new QuestionStats(sum/n, mediana, modaLst, maxModa));
+        questionStatsMap.put(questionId, new QuestionStats(sum / n, mediana, modaLst, maxModa));
     }
 
-    private void addToAnswerCounterMap(Question question){
+    private void addToAnswerCounterMap(Question question) {
         answerCounterMap.put(question.getQuestionID(), new ArrayList<>());
         List<OfferedAnswer> offeredAnswers = question.getOfferedAnswerList();
         List<AnswerCounter> answerCounterList = new ArrayList<>();
-        for (OfferedAnswer o : offeredAnswers){
-            if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())){ // Only for text
+        for (OfferedAnswer o : offeredAnswers) {
+            if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())) { // Only for text
                 addOnlyUnique(o.getAnswerList(), answerCounterList);
-            }
-            else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
+            } else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) { // Only for scale
                 addOnlyUnique(o.getAnswerList(), answerCounterList);
-            }
-            else { // Checkbox or multiple
-                answerCounterList.add(new AnswerCounter(o.getText(), o.getAnswerList().size()));
+            } else { // Checkbox or multiple
+                int i = 0;
+                // Add only finished
+                for (Answer answer : o.getAnswerList()) {
+                    if (answer.isFinished()) {
+                        i++;
+                    }
+                }
+                answerCounterList.add(new AnswerCounter(o.getText(), i));
             }
         }
 
-        if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())){ // Only for scale
+        // Only for scale
+        if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
             Collections.sort(answerCounterList, (x, y) -> Integer.compare(Integer.parseInt(x.answerText), Integer.parseInt(y.answerText)));
             calculateStats(question.getQuestionID(), answerCounterList);
         }
@@ -157,8 +170,13 @@ public class SurveyInfoController implements Serializable{
 
     public void load(FacesContext context, UIComponent component, Object object) throws IOException {
         survey = surveyDao.getSurveyByUrl((String) object);
-        if(survey!= null){
-            for (Question q : survey.getQuestionList()){
+
+        //jei useris yra ne adminas ir nekurejas, o apklausa privati, jis info matyti negali
+        if (!(survey.getPersonID().equals(signInPerson.getLoggedInPerson()) || signInPerson.getLoggedInPerson().getUserType() == "ADMIN") && survey.isSurveyPrivate())
+            mesg.redirectToErrorPage("Jūs neturite teisių matyti šios apklausos atsakymų");
+
+        if (survey != null) {
+            for (Question q : survey.getQuestionList()) {
                 addToAnswerCounterMap(q);
                 calculatePercentage(q.getQuestionID());
             }
@@ -169,22 +187,20 @@ public class SurveyInfoController implements Serializable{
         }
     }
 
-    private void calculatePercentage(Long questionID){
+    private void calculatePercentage(Long questionID) {
         long total = 0;
-        for (AnswerCounter ac : answerCounterMap.get(questionID)){
+        for (AnswerCounter ac : answerCounterMap.get(questionID)) {
             total += ac.countAnswers;
         }
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
-        for (AnswerCounter ac : answerCounterMap.get(questionID)){
-            ac.setPercentage(df.format((float)ac.countAnswers/total*100f));
+        for (AnswerCounter ac : answerCounterMap.get(questionID)) {
+            ac.setPercentage(df.format((float) ac.countAnswers / total * 100f));
         }
     }
 
-    public void exportSurvey()
-    {
-        try
-        {
+    public void exportSurvey() {
+        try {
             File file = new File("apklausa.xlsx");
             Workbook wb = excelSurveyExport.exportSurveyIntoExcelFile(survey).get();
             FileOutputStream fileOut = new FileOutputStream(file);
@@ -192,12 +208,9 @@ public class SurveyInfoController implements Serializable{
             fileOut.close();
             Faces.sendFile(file, true);
             file.delete();
-        }
-        catch (IOException | InterruptedException e)
-        {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
-        } catch (ExecutionException e)
-        {
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
 
@@ -205,7 +218,7 @@ public class SurveyInfoController implements Serializable{
 
     //Metodas ištrinantis apklausą
     @Transactional
-    public void deleteSurvey(){
+    public void deleteSurvey() {
         Survey survey1 = surveyDao.getSurveyByUrl(survey.getSurveyURL());
         surveyDao.delete(survey1);
         mesg.redirectToSuccessPage("Apklausa sėkmingai ištrinta");

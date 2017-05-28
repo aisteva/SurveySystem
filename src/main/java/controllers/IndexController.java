@@ -14,8 +14,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by vdeiv on 2017-04-28.
@@ -54,15 +58,23 @@ public class IndexController implements Serializable {
         {
             personSurveys = signInPerson.getLoggedInPerson().getSurveyList();
             publicSurveys = surveyDAO.getAllSurveysByPrivate(false);
-            publicSurveys.stream().filter(p -> !personSurveys.contains(p));
+            publicSurveys = publicSurveys.stream().filter(p -> !personSurveys.contains(p)).collect(Collectors.toList());
             if (signInController.isAdmin()) {
                 privateSurveys = surveyDAO.getAllSurveysByPrivate(true);
-                privateSurveys.stream().filter(p -> !personSurveys.contains(p));
+                privateSurveys = privateSurveys.stream().filter(p -> !personSurveys.contains(p)).collect(Collectors.toList());
             }
         }
 
     }
-
-
-
+    public boolean isSurveyEnded(final Date endDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        System.out.println(dateFormat.format(date));
+        //tikrinam ar apklausa dar galioja
+        if(endDate != null) {
+            if(endDate.before(date))
+                return true;
+        }
+        return false;
+    }
 }
