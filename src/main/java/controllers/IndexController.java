@@ -14,7 +14,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,5 +64,16 @@ public class IndexController implements Serializable {
             }
         }
 
+    }
+    public boolean isSurveyEnded(final Date endDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        System.out.println(dateFormat.format(date));
+        //tikrinam ar apklausa dar galioja
+        if(endDate != null) {
+            if(endDate.before(date))
+                return true;
+        }
+        return false;
     }
 }
