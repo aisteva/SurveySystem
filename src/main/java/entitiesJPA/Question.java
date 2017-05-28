@@ -13,7 +13,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "question")
@@ -66,6 +68,15 @@ public class Question implements Serializable {
 
     };
 
+    public Map<QUESTION_TYPE, String> getQuestionTypesWithLabels() {
+        Map<QUESTION_TYPE, String> questionTypesWithLabels = new LinkedHashMap<QUESTION_TYPE, String>();
+        questionTypesWithLabels.put(QUESTION_TYPE.TEXT, "Tekstas");
+        questionTypesWithLabels.put(QUESTION_TYPE.CHECKBOX, "Žymimieji langeliai");
+        questionTypesWithLabels.put(QUESTION_TYPE.MULTIPLECHOICE, "Žymimosios akutės");
+        questionTypesWithLabels.put(QUESTION_TYPE.SCALE, "Skalė");
+        return questionTypesWithLabels;
+    }
+
     public QUESTION_TYPE[] getTypes(){
         return Question.QUESTION_TYPE.values();
     };
@@ -73,11 +84,13 @@ public class Question implements Serializable {
     @Transient
     private String newType;
 
-    @Transient
-    private boolean isShowQuestionsByAnswer = false;
+
 
     //Excel exportui - sunumeruoti klausimus nepriklausomai nuo puslapių
     @Transient
     private int questionNumberExcludingPage;
+
+    @Transient
+    private OfferedAnswer previousScaleOfferedAnswer;
 
 }

@@ -99,7 +99,7 @@ public class SurveyInfoController implements Serializable {
                 continue;
             }
             if (a.getText() == null || a.getText().isEmpty()) {
-                a.setText("-666");  // Impossible but in case
+                mesg.redirectToErrorPage("Apklausos atidaryti neįmanoma");
             }
             if (texts.contains(a.getText())) {
                 rez.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();

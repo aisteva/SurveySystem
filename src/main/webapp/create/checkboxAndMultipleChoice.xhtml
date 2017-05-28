@@ -9,44 +9,33 @@
       <ui:repeat var="answer" value="#{createFormController.getOfferedAnswers(questionStatus.index, loopPage)}" varStatus="answerStatus">
          <div class="row">
             <div class="answer-text col-lg-12 col-md-12 col-sm-12 col-xs-12">
-               <h:panelGroup rendered="#{question.showQuestionsByAnswer}">
-                  <div class="logo-with-text col-lg-8 col-md-8 col-sm-6 col-xs-5">
-                     <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                        <div class="square"/>
-                     </h:panelGroup>
-                     <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
-                        <div class="circle"/>
-                     </h:panelGroup>
-                     <div class="answer-input">
-                        <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
-                           <f:ajax render="@form" />
-                        </h:inputText>
-                     </div>
+               <div class="logo-with-text col-lg-8 col-md-8 col-sm-6 col-xs-5">
+                  <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
+                     <div class="square"/>
+                  </h:panelGroup>
+                  <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
+                     <div class="circle"/>
+                  </h:panelGroup>
+                  <div class="answer-input">
+                     <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
+                        <f:ajax render="@form" />
+                     </h:inputText>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-11 text-right">
-                     <h:commandLink style="text-decoration: none;" action="#{createFormController.addChildQuestion(questionStatus.index, loopPage, answer)}" disabled="#{createFormController.survey.submits > 0}">
-                        <span class="text text-info">Pridėti klausimą</span>
-                        <f:ajax render="@form"/>
-                     </h:commandLink>
-                  </div>
-               </h:panelGroup>
+               </div>
+               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-11 text-center" data-toggle="tooltip" title="Pagal atsakymą" data-placement="top">
+                  <h:outputScript>
+                     $('[data-toggle="tooltip"]').tooltip();
+                  </h:outputScript>
+                  <h:commandLink style="text-decoration: none;" action="#{createFormController.addChildQuestion(questionStatus.index, loopPage, answer)}" disabled="#{createFormController.survey.submits > 0}">
+                     <span class="text text-info">Pridėti klausimą</span>
+                     <f:ajax render="@form"/>
+                  </h:commandLink>
+               </div>
 
-               <h:panelGroup rendered="#{not question.showQuestionsByAnswer}">
-                  <div class="logo-with-text col-lg-11 col-md-11 col-sm-11 col-xs-10">
-                     <h:panelGroup rendered="#{question.type == 'CHECKBOX'}">
-                        <div class="square"/>
-                     </h:panelGroup>
-                     <h:panelGroup rendered="#{question.type == 'MULTIPLECHOICE'}">
-                        <div class="circle"/>
-                     </h:panelGroup>
-                     <div class="answer-input">
-                        <h:inputText value="#{answer.text}" a:placeholder="Atsakymas nr. #{answerStatus.index+1}" styleClass="onlyBottomBorder" disabled="#{createFormController.survey.submits > 0}">
-                           <f:ajax render="@form" />
-                        </h:inputText>
-                     </div>
-                  </div>
-               </h:panelGroup>
-               <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2">
+               <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2"  data-toggle="tooltip" title="Ištrinti atsakymą" data-placement="top">
+                  <h:outputScript>
+                     $('[data-toggle="tooltip"]').tooltip();
+                  </h:outputScript>
                   <h:commandLink action="#{createFormController.removeAnswer(questionStatus.index, answerStatus.index, loopPage)}" disabled="#{createFormController.survey.submits > 0}">
                      <div class="glyphicon glyphicon-remove action-icon"></div>
                      <f:ajax render="@form"/>
