@@ -85,7 +85,7 @@ public class Survey implements Serializable {
     @JoinColumn(name = "PersonID", referencedColumnName = "PersonID")
     @ManyToOne(optional = false)
     private Person personID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyID")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyID", orphanRemoval = true)
     @OrderBy("QuestionNumber ASC")
     private List<Question> questionList = new ArrayList<>();
 }
