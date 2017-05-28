@@ -39,4 +39,10 @@ public class AnswerDAO implements IAnswerDAO {
         }
     }
 
+    public void remove(Answer answer)
+    {
+        em.remove(answer);
+        em.flush();
+    }
+
 }
