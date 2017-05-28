@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
 import services.MessageCreator;
 import services.excel.ExcelSurveyExport;
+import userModule.SignInPerson;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -45,6 +46,9 @@ public class SurveyInfoController implements Serializable{
 
     @Getter
     private Survey survey;
+
+    @Inject
+    private SignInPerson signInPerson;
 
     @Inject
     private SurveyDAO surveyDao;
@@ -157,6 +161,11 @@ public class SurveyInfoController implements Serializable{
 
     public void load(FacesContext context, UIComponent component, Object object) throws IOException {
         survey = surveyDao.getSurveyByUrl((String) object);
+
+        //jei useris yra ne adminas ir nekurejas, o apklausa privati, jis info matyti negali
+        if(!(survey.getPersonID().equals(signInPerson.getLoggedInPerson()) || signInPerson.getLoggedInPerson().getUserType() == "ADMIN") && survey.isSurveyPrivate())
+            mesg.redirectToErrorPage("Jūs neturite teisių matyti šios apklausos atsakymų");
+        
         if(survey!= null){
             for (Question q : survey.getQuestionList()){
                 addToAnswerCounterMap(q);
