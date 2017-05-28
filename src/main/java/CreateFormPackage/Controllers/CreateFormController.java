@@ -296,7 +296,9 @@ public class CreateFormController implements Serializable {
     }
 
     private void splitScaleAnswer(Question q) {
+
         String aLine = q.getOfferedAnswerList().get(0).getText();
+        q.setPreviousScaleOfferedAnswer(q.getOfferedAnswerList().get(0));
         Scanner scanner = new Scanner(aLine);
         scanner.useDelimiter(";");
         int min = 0;
@@ -356,7 +358,15 @@ public class CreateFormController implements Serializable {
                 number++;
                 isZeroQuestions = false;
                 if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
-                    OfferedAnswer offeredAnswer = new OfferedAnswer();
+                    OfferedAnswer offeredAnswer;
+                    if(isEditMode)
+                    {
+                        offeredAnswer = q.getPreviousScaleOfferedAnswer();
+                    }
+                    else
+                    {
+                        offeredAnswer = new OfferedAnswer();
+                    }
                     offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
                     offeredAnswer.setQuestionID(q);
                     q.getOfferedAnswerList().clear();
