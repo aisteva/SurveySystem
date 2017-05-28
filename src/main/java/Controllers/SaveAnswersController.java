@@ -143,7 +143,11 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                         {
                             matched = true;
                             selections.put(o, false);
-                            changeCheckBoxValue(q, o);
+                            if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString())) {
+                                changeCheckBoxValue(q, o);
+                            } else if (q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())) {
+                                changeMultipleValue(q, o);
+                            }
                         }
                     }
                     if(!matched)
@@ -221,7 +225,8 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             }
             deleteChildAndTheirChildQuestions(o);
 
-        } else
+        }
+        else
         { // To true
             selections.put(o, true);
             Answer answer = new Answer();
