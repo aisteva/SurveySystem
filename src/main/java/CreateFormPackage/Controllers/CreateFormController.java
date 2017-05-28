@@ -355,6 +355,12 @@ public class CreateFormController implements Serializable {
                 q.setQuestionNumber(number);
                 number++;
                 isZeroQuestions = false;
+
+                if (q.getQuestionText() == null || q.getQuestionText().isEmpty()) {
+                    msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Klausimas yra nenurodytas");
+                    return false;
+                }
+
                 if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
                     OfferedAnswer offeredAnswer = new OfferedAnswer();
                     offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
@@ -362,10 +368,7 @@ public class CreateFormController implements Serializable {
                     q.getOfferedAnswerList().clear();
                     q.getOfferedAnswerList().add(offeredAnswer);
                 }
-                if (q.getQuestionText() == null || q.getQuestionText().isEmpty()) {
-                    msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Klausimas yra nenurodytas");
-                    return false;
-                }
+
                 for (OfferedAnswer o : q.getOfferedAnswerList()) {
                     if (o.getQuestionID().getType().equals(Question.QUESTION_TYPE.TEXT.toString()))
                         continue;
