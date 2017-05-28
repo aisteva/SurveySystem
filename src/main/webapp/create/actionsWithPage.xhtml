@@ -15,7 +15,9 @@
                     <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-plus"
                                    style="text-decoration: none;"
                                    actionListener="#{createFormController.addPage(loopPage)}"
-                                   disabled="#{createFormController.survey.submits > 0}"/>
+                                   disabled="#{createFormController.survey.submits > 0}">
+                        <f:ajax render="@form"/>
+                    </h:commandLink>
                 </h3>
             </div>
             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
@@ -26,7 +28,9 @@
                     <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-trash"
                                    style="text-decoration: none;"
                                    actionListener="#{createFormController.removePage(loopPage)}"
-                                   disabled="#{createFormController.survey.submits > 0}"/>
+                                   disabled="#{createFormController.survey.submits > 0}">
+                        <f:ajax render="@form"/>
+                    </h:commandLink>
                 </h3>
             </div>
             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
@@ -37,7 +41,9 @@
                     <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-triangle-top"
                                    style="text-decoration: none;"
                                    actionListener="#{createFormController.movePageUp(loopPage)}"
-                                   disabled="#{createFormController.survey.submits > 0}"/>
+                                   disabled="#{createFormController.survey.submits > 0}">
+                        <f:ajax render="@form"/>
+                    </h:commandLink>
                 </h3>
             </div>
             <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
@@ -48,7 +54,9 @@
                     <h:commandLink styleClass="text text-center text-info glyphicon glyphicon-triangle-bottom"
                                    style="text-decoration: none;"
                                    actionListener="#{createFormController.movePageDown(loopPage)}"
-                                   disabled="#{createFormController.survey.submits > 0}"/>
+                                   disabled="#{createFormController.survey.submits > 0}">
+                        <f:ajax render="@form"/>
+                    </h:commandLink>
                 </h3>
             </div>
         </div>

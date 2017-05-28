@@ -83,14 +83,21 @@ textarea:focus, input:focus {
 }
 
 .one-question {
-    margin-top: 20px;
+    margin-top: 5px;
     position: relative;
     border-right: 3px solid rgba(0,0,0,0);
     background: #f7f7f7;
+    padding: 0px 15px;
 }
 
 .one-question:hover {
     border-right: 3px solid #0083BB;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 0 3px 1px -2px rgba(0,0,0,0.12), 0 1px 5px 0 rgba(0,0,0,0.2);
+}
+@media(max-width: 767px) {
+    .one-question > .actions-with-question  {
+        visibility: visible;
+    }
 }
 .one-question .question-text {
     font-size: 150%;
