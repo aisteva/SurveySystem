@@ -89,6 +89,8 @@ public class SaveAnswersController implements Serializable {
     @Inject
     private SaltGenerator sg;
 
+    @Getter @Setter private String sessionId;
+
     @Getter
     @Setter
     Map<OfferedAnswer, Boolean> selections = new HashMap<>();
@@ -222,7 +224,7 @@ public class SaveAnswersController implements Serializable {
     }
 
     //patikrina, ar yra atsakytą nors į vieną klausimą
-    public String saveAnswer() {
+    public void saveAnswer() {
 
         //iteruoja per mapą ir ištrina, jei atsakymas yra tuščias, kadangi prieš tai visiems atsakymas liste buvo užsetintas id
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); ) {
@@ -242,17 +244,15 @@ public class SaveAnswersController implements Serializable {
         if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty())) {
             mesg.sendMessage(FacesMessage.SEVERITY_INFO, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
             log.error("Niekas neišsaugota");
-            return null;
         } else {
-            self.saveAnswerTransaction();
-
-            return null;
-            //return "/index.xhtml?faces-redirect=true";
+            self.saveAnswerTransaction(true);
         }
     }
 
+
+
     @Transactional
-    public void saveAnswerTransaction() {
+    public void saveAnswerTransaction(boolean isFinished) {
         try {
             String session = sg.getRandomString(15);
             for (Long l : textAndScaleAnswersList.keySet()) {
@@ -262,7 +262,7 @@ public class SaveAnswersController implements Serializable {
                     //nusetina sesijos id
                     a.setSessionID(session);
                     //nustato, kad i apklausa baigta atsakineti
-                    a.setFinished(true);
+                    a.setFinished(isFinished);
                 } else {
                     OfferedAnswer of = a.getOfferedAnswerID();
                     of.getAnswerList().remove(a);
@@ -277,7 +277,7 @@ public class SaveAnswersController implements Serializable {
                         //nusetina sesijos id
                         a.setSessionID(session);
                         //nustato, kad i apklausa baigta atsakineti
-                        a.setFinished(true);
+                        a.setFinished(isFinished);
                     }
                 }
             }
@@ -359,6 +359,36 @@ public class SaveAnswersController implements Serializable {
         } catch (Exception e) {
            mesg.redirectToErrorPage("Kažkas nutiko...");
            mesg.redirectToErrorPage("Tokios apklausos nėra");
+        }
+    }
+
+    public void validateSession(FacesContext context, UIComponent component, Object object){
+        try{
+            System.out.println(object);
+            if(!object.equals(""))
+            {
+                List<Answer> answersList = answerDAO.getSessionAnswers((String) object);
+                System.out.println(answersList);
+                if(answersList.isEmpty()){
+                    mesg.redirectToErrorPage("Tokios apklausos nėra");
+                }
+                else
+                {
+                    for(Answer answer: answersList)
+                    {
+                        if(answer.isFinished())
+                        {
+                            mesg.redirectToErrorPage("Apklausa jau atsakyta");
+                            break;
+                        }
+                    }
+                }
+            }
+
+
+        } catch (Exception e) {
+            context.getExternalContext().setResponseStatus(404);
+            context.responseComplete();
         }
     }
 

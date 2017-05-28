@@ -20,6 +20,9 @@
                  validator="#{saveAnswersController.validate}">
         <o:viewParamValidationFailed sendRedirect="errorPage.html" message="Neteisingas URL" />
     </o:viewParam>
+    <o:viewParam name = "sessionId" required="false" value="#{saveAnswersController.sessionId}"
+                 validator="#{saveAnswersController.validateSession}">
+    </o:viewParam>
     <f:viewAction action="#{saveAnswersController.init}" />
 
 </f:metadata>
