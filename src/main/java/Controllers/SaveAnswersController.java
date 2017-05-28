@@ -431,11 +431,9 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             }
 
             surveyDAO.update(survey);
-            //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         } catch (OptimisticLockException ole)
         {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
-            //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
             self.solveSubmits(isFinished);
         }
 
@@ -446,7 +444,6 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     public void solveSubmits(Boolean isFinished) throws Exception
     {
         survey.setOptLockVersion(conflictingSurvey.getOptLockVersion());
-        //System.out.println("priskirta: " +survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         increaseSubmits(isFinished);
     }
 
