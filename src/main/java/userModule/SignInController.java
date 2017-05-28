@@ -5,7 +5,8 @@ import entitiesJPA.Person;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
-import services.PasswordHasher;
+import services.interfaces.PasswordHasher;
+import userModule.interfaces.SignInInterface;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
@@ -23,7 +24,8 @@ import java.util.Arrays;
 @Named
 @ViewScoped
 @SurveySystemLog
-public class SignInController implements Serializable, SignInInterface {
+public class SignInController implements Serializable, SignInInterface
+{
 
     @Inject @Getter @Setter
     SignInPerson signInPerson;

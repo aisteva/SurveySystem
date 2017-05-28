@@ -1,6 +1,7 @@
 package services;
 
 import log.SurveySystemLog;
+import services.interfaces.EmailSenderInterface;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.mail.*;

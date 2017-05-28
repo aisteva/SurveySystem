@@ -7,7 +7,7 @@ import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import userModule.SignInInterface;
+import userModule.interfaces.SignInInterface;
 import userModule.SignInPerson;
 
 import javax.annotation.PostConstruct;

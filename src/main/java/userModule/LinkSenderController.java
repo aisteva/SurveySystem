@@ -6,8 +6,9 @@ import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
 import services.EmailService;
-import services.MessageGenerator;
+import services.interfaces.MessageGenerator;
 import services.SaltGenerator;
+import userModule.interfaces.LinkSenderInterface;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;

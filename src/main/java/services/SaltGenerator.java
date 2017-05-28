@@ -1,5 +1,7 @@
 package services;
 
+import services.interfaces.ISaltGenerator;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 import java.io.Serializable;

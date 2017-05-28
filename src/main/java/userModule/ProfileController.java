@@ -4,8 +4,9 @@ import DAO.Implementations.PersonDAO;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
-import services.MessageGenerator;
-import services.PasswordHasher;
+import services.interfaces.MessageGenerator;
+import services.interfaces.PasswordHasher;
+import userModule.interfaces.ProfileInterface;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;

@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+
+import services.interfaces.PasswordHasher;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 

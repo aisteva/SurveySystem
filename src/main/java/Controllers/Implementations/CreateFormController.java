@@ -10,7 +10,7 @@ import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
 import org.primefaces.event.FileUploadEvent;
-import services.MessageGenerator;
+import services.interfaces.MessageGenerator;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 import userModule.SignInPerson;

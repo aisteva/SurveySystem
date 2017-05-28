@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import services.EmailService;
-import services.MessageGenerator;
+import services.interfaces.MessageGenerator;
 import services.SaltGenerator;
 
 import javax.enterprise.context.Conversation;

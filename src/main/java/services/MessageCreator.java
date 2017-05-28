@@ -1,5 +1,7 @@
 package services;
 
+import services.interfaces.MessageGenerator;
+
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;

@@ -1,4 +1,4 @@
-package userModule;
+package userModule.interfaces;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;

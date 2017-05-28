@@ -1,4 +1,4 @@
-package userModule;
+package userModule.interfaces;
 
 /**
  * Created by arturas on 2017-05-28.
