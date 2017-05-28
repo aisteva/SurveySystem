@@ -71,8 +71,8 @@ public class Question implements Serializable {
     public Map<QUESTION_TYPE, String> getQuestionTypesWithLabels() {
         Map<QUESTION_TYPE, String> questionTypesWithLabels = new LinkedHashMap<QUESTION_TYPE, String>();
         questionTypesWithLabels.put(QUESTION_TYPE.TEXT, "Tekstas");
-        questionTypesWithLabels.put(QUESTION_TYPE.CHECKBOX, "Žymimieji langeliai");
-        questionTypesWithLabels.put(QUESTION_TYPE.MULTIPLECHOICE, "Žymimosios akutės");
+        questionTypesWithLabels.put(QUESTION_TYPE.CHECKBOX, "Keli pasirinkimai");
+        questionTypesWithLabels.put(QUESTION_TYPE.MULTIPLECHOICE, "Vienas pasirinkimas");
         questionTypesWithLabels.put(QUESTION_TYPE.SCALE, "Skalė");
         return questionTypesWithLabels;
     }
