@@ -83,7 +83,7 @@ public class Person implements Serializable {
     @Basic(optional = false)
     @Column(name = "inviteURL")
     private String inviteUrl;
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "personID")//TODO:Nėra CascadeType.PERSIST
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REMOVE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "personID")
     private List<Survey> surveyList = new ArrayList<>();
 
     public enum USER_TYPE {

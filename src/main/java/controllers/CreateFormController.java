@@ -319,7 +319,7 @@ public class CreateFormController implements Serializable {
     @Transactional
     public String createForm(final String personEmail) {
         //Merging scale offeredAnswer
-        if (!surveyIsCorrect()) return null; //TODO: pagal įdėją turėtų būti kažkokie messagai jei blogai.
+        if (!surveyIsCorrect()) return null;
         if (!isEditMode) {
             Person person = personDAO.FindPersonByEmail(personEmail);
             survey.setPersonID(person);
