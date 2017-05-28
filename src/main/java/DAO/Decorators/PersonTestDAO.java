@@ -23,14 +23,15 @@ public class PersonTestDAO implements IPersonDAO{
 
     @Override
     public void CreateUser(Person person) {
+        person.setFirstName("Test: "+ person.getFirstName());
         personDAO.CreateUser(person);
     }
 
     @Override
     public void UpdateUser(Person person) {
         Survey survey = person.getSurveyList().get(person.getSurveyList().size()-1);
-        survey.setTitle("Test: "+survey.getTitle());
-        survey.setDescription("Test: "+survey.getDescription());
+        survey.setTitle("Testing survey: "+survey.getTitle());
+        survey.setDescription("Test survey: "+survey.getDescription());
         personDAO.UpdateUser(person);
     }
 
