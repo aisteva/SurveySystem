@@ -62,7 +62,4 @@ public class IndexController implements Serializable {
         }
 
     }
-
-
-
 }

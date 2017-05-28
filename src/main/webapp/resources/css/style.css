@@ -177,3 +177,12 @@ body {
 .error-page .error-message, .success-page .confirm-message {
     color: #7e8d85;
 }
+
+.btn.btn-lg.action {
+    font-weight: normal!important;
+}
+
+.disabledtrue > span {
+    opacity: 0.3;
+    cursor: not-allowed;
+}

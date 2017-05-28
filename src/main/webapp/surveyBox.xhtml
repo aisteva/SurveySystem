@@ -40,15 +40,16 @@
                         </h:link>
                     </h:panelGroup>
                 </div>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-                    <h:link value="Atsakinėti"
-                            styleClass="btn btn-primary btn-lg"
-                            outcome="/surveyAnswers/showSurvey.xhtml?id=#{survey.surveyURL}"/>
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center disabled#{indexController.isSurveyEnded(survey.endDate)}">
+                        <h:link value="Atsakinėti"
+                                styleClass="btn btn-primary btn-lg action"
+                                disabled="#{indexController.isSurveyEnded(survey.endDate)}"
+                                outcome="#{indexController.goToShowSurvey(survey.surveyURL)}"/>
                 </div>
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
                     <h:link value="Žiūrėti atsakymus"
-                            styleClass="btn btn-success btn-lg"
-                            outcome="/surveyInfo/SurveyInfo.xhtml?survey=#{survey.surveyURL}"/>
+                                   styleClass="btn btn-success btn-lg action"
+                                   outcome="/surveyInfo/SurveyInfo.xhtml?survey=#{survey.surveyURL}"/>
                 </div>
             </div>
         </div>
