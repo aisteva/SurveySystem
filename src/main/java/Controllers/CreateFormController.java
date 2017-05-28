@@ -15,6 +15,7 @@ import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 import userModule.SignInPerson;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -320,20 +321,30 @@ public class CreateFormController implements ICreateFormController, Serializable
     @Transactional
     public String createForm(final String personEmail) {
         //Merging scale offeredAnswer
-        if (!surveyIsCorrect()) return null;
+        if (!surveyIsCorrect()){
+            System.out.println("Survey is not correct");
+            return null;
+        }
+        else
+        {
+            System.out.println("Survey is correct");
+        }
         if (!isEditMode) {
+            System.out.println("is not edit mode");
             Person person = personDAO.FindPersonByEmail(personEmail);
             survey.setPersonID(person);
             survey.setSurveyURL(sg.getRandomString(15));
             person.getSurveyList().add(survey);
             personDAO.UpdateUser(person);
         } else {
+            System.out.println("is edit mode");
             surveyDAO.update(survey);
         }
         return "/create/formCreated.xhtml?faces-redirect=true&id=" + survey.getSurveyURL();
     }
 
     private boolean surveyIsCorrect() {
+
         if (survey.getStartDate() == null) {
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
@@ -364,7 +375,8 @@ public class CreateFormController implements ICreateFormController, Serializable
 
                 if (q.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
                     OfferedAnswer offeredAnswer;
-                    if(isEditMode)
+
+                    if(isEditMode || (isImported && survey.getSubmits()>0))
                     {
                         offeredAnswer = q.getPreviousScaleOfferedAnswer();
                     }

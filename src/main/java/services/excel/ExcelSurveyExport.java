@@ -166,30 +166,44 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
 
         int answerId = 0; //kadangi keičiam session id į int reikšmes, tam sukuriamas skaitliukas
         String previousSessionId = null; //su šitu tikrinama, ar pasikeitė session id, t.y. ar reikia padidinti skaitliuką
-
-        int previousQuestionNumber = 0; //skirtas tam, kad kai pasikeičia klausimo nr, sukuriama nauja eilutė
+        String previousQuestionType = null;
+        int previousQuestionNumber = 0;
         int multipleChoiceCellNumber = 2; //multiplechoice atsakymai rašomi į tą pačią eilutę, tad tai tam skirtas skaitliukas
 
         Row answerRow = null;
         for(Answer a: allAnswers)
         {
+
+            boolean matchesPreviousType = a.getOfferedAnswerID().getQuestionID().getType().equals(previousQuestionType);
+            boolean matchesPreviousSessionId = a.getSessionID().equals(previousSessionId);
+            boolean matchesPreviousQuestionNumber = a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage() == previousQuestionNumber;
+
+            if(!(matchesPreviousType && matchesPreviousSessionId && matchesPreviousQuestionNumber))
+            {
+                answerRow = answerSheet.createRow(currentAnswerRowNumber++);
+            }
+
+            if(!matchesPreviousType)
+            {
+                previousQuestionType = a.getOfferedAnswerID().getQuestionID().getType();
+                multipleChoiceCellNumber = 2;
+            }
             //jei sessionID pasikeitė, pakeičiam answer id skaitliuką
-            if(!a.getSessionID().equals(previousSessionId))
+            if(!matchesPreviousSessionId)
             {
                 previousSessionId = a.getSessionID();
                 answerId++;
-            }
-            //jei pasikeitė klausimo numeris, kuriam naują eilutę
-            if(a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage() != previousQuestionNumber)
-            {
-                answerRow = answerSheet.createRow(currentAnswerRowNumber++);
-                previousQuestionNumber = a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage();
-
                 multipleChoiceCellNumber = 2;
             }
+            if(!matchesPreviousQuestionNumber)
+            {
+                previousQuestionNumber = a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage();
+                multipleChoiceCellNumber = 2;
+            }
+
             //išsaugojam į excel atsakymo id ir klausimo id
             answerRow.createCell(0).setCellValue(answerId);
-            answerRow.createCell(1).setCellValue(a.getOfferedAnswerID().getQuestionID().getQuestionNumber());
+            answerRow.createCell(1).setCellValue(a.getOfferedAnswerID().getQuestionID().getQuestionNumberExcludingPage());
 
             //toliau atsakymai surašomi pagal klausimo tipą
             switch(a.getOfferedAnswerID().getQuestionID().getType())
@@ -202,9 +216,11 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
                 //rašomi į answer celę
                 case "SCALE":
                     answerRow.createCell(2).setCellValue(Integer.parseInt(a.getText()));
+                    multipleChoiceCellNumber = 2;
                     break;
                 case "TEXT":
                     answerRow.createCell(2).setCellValue(a.getText());
+                    multipleChoiceCellNumber = 2;
                     break;
             }
         }
