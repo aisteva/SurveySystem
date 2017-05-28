@@ -42,7 +42,7 @@
                     </div>
                     <ui:repeat  value="#{saveAnswersController.questions.get(saveAnswersController.page)}" var="question" varStatus="questionStatus">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
-                            <h2>#{questionStatus.index}. #{question.questionText}
+                            <h2>#{questionStatus.index+1}. #{question.questionText}
                                 <h:panelGroup rendered="#{question.isRequired()}">
                                     <span class="required">*</span>
                                 </h:panelGroup>
