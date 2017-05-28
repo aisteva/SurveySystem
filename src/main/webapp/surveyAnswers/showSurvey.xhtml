@@ -184,7 +184,8 @@
                                 <h:commandButton value="Išsisiųsti nuorodą"
                                                  styleClass="btn btn-primary btn-md text-center"
                                                  id = "unfinished"
-                                                 action="#{saveAnswersController.sendUnfinishedSurvey()}">
+                                                 action="#{saveAnswersController.sendUnfinishedSurvey()}"
+                                                 onclick="setTimeout('document.getElementById(\'' + this.id + '\').disabled=true;', 50);">
                                     <!--onclick="initDialog(); return false;">-->
 
                                     <!--<f:ajax execute="@form" render="@form"/>-->
