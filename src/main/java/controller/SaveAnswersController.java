@@ -35,7 +35,8 @@ import java.util.*;
 @Named
 @ConversationScoped
 @SurveySystemLog
-public class SaveAnswersController implements Serializable {
+public class SaveAnswersController implements Serializable
+{
 
     @Inject
     private Conversation conversation;
@@ -91,75 +92,143 @@ public class SaveAnswersController implements Serializable {
 
     @Getter
     @Setter
+    private String sessionId;
+
+    @Getter @Setter private List<Answer> sessionAnswerList = new ArrayList<>();
+
+    @Getter
+    @Setter
     Map<OfferedAnswer, Boolean> selections = new HashMap<>();
 
-    public void init() {
+    public void init()
+    {
         // Prasideda conversation, kai atidaromas puslapis
         conversation.begin();
-        for (Question q : survey.getQuestionList()) {
-            if (!questions.containsKey(q.getPage())) {
+        for (Question q : survey.getQuestionList())
+        {
+            if (!questions.containsKey(q.getPage()))
+            {
                 questions.put(q.getPage(), new ArrayList<>());
             }
-            if (q.getParentOfferedAnswers().size() == 0) { //Add only parent questions
+            if (q.getParentOfferedAnswers().size() == 0)
+            { //Add only parent questions
                 questions.get(q.getPage()).add(q);
             }
             if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString()) ||
-                    q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())) {
-                for (OfferedAnswer o : q.getOfferedAnswerList()) {
-                    selections.put(o, false);
+                    q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString()))
+            {
+                for (OfferedAnswer o : q.getOfferedAnswerList())
+                {
+                    boolean matched = false;
+                    for(Answer answer: sessionAnswerList)
+                    {
+                        if(answer.getOfferedAnswerID().getOfferedAnswerID().equals(o.getOfferedAnswerID()))
+                        {
+                            matched = true;
+                            selections.put(o, false);
+                            changeCheckBoxValue(q, o);
+                        }
+                    }
+                    if(!matched)
+                    {
+                        selections.put(o, false);
+                    }
+
                 }
             }
             addToTextAndScaleAnswerList(q);
         }
     }
 
-    public void nextPage() {
+    public void nextPage()
+    {
         page++;
     }
 
-    public void prevPage() {
+    public void prevPage()
+    {
         page--;
         prevPage = true;
     }
 
-    private void deleteChildAndTheirChildQuestions(OfferedAnswer offeredAnswer){
-        for (Question childQuestion : offeredAnswer.getChildQuestions()){
+    private void deleteChildAndTheirChildQuestions(OfferedAnswer offeredAnswer)
+    {
+        for (Question childQuestion : offeredAnswer.getChildQuestions())
+        {
             questions.get(childQuestion.getPage()).remove(childQuestion);
-            for (OfferedAnswer oa : childQuestion.getOfferedAnswerList()){
+            for (OfferedAnswer oa : childQuestion.getOfferedAnswerList())
+            {
                 deleteChildAndTheirChildQuestions(oa);
                 selections.remove(oa);
             }
-            if (checkboxAndMultipleAnswersList.containsKey(childQuestion.getQuestionID())){
+            if (checkboxAndMultipleAnswersList.containsKey(childQuestion.getQuestionID()))
+            {
                 checkboxAndMultipleAnswersList.remove(childQuestion.getQuestionID());
             }
-            if (textAndScaleAnswersList.containsKey(childQuestion.getQuestionID())){
+            if (textAndScaleAnswersList.containsKey(childQuestion.getQuestionID()))
+            {
                 textAndScaleAnswersList.remove(childQuestion.getQuestionID());
             }
         }
     }
 
-    public void changeCheckBoxValue(Question q, OfferedAnswer o) {
-        if (selections.get(o) == true) { // To false
+    public void changeCheckBoxValue(Question q, OfferedAnswer o)
+     {
+        if (selections.get(o) == true)
+        { // To false
             selections.put(o, false);
             // Remove old choice
-            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())){
-                checkboxAndMultipleAnswersList.get(q.getQuestionID()).remove(o);
+            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID()))
+            {
+                for(Iterator<Map.Entry<Long, List<Answer>>> iterator = checkboxAndMultipleAnswersList.entrySet().iterator(); iterator.hasNext(); )
+                {
+                    Map.Entry<Long, List<Answer>> entry  = iterator.next();
+                    for(Answer a: entry.getValue())
+                    {
+                        if(a.getOfferedAnswerID().getOfferedAnswerID().equals(o.getOfferedAnswerID()))
+                        {
+                            a.setSessionID(null);
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+
+            for(Answer a: sessionAnswerList)
+            {
+                if(a.getOfferedAnswerID().getOfferedAnswerID().equals(o.getOfferedAnswerID()))
+                {
+                    a.setSessionID(null);
+                    o.getAnswerList().remove(a);
+                }
             }
             deleteChildAndTheirChildQuestions(o);
 
-        } else { // To true
+        } else
+        { // To true
             selections.put(o, true);
             Answer answer = new Answer();
-            answer.setOfferedAnswerID(o);
             answer.setSessionID(null);
+            for(Answer a: sessionAnswerList)
+            {
+                if(a.getOfferedAnswerID().getOfferedAnswerID().equals(o.getOfferedAnswerID()))
+                {
+                    answer = a;
+                    answer.setSessionID(sessionId);
+                }
+            }
+            answer.setOfferedAnswerID(o);
             o.getAnswerList().add(answer);
-            if (!checkboxAndMultipleAnswersList.containsKey(o.getQuestionID().getQuestionID())) {
+            if (!checkboxAndMultipleAnswersList.containsKey(o.getQuestionID().getQuestionID()))
+            {
                 checkboxAndMultipleAnswersList.put(o.getQuestionID().getQuestionID(), new ArrayList<>());
             }
             checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).add(answer);
-            for (Question childQuestion : o.getChildQuestions()){
+            for (Question childQuestion : o.getChildQuestions())
+            {
                 questions.get(childQuestion.getPage()).add(childQuestion);
-                for (OfferedAnswer oo : childQuestion.getOfferedAnswerList()){
+                for (OfferedAnswer oo : childQuestion.getOfferedAnswerList())
+                {
                     selections.put(oo, false);
                 }
                 addToTextAndScaleAnswerList(childQuestion);
@@ -167,16 +236,26 @@ public class SaveAnswersController implements Serializable {
         }
     }
 
-    public void changeMultipleValue(Question q, OfferedAnswer o) {
-        if (selections.get(o) == false) { // To true new choice
+    public void changeMultipleValue(Question q, OfferedAnswer o)
+    {
+        if (selections.get(o) == false)
+        { // To true new choice
             selections.put(o, true);
             Answer answer = new Answer();
             answer.setOfferedAnswerID(o);
             answer.setSessionID(null);
             o.getAnswerList().add(answer);
 
-            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())) {
+            if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID()))
+            {
                 Answer oldAnswer = checkboxAndMultipleAnswersList.get(q.getQuestionID()).get(0);
+                for(Answer a: sessionAnswerList)
+                {
+                    if(a.getOfferedAnswerID().getOfferedAnswerID().equals(oldAnswer.getOfferedAnswerID().getOfferedAnswerID()))
+                    {
+                        a.setSessionID(null);
+                    }
+                }
                 checkboxAndMultipleAnswersList.get(q.getQuestionID()).clear();
                 checkboxAndMultipleAnswersList.get(q.getQuestionID()).add(answer);
                 OfferedAnswer oldOfferedAnswer = oldAnswer.getOfferedAnswerID();
@@ -186,14 +265,17 @@ public class SaveAnswersController implements Serializable {
                 // Removes old child questions
                 deleteChildAndTheirChildQuestions(oldOfferedAnswer);
 
-            } else {
+            } else
+            {
                 checkboxAndMultipleAnswersList.put(q.getQuestionID(), new ArrayList<>());
                 checkboxAndMultipleAnswersList.get(q.getQuestionID()).add(answer);
             }
 
             // Add new child questions
-            for (Question childQuestion : o.getChildQuestions()){
-                for (OfferedAnswer oo : childQuestion.getOfferedAnswerList()) {
+            for (Question childQuestion : o.getChildQuestions())
+            {
+                for (OfferedAnswer oo : childQuestion.getOfferedAnswerList())
+                {
                     selections.put(oo, false);
                 }
                 questions.get(childQuestion.getPage()).add(childQuestion);
@@ -202,18 +284,31 @@ public class SaveAnswersController implements Serializable {
         }
     }
 
-    private void addToTextAndScaleAnswerList(Question q) {
+    private void addToTextAndScaleAnswerList(Question q)
+    {
         Hibernate.initialize(q.getOfferedAnswerList());
-        for (OfferedAnswer o : q.getOfferedAnswerList()) {
+        for (OfferedAnswer o : q.getOfferedAnswerList())
+        {
             Hibernate.initialize(o.getAnswerList());
-            if (q.getType().equals("TEXT")) {
-                Answer a = new Answer();
+            Answer a = new Answer();
+            for(Answer answer: sessionAnswerList)
+            {
+                //tikrinimas apklausos atsakymo pratęsimui: jei nesutaps nė vieną kartą, kuriam naują answer
+                if(o.getOfferedAnswerID().equals(answer.getOfferedAnswerID().getOfferedAnswerID()))
+                {
+                    a = answer;
+                }
+            }
+
+            if (q.getType().equals("TEXT"))
+            {
                 o.getAnswerList().add(a);
                 a.setOfferedAnswerID(o);
                 textAndScaleAnswersList.put(q.getQuestionID(), a);
             }
-            if (q.getType().equals("SCALE")) {
-                Answer a = new Answer();
+            if (q.getType().equals("SCALE"))
+            {
+
                 o.getAnswerList().add(a);
                 a.setOfferedAnswerID(o);
                 textAndScaleAnswersList.put(q.getQuestionID(), a);
@@ -222,62 +317,72 @@ public class SaveAnswersController implements Serializable {
     }
 
     //patikrina, ar yra atsakytą nors į vieną klausimą
-    public String saveAnswer() {
+    public void saveAnswer()
+    {
 
         //iteruoja per mapą ir ištrina, jei atsakymas yra tuščias, kadangi prieš tai visiems atsakymas liste buvo užsetintas id
-        for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); ) {
+        for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); )
+        {
             Map.Entry<Long, Answer> entry = it.next();
-            if (entry.getValue().getText() == null) {
+            if (entry.getValue().getText() == null)
+            {
                 OfferedAnswer of = entry.getValue().getOfferedAnswerID();
                 of.getAnswerList().remove(entry.getValue());
-                 it.remove();
+                it.remove();
             }
 
         }
-        System.out.println(textAndScaleAnswersList.toString());
 
         //conversation.end();
         //jei neatsakyta nei i viena klausima metama zinute
 
-        if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty())) {
+        if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty()))
+        {
             mesg.sendMessage(FacesMessage.SEVERITY_INFO, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
             log.error("Niekas neišsaugota");
-            return null;
-        } else {
-            self.saveAnswerTransaction();
-
-            return null;
-            //return "/index.xhtml?faces-redirect=true";
+        } else
+        {
+            self.saveAnswerTransaction(true);
         }
     }
 
+
     @Transactional
-    public void saveAnswerTransaction() {
-        try {
-            String session = sg.getRandomString(15);
-            for (Long l : textAndScaleAnswersList.keySet()) {
+    public void saveAnswerTransaction(boolean isFinished)
+    {
+        try
+        {
+            String session;
+            if(sessionId != "") session = sessionId;
+            else session = sg.getRandomString(15);
+            for (Long l : textAndScaleAnswersList.keySet())
+            {
                 Answer a = textAndScaleAnswersList.get(l);
-                System.out.println(a.toString());
-                if (a.getText() != null && a.getText() != "") {
+                if (a.getText() != null && a.getText() != "")
+                {
                     //nusetina sesijos id
                     a.setSessionID(session);
                     //nustato, kad i apklausa baigta atsakineti
-                    a.setFinished(true);
-                } else {
+                    a.setFinished(isFinished);
+                } else
+                {
                     OfferedAnswer of = a.getOfferedAnswerID();
                     of.getAnswerList().remove(a);
                     a.setOfferedAnswerID(null);
                 }
             }
 
-            for (Long l : checkboxAndMultipleAnswersList.keySet()) {
+            for (Long l : checkboxAndMultipleAnswersList.keySet())
+            {
                 List<Answer> answerList = checkboxAndMultipleAnswersList.get(l);
-                for (Answer a : answerList) {
-                    if (a.getOfferedAnswerID() != null) {
+                for (Answer a : answerList)
+                {
+                    if (a.getOfferedAnswerID() != null)
+                    {
                         //nusetina sesijos id
                         a.setSessionID(session);
                         //nustato, kad i apklausa baigta atsakineti
-                        a.setFinished(true);
+                        a.setFinished(isFinished);
                     }
                 }
             }
@@ -285,7 +390,8 @@ public class SaveAnswersController implements Serializable {
             conversation.end();
             mesg.redirectToSuccessPage("Apklausa išsaugota");
 
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             conversation.end();
             mesg.redirectToErrorPage("Nepavyko išsaugoti apklausos");
         }
@@ -293,10 +399,13 @@ public class SaveAnswersController implements Serializable {
 
     //metodas padidinantis atsakytu apklausu skaiciu + survey submits optimistic locking
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void increaseSubmits() throws Exception {
-        try {
+    public void increaseSubmits() throws Exception
+    {
+        try
+        {
             //tikrinama, ar survey nebuvo ištrinta
-            if(surveyDAO.getSurveyByUrl(survey.getSurveyURL())== null){
+            if (surveyDAO.getSurveyByUrl(survey.getSurveyURL()) == null)
+            {
                 //exception metimas, kad būtų užbaigtas conversation
                 throw new Exception();
             }
@@ -304,7 +413,8 @@ public class SaveAnswersController implements Serializable {
             survey.setSubmits(survey.getSubmits() + 1);
             surveyDAO.update(survey);
             //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
-        } catch (OptimisticLockException ole) {
+        } catch (OptimisticLockException ole)
+        {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
             //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
             self.solveSubmits();
@@ -314,24 +424,29 @@ public class SaveAnswersController implements Serializable {
 
     //metodas perraso naujai survey su konfliktuojancio submits skaiciaus survey versija
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void solveSubmits() throws Exception {
+    public void solveSubmits() throws Exception
+    {
         survey.setOptLockVersion(conflictingSurvey.getOptLockVersion());
         //System.out.println("priskirta: " +survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         increaseSubmits();
     }
 
     //isparsina gautus scale skacius
-    public ScaleLimits processLine(List<OfferedAnswer> list) throws IOException {
+    public ScaleLimits processLine(List<OfferedAnswer> list) throws IOException
+    {
         min = 0;
         max = 0;
-        if (!list.isEmpty()) {
+        if (!list.isEmpty())
+        {
             String aLine = list.get(0).getText();
             Scanner scanner = new Scanner(aLine);
             scanner.useDelimiter(";");
-            if (scanner.hasNext()) {
+            if (scanner.hasNext())
+            {
                 min = Integer.parseInt(scanner.next());
                 max = Integer.parseInt(scanner.next());
-            } else {
+            } else
+            {
 
                 mesg.redirectToErrorPage("Nepavyko atvaizduoti apklausos");
 
@@ -340,38 +455,63 @@ public class SaveAnswersController implements Serializable {
         return new ScaleLimits(min, max);
     }
 
-    public void validate(FacesContext context, UIComponent component, Object object) throws IOException {
+    public void validate(FacesContext context, UIComponent component, Object object) throws IOException
+    {
         //surandam apklausą pagal url
-        try {
+        try
+        {
             survey = surveyDAO.getSurveyByUrl((String) object);
             //gaunam šiandien dienos datą
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             Date date = new Date();
-            System.out.println(dateFormat.format(date));
             //tikrinam ar apklausa dar galioja
-            if(survey.getEndDate() != null) {
-                if(survey.getEndDate().before(date))
+            if (survey.getEndDate() != null)
+            {
+                if (survey.getEndDate().before(date))
                     mesg.redirectToErrorPage("Apklausa nebegalioja");
             }
-            if (survey == null) {
+            if (survey == null)
+            {
                 mesg.redirectToErrorPage("Tokios apklausos nėra");
             }
-        } catch (Exception e) {
-           mesg.redirectToErrorPage("Kažkas nutiko...");
-           mesg.redirectToErrorPage("Tokios apklausos nėra");
+        } catch (Exception e)
+        {
+            mesg.redirectToErrorPage("Kažkas nutiko...");
+            mesg.redirectToErrorPage("Tokios apklausos nėra");
         }
     }
 
+    public void validateSession(FacesContext context, UIComponent component, Object object)
+    {
+        try
+        {
+            if (!object.equals(""))
+            {
+                sessionAnswerList = answerDAO.getSessionAnswers((String) object);
+                if (sessionAnswerList.isEmpty())
+                {
+                    mesg.redirectToErrorPage("Tokios apklausos nėra");
+                } else
+                {
+                    for (Answer answer : sessionAnswerList)
+                    {
+                        if (answer.isFinished())
+                        {
+                            mesg.redirectToErrorPage("Apklausa jau atsakyta");
+                            break;
+                        }
+                    }
+                }
+            }
 
-    //Funkcija HTTP 400 Error kvietimui
-    private void setCode(FacesContext context, String message, int code) {
-        try {
-            context.getExternalContext().responseSendError(code, message);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+        } catch (Exception e)
+        {
+            context.getExternalContext().setResponseStatus(404);
+            context.responseComplete();
         }
-        context.responseComplete();
     }
+
 }
 
 

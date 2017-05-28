@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -29,5 +30,19 @@ public class AnswerDAO implements IAnswerDAO {
         return em.createNamedQuery("Answer.findAll", Answer.class).getResultList();
     }
 
+    public List<Answer> getSessionAnswers(String sessionID) {
+        Query q = em.createNamedQuery("Answer.findBySessionID").setParameter("sessionID", sessionID);
+        try {
+            return q.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public void remove(Answer answer)
+    {
+        em.remove(answer);
+        em.flush();
+    }
 
 }

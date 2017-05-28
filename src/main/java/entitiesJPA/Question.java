@@ -90,4 +90,7 @@ public class Question implements Serializable {
     @Transient
     private int questionNumberExcludingPage;
 
+    @Transient
+    private OfferedAnswer previousScaleOfferedAnswer;
+
 }
