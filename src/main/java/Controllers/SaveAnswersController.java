@@ -143,7 +143,11 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                         {
                             matched = true;
                             selections.put(o, false);
-                            changeCheckBoxValue(q, o);
+                            if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString())) {
+                                changeCheckBoxValue(q, o);
+                            } else if (q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())) {
+                                changeMultipleValue(q, o);
+                            }
                         }
                     }
                     if(!matched)
@@ -221,7 +225,8 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             }
             deleteChildAndTheirChildQuestions(o);
 
-        } else
+        }
+        else
         { // To true
             selections.put(o, true);
             Answer answer = new Answer();
@@ -431,11 +436,9 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             }
 
             surveyDAO.update(survey);
-            //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         } catch (OptimisticLockException ole)
         {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
-            //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
             self.solveSubmits(isFinished);
         }
 
@@ -446,7 +449,6 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     public void solveSubmits(Boolean isFinished) throws Exception
     {
         survey.setOptLockVersion(conflictingSurvey.getOptLockVersion());
-        //System.out.println("priskirta: " +survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         increaseSubmits(isFinished);
     }
 

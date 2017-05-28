@@ -235,7 +235,7 @@ public class CreateFormController implements ICreateFormController, Serializable
                     parentIndex++;
                 }
                 parentIndex++;
-                str = "Jei '" + oa.getQuestionID().getQuestionText() + "' klausime buvo atsakyta '" + oa.getText()+"'";
+                str = "Jei '" + parentIndex + ". " + oa.getQuestionID().getQuestionText() + "' klausime buvo atsakyta '" + oa.getText()+"'";
             }
             return str;
         } else {

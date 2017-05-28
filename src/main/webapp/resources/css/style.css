@@ -73,7 +73,13 @@
     .survey-box-inside:active > .action-with-survey {
         opacity: 1;
         transition: 0.1s opacity linear;
-
+    }
+    .robot {
+        visibility: hidden;
+    }
+    .action-with-survey.active {
+        opacity: 1;
+        transition: 0.1s opacity linear;
     }
 }
 .description-fade {
