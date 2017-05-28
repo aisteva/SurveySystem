@@ -2,7 +2,10 @@ package controller;
 
 import DAO.Implementations.AnswerDAO;
 import DAO.Implementations.SurveyDAO;
-import entitiesJPA.*;
+import entitiesJPA.Answer;
+import entitiesJPA.OfferedAnswer;
+import entitiesJPA.Question;
+import entitiesJPA.Survey;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +23,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.OptimisticLockException;
-import javax.print.attribute.standard.Severity;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.Serializable;
@@ -399,8 +401,8 @@ public class SaveAnswersController implements Serializable
                     }
                 }
             }
-            if(isFinished == true)
-                self.increaseSubmits();
+
+                self.increaseSubmits(isFinished);
             //conversation.end();
             mesg.redirectToSuccessPage("Apklausa išsaugota");
 
@@ -413,7 +415,7 @@ public class SaveAnswersController implements Serializable
 
     //metodas padidinantis atsakytu apklausu skaiciu + survey submits optimistic locking
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void increaseSubmits() throws Exception
+    public void increaseSubmits(Boolean isFinished) throws Exception
     {
         try
         {
@@ -423,26 +425,28 @@ public class SaveAnswersController implements Serializable
                 //exception metimas, kad būtų užbaigtas conversation
                 throw new Exception();
             }
+            if(isFinished==true){
+                survey.setSubmits(survey.getSubmits() + 1);
+            }
 
-            survey.setSubmits(survey.getSubmits() + 1);
             surveyDAO.update(survey);
             //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         } catch (OptimisticLockException ole)
         {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
             //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
-            self.solveSubmits();
+            self.solveSubmits(isFinished);
         }
 
     }
 
     //metodas perraso naujai survey su konfliktuojancio submits skaiciaus survey versija
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void solveSubmits() throws Exception
+    public void solveSubmits(Boolean isFinished) throws Exception
     {
         survey.setOptLockVersion(conflictingSurvey.getOptLockVersion());
         //System.out.println("priskirta: " +survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
-        increaseSubmits();
+        increaseSubmits(isFinished);
     }
 
     //isparsina gautus scale skacius
