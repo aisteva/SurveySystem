@@ -152,24 +152,54 @@
                                 </h:commandButton>
                             </h:panelGroup>
                         </div>
-
-                        <p:inputText id="email1" value="#{saveAnswersController.email}"/>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
-                            <h:commandButton value="Išsisiųsti nebaigtą pildyti apklausą el.paštu"
-                                             styleClass="btn btn-primary btn-lg text-center"
-                                             id = "unfinished"
-                                             action="#{saveAnswersController.sendUnfinishedSurvey()}">
-                                <!--onclick="initDialog(); return false;">-->
-
-                                <!--<f:ajax execute="@form" render="@form"/>-->
-                            </h:commandButton>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top: 20px;">
+                            <a style="text-decoration: none; cursor: pointer;" class="text text-info" data-toggle="modal" data-target="#myModal">Užbaigti pildyti vėliau</a>
                         </div>
+
                     </div>
 
                 </div>
             </div>
         </h:form>
+        <!--Išsiuntimui el. paštu-->
+
+        <!-- Modal -->
+        <div id="myModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <h:form>
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title text-center">Išsisiųskite nebaigtos pildyti apklausos nuorodą el. paštu</h4>
+                        </div>
+                        <div class="modal-body">
+
+                                    <p:inputText id="email1"
+                                                 value="#{saveAnswersController.email}"
+                                                 styleClass="onlyBottomBorder"
+                                                 placeholder="Jūsų el. pašto adresas"/>
+                        </div>
+                        <div class="modal-footer">
+
+                                <h:commandButton value="Išsisiųsti nuorodą"
+                                                 styleClass="btn btn-primary btn-md text-center"
+                                                 id = "unfinished"
+                                                 action="#{saveAnswersController.sendUnfinishedSurvey()}">
+                                    <!--onclick="initDialog(); return false;">-->
+
+                                    <!--<f:ajax execute="@form" render="@form"/>-->
+                                </h:commandButton>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Uždaryti</button>
+                        </div>
+                    </div>
+
+                </h:form>
+            </div>
+        </div>
     </div>
+
+
     <ui:include src="/footer.xhtml"/>
 </h:body>
+
 </html>
