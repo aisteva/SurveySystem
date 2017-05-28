@@ -101,9 +101,23 @@ public class CreateFormController implements Serializable {
 
     public void removeQuestion(final int questionIndex, final int page) {
         if (questions.get(page).size() != 1) {
+            int childQuestions = 0;
             Question q = questions.get(page).get(questionIndex);
+            for (OfferedAnswer offeredAnswer : q.getOfferedAnswerList()) {
+                childQuestions += offeredAnswer.getChildQuestions().size();
+            }
+            // All other questions are child, cannot delete because list will be empty
+            if (childQuestions + 1 == questions.get(page).size()) {
+                msg.sendMessage(FacesMessage.SEVERITY_INFO, "Turi būti nors vienas klausimas");
+                return;
+            }
             for (OfferedAnswer o : q.getParentOfferedAnswers()) {
                 o.getChildQuestions().remove(q);
+            }
+            for (OfferedAnswer offeredAnswer : q.getOfferedAnswerList()) {
+                for (Question childQuestion : offeredAnswer.getChildQuestions()) {
+                    removeAllChildAndChildQuestions(childQuestion);
+                }
             }
             questions.get(page).remove(questionIndex);
         }
@@ -127,9 +141,9 @@ public class CreateFormController implements Serializable {
         }
     }
 
-    public void addChildQuestion(int questionIndex, int page, OfferedAnswer oa){
+    public void addChildQuestion(int questionIndex, int page, OfferedAnswer oa) {
         addQuestion(questionIndex, page);
-        Question childQuestion = questions.get(page).get(questionIndex+1);
+        Question childQuestion = questions.get(page).get(questionIndex + 1);
         childQuestion.getParentOfferedAnswers().add(oa);
         oa.getChildQuestions().add(childQuestion);
     }
@@ -137,15 +151,8 @@ public class CreateFormController implements Serializable {
     public void removeAnswer(int questionIndex, final int answerIndex, final int page) {
         if (questions.get(page).get(questionIndex).getOfferedAnswerList().size() > 1) {
             OfferedAnswer offeredAnswer = questions.get(page).get(questionIndex).getOfferedAnswerList().get(answerIndex);
-            for (Question childQuestion : offeredAnswer.getChildQuestions()) {
-                int i = 0;
-                for (Question q : questions.get(page)){
-                    if (q == childQuestion){
-                        break;
-                    }
-                    i++;
-                }
-                questions.get(page).remove(i);
+            for (Question q : offeredAnswer.getChildQuestions()) {
+                removeAllChildAndChildQuestions(q);
             }
             questions.get(page).get(questionIndex).getOfferedAnswerList().remove(answerIndex);
         }
@@ -220,8 +227,15 @@ public class CreateFormController implements Serializable {
         String str = "Prieš tai buvo atsakyta ";
         if (question.getParentOfferedAnswers().size() > 0) {
             for (OfferedAnswer oa : question.getParentOfferedAnswers()) {
-                str = "Jei " + //TODO: add index
-                        oa.getQuestionID().getQuestionText() + " klausime buvo atsakyta "+oa.getText();
+                int parentIndex = 0;
+                for (Question q : questions.get(page)){
+                    if (oa.getQuestionID() == q){
+                        break;
+                    }
+                    parentIndex++;
+                }
+                parentIndex++;
+                str = "Jei " + parentIndex + ". " + oa.getQuestionID().getQuestionText() + " klausime buvo atsakyta " + oa.getText();
             }
             return str;
         } else {
@@ -237,19 +251,18 @@ public class CreateFormController implements Serializable {
             survey = surveyDAO.getSurveyByUrl((String) object);
 
             //tikrina, ar user yra kurejas
-            if(!(survey.getPersonID()).equals(person.getLoggedInPerson())){
-               msg.redirectToErrorPage("Neturite teisių koreguoti apklausą");
+            if (!(survey.getPersonID()).equals(person.getLoggedInPerson())) {
+                msg.redirectToErrorPage("Neturite teisių koreguoti apklausą");
             }
 
             //tikrinam, ar yra tokia survey
-            if(survey == null) {
+            if (survey == null) {
                 msg.redirectToErrorPage("Tokios apklausos nėra");
-            }
-            else{
+            } else {
                 //tikrinam ar jau yra atsakyta
                 if (survey.getSubmits() != 0)
                     msg.redirectToErrorPage("Į apklausą jau yra atsakymų, todėl jos redaguoti negalima");
-                else{
+                else {
                     mapQuestions();
                     survey.getQuestionList().clear();
                 }
@@ -266,8 +279,7 @@ public class CreateFormController implements Serializable {
         Kadangi konstruktoriuje sukuriam pirmą klausimą, kuris yra tuščias, tai mapinam klausimus tik tokiu atveju, kai
         pirmas klausimas tuščias. Kitu atveju žinom, kad klausimai sumapinti, ir taip išvengiam galimų konfliktų.
          */
-        if(questions.get(1).get(0).getQuestionText().equals(""))
-        {
+        if (questions.get(1).get(0).getQuestionText().equals("")) {
             questions.get(1).remove(questions.get(1).size() - 1); //ištrinam naujai pridėtą klausimą, kurio reikia tik naujai kuriant apklausą
             for (Question q : survey.getQuestionList()) {
                 q.setNewType(q.getType()); //kadangi transient laukas, reikia nustatyti mapinant
@@ -327,8 +339,7 @@ public class CreateFormController implements Serializable {
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
         }
-        if(survey.getTitle().equals(""))
-        {
+        if (survey.getTitle().equals("")) {
             survey.setTitle("Be pavadinimo");
         }
         boolean isZeroQuestions = true;
@@ -383,6 +394,11 @@ public class CreateFormController implements Serializable {
             }
         } else if (question.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString()) //If was checkbox or multiple
                 || question.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())) {
+            for (OfferedAnswer offeredAnswer : questions.get(page).get(questionIndex).getOfferedAnswerList()) {
+                for (Question q : offeredAnswer.getChildQuestions()) {
+                    removeAllChildAndChildQuestions(q);
+                }
+            }
             if (question.getNewType().equals(Question.QUESTION_TYPE.TEXT.toString())) {
                 removeAllOfferedAnswers(questionIndex, page);
                 addOfferedAnswer(questionIndex, page);
@@ -396,6 +412,22 @@ public class CreateFormController implements Serializable {
             addOfferedAnswer(questionIndex, page);
         }
         question.setType(question.getNewType());
+    }
+
+    private void removeAllChildAndChildQuestions(Question question) {
+        for (OfferedAnswer o : question.getOfferedAnswerList()) {
+            for (Question childQuestion : o.getChildQuestions()) {
+                removeAllChildAndChildQuestions(childQuestion);
+            }
+        }
+        int i = 0;
+        for (Question q : questions.get(question.getPage())) {
+            if (q == question) {
+                break;
+            }
+            i++;
+        }
+        questions.get(question.getPage()).remove(i);
     }
 
     public void importExcelFile(FileUploadEvent event) throws IOException {
