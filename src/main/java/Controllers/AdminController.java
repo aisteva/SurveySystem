@@ -1,5 +1,6 @@
-package controllers;
+package Controllers;
 
+import Controllers.Interfaces.IAdminController;
 import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Person;
@@ -28,7 +29,7 @@ import java.util.List;
 @ViewScoped
 @Slf4j
 @SurveySystemLog
-public class AdminController implements Serializable {
+public class AdminController implements IAdminController, Serializable {
 
     @Inject
     AdminController self;

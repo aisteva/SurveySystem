@@ -5,9 +5,9 @@ import entitiesJPA.Person;
 import log.SurveySystemLog;
 import lombok.Getter;
 import lombok.Setter;
-import services.PasswordHash;
+import services.interfaces.PasswordHasher;
+import userModule.interfaces.SignInInterface;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -24,7 +24,8 @@ import java.util.Arrays;
 @Named
 @ViewScoped
 @SurveySystemLog
-public class SignInController implements Serializable {
+public class SignInController implements Serializable, SignInInterface
+{
 
     @Inject @Getter @Setter
     SignInPerson signInPerson;
@@ -36,7 +37,7 @@ public class SignInController implements Serializable {
     private PersonDAO personDAO;
 
     @Inject
-    PasswordHash ph;
+    PasswordHasher ph;
 
     @Getter @Setter
     private boolean showRegisterWindow = false;

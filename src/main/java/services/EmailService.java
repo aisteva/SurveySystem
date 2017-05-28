@@ -1,6 +1,7 @@
 package services;
 
 import log.SurveySystemLog;
+import services.interfaces.EmailSenderInterface;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.mail.*;
@@ -10,10 +11,11 @@ import java.util.Properties;
 
 /**
  * Created by arturas on 2017-04-04.
+ * Email sender service
  */
 @ApplicationScoped
 @SurveySystemLog
-public class EmailService
+public class EmailService implements EmailSenderInterface
 {
     protected String port = "";
     protected String host = "";

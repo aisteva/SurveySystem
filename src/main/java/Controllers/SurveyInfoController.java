@@ -1,5 +1,6 @@
-package controllers;
+package Controllers;
 
+import Controllers.Interfaces.ISurveyInfoController;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Answer;
 import entitiesJPA.OfferedAnswer;
@@ -10,7 +11,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.omnifaces.util.Faces;
-import services.MessageCreator;
+import services.interfaces.MessageGenerator;
 import services.excel.ExcelSurveyExport;
 import userModule.SignInPerson;
 
@@ -35,7 +36,7 @@ import java.util.concurrent.ExecutionException;
 @Named
 @ViewScoped
 @Slf4j
-public class SurveyInfoController implements Serializable {
+public class SurveyInfoController implements ISurveyInfoController, Serializable {
 
     @Getter
     @Setter
@@ -63,7 +64,7 @@ public class SurveyInfoController implements Serializable {
     private Map<Long, QuestionStats> questionStatsMap = new HashMap<>();
 
     @Inject
-    private MessageCreator mesg;
+    private MessageGenerator mesg;
 
     public class QuestionStats {
         public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa) {

@@ -1,5 +1,6 @@
-package CreateFormPackage.Controllers;
+package Controllers;
 
+import Controllers.Interfaces.ICreateFormController;
 import DAO.Implementations.PersonDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.*;
@@ -9,7 +10,7 @@ import lombok.Setter;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.IOUtils;
 import org.primefaces.event.FileUploadEvent;
-import services.MessageCreator;
+import services.interfaces.MessageGenerator;
 import services.SaltGenerator;
 import services.excel.IExcelSurveyImport;
 import userModule.SignInPerson;
@@ -34,13 +35,13 @@ import java.util.concurrent.ExecutionException;
 @ViewScoped
 @Getter
 @SurveySystemLog
-public class CreateFormController implements Serializable {
+public class CreateFormController implements ICreateFormController, Serializable {
 
     @Inject
     private SaltGenerator sg;
 
     @Inject
-    private MessageCreator msg;
+    private MessageGenerator msg;
 
     private Survey survey = new Survey();
 
@@ -319,11 +320,11 @@ public class CreateFormController implements Serializable {
     @Transactional
     public String createForm(final String personEmail) {
         //Merging scale offeredAnswer
-        if (!surveyIsCorrect()) return null; //TODO: pagal įdėją turėtų būti kažkokie messagai jei blogai.
+        if (!surveyIsCorrect()) return null;
         if (!isEditMode) {
             Person person = personDAO.FindPersonByEmail(personEmail);
             survey.setPersonID(person);
-            survey.setSurveyURL(sg.getRandomString(8));
+            survey.setSurveyURL(sg.getRandomString(15));
             person.getSurveyList().add(survey);
             personDAO.UpdateUser(person);
         } else {

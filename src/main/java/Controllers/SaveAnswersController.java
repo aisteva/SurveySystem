@@ -1,5 +1,6 @@
-package controller;
+package Controllers;
 
+import Controllers.Interfaces.ISaveAnswersController;
 import DAO.Implementations.AnswerDAO;
 import DAO.Implementations.SurveyDAO;
 import entitiesJPA.Answer;
@@ -12,7 +13,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import services.EmailService;
-import services.MessageCreator;
+import services.interfaces.MessageGenerator;
 import services.SaltGenerator;
 
 import javax.enterprise.context.Conversation;
@@ -39,7 +40,7 @@ import java.util.*;
 @Named
 @ConversationScoped
 @SurveySystemLog
-public class SaveAnswersController implements Serializable
+public class SaveAnswersController implements ISaveAnswersController, Serializable
 {
 
     @Inject
@@ -89,7 +90,7 @@ public class SaveAnswersController implements Serializable
     private SaveAnswersController self;
 
     @Inject
-    private MessageCreator mesg;
+    private MessageGenerator mesg;
 
     @Inject
     private SaltGenerator sg;
@@ -430,11 +431,9 @@ public class SaveAnswersController implements Serializable
             }
 
             surveyDAO.update(survey);
-            //System.out.println(survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         } catch (OptimisticLockException ole)
         {
             conflictingSurvey = surveyDAO.getSurveyByUrl(survey.getSurveyURL());
-            //System.out.println("Conflicting: " +conflictingSurvey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
             self.solveSubmits(isFinished);
         }
 
@@ -445,7 +444,6 @@ public class SaveAnswersController implements Serializable
     public void solveSubmits(Boolean isFinished) throws Exception
     {
         survey.setOptLockVersion(conflictingSurvey.getOptLockVersion());
-        //System.out.println("priskirta: " +survey.toString()); //kol kas netrinkit, pasilikau pratestavimui, kai veiks isaugojimas
         increaseSubmits(isFinished);
     }
 
@@ -550,8 +548,6 @@ public class SaveAnswersController implements Serializable
         }
 
     }
-
-
 
 }
 

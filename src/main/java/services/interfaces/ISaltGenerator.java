@@ -1,4 +1,4 @@
-package services;
+package services.interfaces;
 
 import java.security.SecureRandom;
 import java.util.Random;
