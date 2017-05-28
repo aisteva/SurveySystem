@@ -39,8 +39,8 @@
                                 </tr>
                             </ui:repeat>
                             <tr>
-                                <td><h:inputText value="#{adminController.newPendingPerson.email}" a:placeholder="El. paštas" styleClass="onlyBottomBorder"></h:inputText></td>
-                                <td colspan="2">
+                                <td  style="padding-top: 40px;"><h:inputText value="#{adminController.newPendingPerson.email}" a:placeholder="El. paštas" styleClass="onlyBottomBorder"></h:inputText></td>
+                                <td colspan="2"  style="padding-top: 40px;">
                                     <h:selectOneMenu style="font-size: 100%;" id="user-type-input" value="#{adminController.newPendingPerson.userType}" required="true" styleClass="onlyBottomBorder">
                                         <f:selectItems value = "#{adminController.newPendingPerson.getUserTypesWithLabels().entrySet()}"
                                                        var="user"
