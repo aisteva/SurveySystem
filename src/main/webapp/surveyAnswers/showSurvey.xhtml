@@ -38,7 +38,6 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 30px;">
                         <span class="required">* - Privaloma</span>
-                        <p:messages id="show-survey-message" autoUpdate="true"/>
                     </div>
                     <ui:repeat  value="#{saveAnswersController.questions.get(saveAnswersController.page)}" var="question" varStatus="questionStatus">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
@@ -79,7 +78,9 @@
                                     <label class="radio">
                                         <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                value="#{saveAnswersController.selections.get(offered)}"
-                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}">
+                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}"
+                                                               required="#{question.required} and not empty param.nextPage}"
+                                                               requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
                                             <p:ajax update="@form"/>
                                         </p:selectBooleanButton>
                                     </label>
@@ -122,6 +123,7 @@
                         </div>
                     </ui:repeat>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
+                        <p:messages id="show-survey-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left" style="padding-top: 7px; padding-bottom: 10px">
                             <h:panelGroup rendered="#{saveAnswersController.page > 1}">
                                 <p:commandButton value="Praeitas puslapis"
