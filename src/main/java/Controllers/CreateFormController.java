@@ -383,6 +383,9 @@ public class CreateFormController implements ICreateFormController, Serializable
                     if(isEditMode || (isImported && survey.getSubmits()>0))
                     {
                         offeredAnswer = q.getPreviousScaleOfferedAnswer();
+                        if (offeredAnswer == null) {
+                            offeredAnswer = new OfferedAnswer();
+                        }
                     }
                     else
                     {
