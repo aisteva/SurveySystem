@@ -124,7 +124,7 @@
                                 <p>
                                     <b>Moda:</b>
                                     <ui:repeat  value="#{surveyInfoController.questionStatsMap.get(question.questionID).modaLst}" var="moda" varStatus="modaStatus">
-                                        #{moda} #{modaStatus.last ? '' : ', '}
+                                        #{moda}#{modaStatus.last ? '' : ', '}
                                     </ui:repeat>
                                 </p>
                                 <p><b>Moda pasikartoja:</b> #{surveyInfoController.questionStatsMap.get(question.questionID).modaRepeated} kartų</p>
