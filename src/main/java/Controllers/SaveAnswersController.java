@@ -136,6 +136,10 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             {
                 for (OfferedAnswer o : q.getOfferedAnswerList())
                 {
+                    Set<Question> hs = new HashSet<>();
+                    hs.addAll(o.getChildQuestions());
+                    o.getChildQuestions().clear();
+                    o.getChildQuestions().addAll(hs); // TODO: lyg neturėtų sugadint blogiau...
                     boolean matched = false;
                     for(Answer answer: sessionAnswerList)
                     {
@@ -144,7 +148,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                             matched = true;
                             selections.put(o, false);
                             if (q.getType().equals(Question.QUESTION_TYPE.CHECKBOX.toString())) {
-                                changeCheckBoxValue(q, o);
+                                changeCheckBoxValue(q, o); // TODO: Čia irgi pakeičiau anksčiau. Pridėjau else if.
                             } else if (q.getType().equals(Question.QUESTION_TYPE.MULTIPLECHOICE.toString())) {
                                 changeMultipleValue(q, o);
                             }
