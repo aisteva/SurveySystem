@@ -81,6 +81,20 @@
         opacity: 1;
         transition: 0.1s opacity linear;
     }
+    .action-with-survey .link {
+        visibility: hidden;
+        opacity: 0;
+        display: none;
+    }
+    .action-with-survey .link-copy {
+        margin-top: 0!important;
+    }
+    .action-with-survey .link-copy:before {
+        text-align: left;
+    }
+    .action-with-survey .row {
+        border: none!important;
+    }
 }
 .description-fade {
     z-index: 10;
@@ -89,7 +103,10 @@
     left: 0;
     height: 25%;
     width: 100%;
-    background: linear-gradient(rgba(0,0,0,0), #f7f7f7);
+    background: -webkit-linear-gradient(rgba(0,0,0,0), #f7f7f7); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(rgba(0,0,0,0), #f7f7f7); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(rgba(0,0,0,0), #f7f7f7); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(rgba(0,0,0,0), #f7f7f7); /* Standard syntax */
 }
 
 .ui-messages-info, .ui-messages-error  {
