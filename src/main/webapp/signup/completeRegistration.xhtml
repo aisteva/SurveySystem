@@ -32,6 +32,12 @@
                     <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12 box-shadow" style="padding-top: 40px;">
                     <h2 class="text-center">Registracijos užbaigimas</h2>
                     <p class="text-center">Norėdami užbaigti registraciją, įveskite vardą, pavardę ir slaptažodį. Slaptažodis turi būti iš bent 6 simbolių, jį turi sudaryti bent viena didžioji raidė, bent viena mažoji raidė, bent vienas skaičius.</p>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div><h:message for="firstname" styleClass="error-message"/></div>
+                            <div><h:message for="lastname" styleClass="error-message"/></div>
+                            <div><h:message for="pass" styleClass="error-message"/></div>
+                            <div><h:message for="confirmPass" styleClass="error-message"/></div>
+                        </div>
                         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <h:inputText a:placeholder="Vardas" id="firstname" value="#{setPasswordByLinkController.person.firstName}" required="true" requiredMessage="Įveskite vardą"/>
                         </div>
@@ -62,12 +68,6 @@
                                             didžioji raidė, skaičius ">
                                 <f:validateRegex pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,})" />
                             </p:password>
-                        </div>
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <div><h:message for="firstname" styleClass="error-message"/></div>
-                            <div><h:message for="lastname" styleClass="error-message"/></div>
-                            <div><h:message for="pass" styleClass="error-message"/></div>
-                            <div><h:message for="confirmPass" styleClass="error-message"/></div>
                         </div>
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <h:commandButton value="Registruotis"
