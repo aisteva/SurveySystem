@@ -77,16 +77,19 @@ body {
     }
 }
 @media (max-width: 767px) {
+    body {
+        margin-top: 10px!important;
+    }
     .shaped h1 {
         font-size: 250%;
         margin-top: 1vh;
     }
     .logo {
-        width: 200px;
-        margin: 20px auto;
+        width: 100px;
+        margin: 10px auto;
     }
     .logo img {
-        width: 200px;
+        width: 100px;
     }
     .shaped {
         width: 60vw;
