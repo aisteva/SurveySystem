@@ -285,6 +285,10 @@ public class CreateFormController implements ICreateFormController, Serializable
                 q.setNewType(q.getType()); //kadangi transient laukas, reikia nustatyti mapinant
                 if (questions.size() - 1 < q.getPage()) {
                     questions.add(q.getPage(), new ArrayList<>());
+                    pages.add(pages.size() + 1);
+                    for (int i = 0; i < pages.size(); i++) {
+                        pages.set(i, i + 1);
+                    }
                 }
                 questions.get(q.getPage()).add(q.getQuestionNumber() - 1, q);
 
