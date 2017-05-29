@@ -77,6 +77,13 @@
     .robot {
         visibility: hidden;
     }
+    .action-with-survey a {
+        pointer-events: none;
+
+    }
+    .action-with-survey.active a {
+        pointer-events: auto;
+    }
     .action-with-survey.active {
         opacity: 1;
         transition: 0.1s opacity linear;

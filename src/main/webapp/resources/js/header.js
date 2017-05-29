@@ -13,9 +13,6 @@ $(document).ready(function() {
         placement: 'bottom'
     });
 
-    $('.action-with-survey').click(function () {
-       $('.action-with-survey.active').removeClass('active');
-       $(this).addClass('active');
-    });
+
 
 });

@@ -22,4 +22,12 @@ $(document).ready(function() {
         setTooltip(btn, 'Nukopijuota');
         hideTooltip(btn);
     });
+
+
+    $('.action-with-survey').click(function () {
+        if($(window).width() <= 767){
+            $('.action-with-survey.active').removeClass('active');
+            $(this).addClass('active');
+        }
+    });
 });
