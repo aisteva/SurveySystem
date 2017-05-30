@@ -368,6 +368,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                 it.remove();
             }
 
+
         }
 
         //conversation.end();
@@ -402,7 +403,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             }
 
             //tikrina scale reikšmę
-            if(q.getType().equals("SCALE") && (Integer.parseInt(entry.getValue().getText())<processLine(q.getOfferedAnswerList()).getMin() || Integer.parseInt(entry.getValue().getText())>processLine(q.getOfferedAnswerList()).getMax())){
+            if(q.getType().equals("SCALE") && entry.getValue().getText() != null && (Integer.parseInt(entry.getValue().getText())<processLine(q.getOfferedAnswerList()).getMin() || Integer.parseInt(entry.getValue().getText())>processLine(q.getOfferedAnswerList()).getMax())){
                 mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Įvesta bloga scale reiškmė");
                 return;
             }
