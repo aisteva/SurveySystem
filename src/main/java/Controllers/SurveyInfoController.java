@@ -240,10 +240,9 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
             fileOut.close();
             Faces.sendFile(file, true);
             file.delete();
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            mesg.redirectToErrorPage("Klaida eksportuojant apklausą");
         }
 
     }

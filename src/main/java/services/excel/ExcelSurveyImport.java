@@ -12,17 +12,20 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import services.SaltGenerator;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.AsyncResult;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Column;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.Future;
 
 import static entitiesJPA.Question.QUESTION_TYPE.*;
@@ -36,10 +39,13 @@ import static entitiesJPA.Question.QUESTION_TYPE.*;
 public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
 {
     private XSSFSheet surveySheet = null;
-    private String[] surveyColumns = new String[]{"$questionNumber", "$question", "$questionType", "$optionsList"};
+    private String[] surveyColumns = new String[]{"$questionNumber", "$mandatory", "$question", "$questionType", "$optionsList"};
 
     private XSSFSheet answerSheet = null;
     private String[] answerColumns = new String[]{"$answerID", "$questionNumber", "$answer"};
+
+    private XSSFSheet headerSheet = null;
+    private String[] headerRows = new String[]{"#name", "$description", "$validate", "$public"};
 
     @Setter
     @Inject
@@ -55,6 +61,34 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
         //Atidaromas excel failas
         FileInputStream file = new FileInputStream(excelFile);
         Workbook wb = new XSSFWorkbook(excelFile);
+
+        //atsidaromas header lapas
+        this.headerSheet = (XSSFSheet) wb.getSheet("Header");
+        if(headerSheet == null)
+        {
+            throw new InvalidFormatException("Faile turi būti \"Header \" lapas");
+        }
+
+        //patikrinam, ar teisingas pirmo stulpelio formatas
+        assertCorrectFirstColumnFormat(headerSheet, headerRows);
+
+
+        survey.setTitle(headerSheet.getRow(0).getCell(1).getStringCellValue());
+
+        if(!isCellEmpty(headerSheet.getRow(1).getCell(1)))
+        {
+            survey.setDescription(headerSheet.getRow(1).getCell(1).getStringCellValue());
+        }
+        survey.setStartDate(new Date());
+
+        if(!isCellEmpty(headerSheet.getRow(2).getCell(1)))
+        {
+            survey.setEndDate(getImportedDateFormat(headerSheet.getRow(2).getCell(1)));
+        }
+        //kadangi formate parametrizuota "YES" arba "NO", tikrinama su tam skirta funkcija
+        survey.setSurveyPrivate(parseYesNoParameters(headerSheet.getRow(3).getCell(1)));
+
+
 
         //Atsidaromas survey lapas
         this.surveySheet = (XSSFSheet) wb.getSheet("Survey");
@@ -77,8 +111,9 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
             Question question = new Question();
             question.setPage(1);
             question.setQuestionNumber(getNumericValueFromCell(currentRow.getCell(0)));
-            question.setQuestionText(getStringValueFromCell(currentRow.getCell(1)));
-            Question.QUESTION_TYPE questionType = getQuestionTypeFromCell(currentRow.getCell(2));
+            question.setQuestionText(getStringValueFromCell(currentRow.getCell(2)));
+            question.setRequired(parseYesNoParameters(currentRow.getCell(1)));
+            Question.QUESTION_TYPE questionType = getQuestionTypeFromCell(currentRow.getCell(3));
 
             question.setType(questionType.name());
             question.setNewType(questionType.name());
@@ -87,7 +122,7 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
             List<OfferedAnswer> offeredAnswers = new ArrayList<>();
             OfferedAnswer offeredAnswer;
 
-            int currentCellNumber = 3;
+            int currentCellNumber = 4;
             switch(questionType)
             {
                 case TEXT:
@@ -126,8 +161,8 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
                     break;
                 //pagal sutarta formata dedam min ir max reiksmes i viena offeredanswer
                 case SCALE:
-                    Cell cellMin = currentRow.getCell(3);
-                    Cell cellMax = currentRow.getCell(4);
+                    Cell cellMin = currentRow.getCell(4);
+                    Cell cellMax = currentRow.getCell(5);
                     offeredAnswer = new OfferedAnswer();
                     if(cellMin.getCellTypeEnum() == CellType.BLANK ||
                             cellMax.getCellTypeEnum() == CellType.BLANK)
@@ -136,8 +171,8 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
                                 " eilutėje SCALE tipo klausimas turi turėti min ir max reikšmes " +
                                 cellMin.getAddress() + " ir " + cellMax.getAddress() + " langeliuose");
                     }
-                    String scale = (int)currentRow.getCell(3).getNumericCellValue() + ";" +
-                            (int)currentRow.getCell(4).getNumericCellValue();
+                    String scale = (int)currentRow.getCell(4).getNumericCellValue() + ";" +
+                            (int)currentRow.getCell(5).getNumericCellValue();
                     offeredAnswer.setQuestionID(question);
                     offeredAnswer.setText(scale);
                     offeredAnswers.add(offeredAnswer);
@@ -170,7 +205,6 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
         {
             return new AsyncResult<>(importAnswersIntoSurveyEntity(survey));
         }
-
     }
 
     private Survey importAnswersIntoSurveyEntity(Survey survey) throws InvalidFormatException
@@ -296,6 +330,13 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
             {
                 return false;
             }
+            if(cell.getCellTypeEnum() == CellType.STRING)
+            {
+                if(cell.getStringCellValue().isEmpty())
+                {
+                    return true;
+                }
+            }
         }
         return true;
     }
@@ -386,6 +427,60 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
                 throw new InvalidFormatException(cell.getAddress().toString() + " langelis turi turėti "
                         + args[i] + " pavadinimą");
             }
+        }
+    }
+
+    private void assertCorrectFirstColumnFormat(Sheet sheet, String[] args) throws InvalidFormatException
+    {
+        for(int i=0; i<args.length; i++)
+        {
+            Row row = sheet.getRow(i);
+            if(isRowEmpty(row))
+            {
+                throw new InvalidFormatException(sheet.getSheetName() + "turi turėti eilutę" + args[i]);
+            }
+            if(isCellEmpty(row.getCell(0)))
+            {
+                throw new InvalidFormatException(sheet.getSheetName() + " lapo " + row.getRowNum() + " eilutė turi turėti stulpelio pavadinimą");
+            }
+        }
+    }
+
+    private Date getImportedDateFormat(Cell cell) throws InvalidFormatException
+    {
+        Date date;
+        try
+        {
+            date = cell.getDateCellValue();
+        }
+        catch (IllegalStateException ise)
+        {
+
+            String stringDate = cell.getStringCellValue();
+            DateFormat format =  new SimpleDateFormat("yyyy.MM.dd");
+            try
+            {
+                return format.parse(stringDate);
+            } catch (ParseException e)
+            {
+                throw new InvalidFormatException(cell.getSheet().getSheetName() + " lape " + cell.getAddress() +
+                        " neteisingas datos formatas. Turi būti YYYY.MM.DD");
+            }
+        }
+        return date;
+    }
+
+    private boolean parseYesNoParameters(Cell cell) throws InvalidFormatException
+    {
+        switch (cell.getStringCellValue())
+        {
+            case "YES":
+                return true;
+            case "NO":
+                return false;
+            default:
+                throw new InvalidFormatException(cell.getSheet().getSheetName() + " lape " + cell.getAddress() +
+                        " langelyje turi būti \"YES\" arba \"NO\" tekstas");
         }
     }
 }

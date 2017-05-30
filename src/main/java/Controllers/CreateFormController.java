@@ -525,6 +525,7 @@ public class CreateFormController implements ICreateFormController, Serializable
                         new FacesMessage(e.getCause().getMessage()));
             } else {
                 e.printStackTrace();
+                msg.redirectToErrorPage("Apklausos importo klaida");
             }
 
         }

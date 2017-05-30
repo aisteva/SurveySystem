@@ -16,6 +16,8 @@ import javax.ejb.AsyncResult;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Future;
 
@@ -26,8 +28,9 @@ import java.util.concurrent.Future;
 @CustomerExcelFormat
 public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
 {
-    private static final String[] surveyColumns = new String[]{"$questionNumber", "$question", "$questionType", "$optionsList"};
-    private static final String[] answerColumns = new String[]{"$answerID", "$questionNumber", "$answer"};
+    private String[] surveyColumns = new String[]{"$questionNumber", "$mandatory", "$question", "$questionType", "$optionsList"};
+    private String[] answerColumns = new String[]{"$answerID", "$questionNumber", "$answer"};
+    private String[] headerRows = new String[]{"$name", "$description", "$validate", "$public"};
 
     //skaitliukai, į kelintą eilutę šiuo metu įrašinėjami duomenys
     private int currentSurveyRowNumber = 0;
@@ -44,6 +47,7 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
     {
         //Sukuriamas excel failas, su dviema lapais jame
         Workbook wb = new XSSFWorkbook();
+        Sheet headerSheet = wb.createSheet("Header");
         Sheet surveySheet = wb.createSheet("Survey");
         Sheet answerSheet = wb.createSheet("Answer");
 
@@ -52,6 +56,38 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
         style.setBorderBottom(BorderStyle.THIN);
         style.setBorderLeft(BorderStyle.THIN);
         style.setBorderRight(BorderStyle.THIN);
+
+        for(int i=0; i<headerRows.length; i++)
+        {
+            headerSheet.createRow(i).createCell(0).setCellValue(headerRows[i]);
+        }
+
+        headerSheet.getRow(0).createCell(1).setCellValue(survey.getTitle());
+        if(!(survey.getDescription().isEmpty() || survey.getDescription() == null))
+        {
+            headerSheet.getRow(1).createCell(1).setCellValue(survey.getDescription());
+        }
+        else
+        {
+            headerSheet.getRow(1).createCell(1).setCellValue("");
+        }
+
+        //data konvertuojama pagal importo formatą
+        if(survey.getEndDate() != null)
+        {
+            DateFormat format =  new SimpleDateFormat("yyyy.MM.dd");
+            headerSheet.getRow(2).createCell(1).setCellValue(format.format(survey.getEndDate()));
+        }
+        else
+        {
+            headerSheet.getRow(2).createCell(1).setCellType(CellType.BLANK);
+        }
+
+        //kadangi boolean reikia įrašyti kaip "YES" arba "NO", konvertuojama savo sukurta funkcija
+        headerSheet.getRow(3).createCell(1).setCellValue(requiredBooleanToFormattedString(survey.isSurveyPrivate()));
+
+        headerSheet.autoSizeColumn(0);
+        headerSheet.autoSizeColumn(1);
 
         //Į pirmą eilutę įrašomi parametrų pavadinimai
         Row surveyFirstRow = surveySheet.createRow(currentSurveyRowNumber++);
@@ -76,15 +112,17 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
             //įrašomi privalomi klausimo atributai: klausimo nr, tekstas ir tipas
             question.setQuestionNumberExcludingPage(++questionNumberExcludingPages); //workaround: skaičiuojamas bendras klausimo nr, be puslapių
             questionRow.createCell(0).setCellValue(question.getQuestionNumberExcludingPage());
-            questionRow.createCell(1).setCellValue(question.getQuestionText());
-            questionRow.createCell(2).setCellValue(question.getType());
+            //kadangi boolean reikia konvertuoti į "YES" arba "NO", naudojama sukurta funkcija
+            questionRow.createCell(1).setCellValue(requiredBooleanToFormattedString(question.isRequired()));
+            questionRow.createCell(2).setCellValue(question.getQuestionText());
+            questionRow.createCell(3).setCellValue(question.getType());
 
             switch (question.getType())
             {
                 case "CHECKBOX":
                 case "MULTIPLECHOICE":
                     //Pradedant nuo $optionslist stulpelio ir einant į dešinę rašomi atsakymų variantai
-                    int currentCellNumber = 3;
+                    int currentCellNumber = 4;
                     for(OfferedAnswer offeredAnswer: question.getOfferedAnswerList())
                     {
                         questionRow.createCell(currentCellNumber++).setCellValue(offeredAnswer.getText());
@@ -94,11 +132,11 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
                     //išsiparsinamas offeredanswer ir įrašomos dvi celes su min ir max
                     String scale = question.getOfferedAnswerList().get(0).getText();
                     String[] answers = scale.split(";");
-                    createNumericCell(questionRow, 3).setCellValue(Integer.parseInt(answers[0]));
-                    createNumericCell(questionRow, 4).setCellValue(Integer.parseInt(answers[1]));
+                    createNumericCell(questionRow, 4).setCellValue(Integer.parseInt(answers[0]));
+                    createNumericCell(questionRow, 5).setCellValue(Integer.parseInt(answers[1]));
                     break;
                 case "TEXT":
-                    questionRow.createCell(3).setCellType(CellType.BLANK);
+                    questionRow.createCell(4).setCellType(CellType.BLANK);
                     //nerašomas joks option pagal reikalavimus
                     break;
             }
@@ -242,4 +280,10 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
         }
         return res;
     };
+
+    private String requiredBooleanToFormattedString(boolean isRequired)
+    {
+        if(isRequired) return "YES";
+        return "NO";
+    }
 }
