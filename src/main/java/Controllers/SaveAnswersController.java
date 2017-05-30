@@ -169,21 +169,12 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     }
 
     public void nextPage() throws IOException {
-        try {
-            checkIfAnsweredCorrectlly(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         page++;
     }
 
     public void prevPage()
     {
-        try {
-            checkIfAnsweredCorrectlly(false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         page--;
         prevPage = true;
     }
