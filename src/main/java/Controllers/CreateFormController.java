@@ -365,7 +365,7 @@ public class CreateFormController implements ICreateFormController, Serializable
         }
         System.out.println(survey.getStartDate());
         System.out.println(survey.getEndDate());
-        if(survey.getStartDate().after(survey.getEndDate())){
+        if(survey.getEndDate() != null && survey.getStartDate().after(survey.getEndDate())){
             msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Pabaigos data yra ankstesnė nei pradžios");
             return false;
         }
