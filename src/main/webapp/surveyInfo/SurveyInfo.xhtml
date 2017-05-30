@@ -35,7 +35,7 @@
                                      actionListener="#{surveyInfoController.exportSurvey()}"
                                      styleClass="text text-info glyphicon glyphicon-download-alt" >
                         </h:commandLink>
-                        <h:panelGroup rendered="#{signInPerson.loggedInPerson.userType == 'ADMIN' or survey.personID.personID == signInPerson.loggedInPerson.personID}">
+                        <h:panelGroup rendered="#{signInPerson.loggedInPerson.userType == 'ADMIN' or surveyInfoController.survey.personID.personID == signInPerson.loggedInPerson.personID}">
                             <h:commandLink value=""
                                            style="text-decoration: none; padding-left: 20px;"
                                            action="#{surveyInfoController.deleteSurvey()}"
