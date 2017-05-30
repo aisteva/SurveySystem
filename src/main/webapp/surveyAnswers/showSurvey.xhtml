@@ -84,7 +84,7 @@
                                                                valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}"
                                                                required="#{question.isRequired() and not empty param.nextPage}"
                                                                requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
-
+                                            <p:ajax update="@form" />
                                         </p:selectBooleanButton>
                                     </label>
                                 </ui:repeat>
