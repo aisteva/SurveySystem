@@ -73,7 +73,6 @@ public class IndexController implements IIndexController, Serializable {
         Date date = new Date();
         //tikrinam ar apklausa dar galioja
         if(startDate != null) {
-            System.out.println("START:"+date + " "+startDate.after(date) + " "+startDate);
             return startDate.before(date);
         }
         return true;
@@ -83,7 +82,7 @@ public class IndexController implements IIndexController, Serializable {
         Date date = new Date();
         //tikrinam ar apklausa dar galioja
         if(endDate != null) {
-            return endDate.after(date);
+            return endDate.before(date);
         }
         return false;
     }
