@@ -177,6 +177,21 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
             mesg.redirectToErrorPage("Jūs neturite teisių matyti šios apklausos atsakymų");
 
         if (survey != null) {
+            Collections.sort(survey.getQuestionList(), new Comparator() {
+                public int compare(Object o1, Object o2) {
+                    Integer x1 = ((Question) o1).getPage();
+                    Integer x2 = ((Question) o2).getPage();
+                    int sComp = x1.compareTo(x2);
+
+                    if (sComp != 0) {
+                        return sComp;
+                    } else {
+                        x1 = ((Question) o1).getQuestionNumber();
+                        x2 = ((Question) o2).getQuestionNumber();
+                        return x1.compareTo(x2);
+                    }
+                }
+            });
             for (Question q : survey.getQuestionList()) {
                 addToAnswerCounterMap(q);
                 calculatePercentage(q.getQuestionID());

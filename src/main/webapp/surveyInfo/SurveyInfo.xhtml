@@ -110,7 +110,7 @@
             </h:outputScript>
             <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 one-question">
-                    <h3>#{question.questionNumber}. #{question.questionText}</h3>
+                    <h3>#{question.page}.#{question.questionNumber}. #{question.questionText}</h3>
                     <h:panelGroup rendered="#{not question.type.equals('SCALE')}">
                         <div id="chartContainer#{question.questionID}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 300px"></div>
                     </h:panelGroup>
