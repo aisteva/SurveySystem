@@ -23,7 +23,7 @@
                                 <tr>
                                     <td>#{person.email}</td>
                                     <td>
-                                        <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}" required="true">
+                                        <h:selectOneMenu style="font-size: 100%;" value="#{person.userType}">
                                             <p:ajax update=":form2:pending" listener="#{adminController.updateUserType(person, true)}" />
                                             <f:selectItems value = "#{person.getUserTypesWithLabels().entrySet()}"
                                                            var="user"
@@ -41,7 +41,7 @@
                             <tr>
                                 <td  style="padding-top: 40px;"><h:inputText value="#{adminController.newPendingPerson.email}" a:placeholder="El. paštas" styleClass="onlyBottomBorder"></h:inputText></td>
                                 <td colspan="2"  style="padding-top: 40px;">
-                                    <h:selectOneMenu style="font-size: 100%;" id="user-type-input" value="#{adminController.newPendingPerson.userType}" required="true" styleClass="onlyBottomBorder">
+                                    <h:selectOneMenu style="font-size: 100%;" id="user-type-input" value="#{adminController.newPendingPerson.userType}"  styleClass="onlyBottomBorder">
                                         <f:selectItems value = "#{adminController.newPendingPerson.getUserTypesWithLabels().entrySet()}"
                                                        var="user"
                                                        itemLabel="#{user.value}"
@@ -54,6 +54,7 @@
                 </h:panelGroup>
             </div>
             <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 text-center">
+                <p:messages id="add-pending-user-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                 <p:commandButton value="Pridėti"
                                  styleClass="btn btn-primary btn-md"
                                  action="#{adminController.addNewPendingPerson}"
