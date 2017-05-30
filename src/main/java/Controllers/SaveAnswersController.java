@@ -117,6 +117,9 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     @Setter
     Map<OfferedAnswer, Boolean> selections = new HashMap<>();
 
+    @Getter @Setter
+    private boolean error;
+
     public void init()
     {
         // Prasideda conversation, kai atidaromas puslapis
@@ -361,10 +364,13 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
 
         //conversation.end();
         //jei neatsakyta nei i viena klausima metama zinute
-
         if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty()))
         {
-            mesg.sendMessage(FacesMessage.SEVERITY_INFO, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
+            if(isFinished == true)
+                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
+            else
+                mesg.redirectToErrorPage("Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
+            error = true;
             log.error("Niekas neišsaugota");
         } else
         {
@@ -374,7 +380,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     }
 
     //metodas, kuris tikrina, ar atsakytą į privalomus klausimus
-    public String checkIfAnsweredCorrectlly(boolean isFinished){
+    public void checkIfAnsweredCorrectlly(boolean isFinished){
 
 
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); )
@@ -384,7 +390,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             Question q = of.getQuestionID();
             if(q.isRequired() && entry.getValue().getText() == null){
                 mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privolomą klausimą");
-                return null;
+                return;
             }
         }
 
@@ -393,12 +399,11 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
         {
             if(q.isRequired() && (q.getType().equals("MULTIPLECHOICE") || q.getType().equals("CHECKBOX")) && checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())== false) {
                 mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privalomą klausimą");
-                return null;
+                return;
             }
         }
 
         saveAnswer(isFinished);
-        return null;
     }
 
 
@@ -576,14 +581,16 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
 
         try{
             saveAnswer(false);
-            String text = String.format(emailText, survey.getSurveyURL());
-            String lastText = text+"&sessionId=%s";
-            System.out.println(sessionId);
-            if(email!= null)
-                //System.out.println(lastText);
-                es.sendEmail(email, emailSubject, String.format(lastText, sessionId));
-            else{
-                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neįvestas email adresas");
+            if(error==false) {
+                String text = String.format(emailText, survey.getSurveyURL());
+                String lastText = text + "&sessionId=%s";
+                System.out.println(sessionId);
+                if (email != null)
+                    //System.out.println(lastText);
+                    es.sendEmail(email, emailSubject, String.format(lastText, sessionId));
+                else {
+                    mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neįvestas email adresas");
+                }
             }
 
         }catch (Exception e){
