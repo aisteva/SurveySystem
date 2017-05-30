@@ -23,10 +23,12 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import java.awt.*;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -361,9 +363,17 @@ public class CreateFormController implements ICreateFormController, Serializable
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
         }
+        System.out.println(survey.getStartDate());
+        System.out.println(survey.getEndDate());
+        if(survey.getStartDate().after(survey.getEndDate())){
+            msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Pabaigos data yra ankstesnė nei pradžios");
+            return false;
+        }
         if (survey.getTitle().equals("")) {
             survey.setTitle("Be pavadinimo");
         }
+
+
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
         boolean zeroPage = true;
