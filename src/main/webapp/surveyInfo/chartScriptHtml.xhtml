@@ -49,7 +49,7 @@
                 else if (#{question.type == 'SCALE'}) {
                     chartType#{question.questionID} = "column";
                     toolTip#{question.questionID} = "Skaičius {label}: {y} ({name})";
-                    title#{question.questionID} = "Reikšmės nuo x iki y";
+                    title#{question.questionID} = "Reikšmės nuo #{surveyInfoController.questionStatsMap.get(question.questionID).minValue} iki #{surveyInfoController.questionStatsMap.get(question.questionID).maxValue}";
                 }
                 var chart#{question.questionID} = new CanvasJS.Chart("chartContainer#{question.questionID}", {
                     colorSet: "colorSet",

@@ -93,6 +93,11 @@ public class SignInController implements Serializable, SignInInterface
         byte[] byteHashedPasswordAndSalt = new byte[0];
         try
         {
+            String hashedPasswordAndSalt = signInPerson.getLoggedInPerson().getPassword();
+            if(hashedPasswordAndSalt == null)
+            {
+                return false;
+            }
             byteHashedPasswordAndSalt = ph.base64Decode(signInPerson.getLoggedInPerson().getPassword());
         } catch (IOException e)
         {
