@@ -148,7 +148,7 @@
                             <h:panelGroup rendered="#{!saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <h:commandButton value="Siųsti atsakymą"
                                                  styleClass="btn btn-primary btn-lg text-center"
-                                                 action="#{saveAnswersController.saveAnswer(true)}"
+                                                 action="#{saveAnswersController.checkIfAnsweredCorrectlly(true)}"
                                                  ajax="false">
                                     <p:ajax execute="@form" render="@form"/>
                                 </h:commandButton>
