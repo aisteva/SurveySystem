@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.omnifaces.cdi.ViewScoped;
 import org.primefaces.context.RequestContext;
+import services.MessageCreator;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -30,6 +31,9 @@ import java.util.List;
 @Slf4j
 @SurveySystemLog
 public class AdminController implements IAdminController, Serializable {
+
+    @Inject
+    private MessageCreator msg;
 
     @Inject
     AdminController self;
@@ -139,6 +143,11 @@ public class AdminController implements IAdminController, Serializable {
 
     @Transactional
     public void addNewPendingPerson() {
+
+        if(newPendingPerson.getEmail().equals("")){
+           msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neįvestas naujo naudoto el.paštas");
+           return;
+        }
         personDao.CreateUser(newPendingPerson);
         newPendingPerson = new Person();
         reloadAll();
