@@ -100,6 +100,12 @@ public class CreateFormController implements ICreateFormController, Serializable
             for (int i = 0; i < pages.size(); i++) {
                 pages.set(i, i + 1);
             }
+        } else if (currentPage == 1 && pages.size() > 1){ // Because pages first is zero.
+            questions.remove(currentPage);
+            pages.remove(pages.size() - 1);
+            for (int i = 0; i < pages.size(); i++) {
+                pages.set(i, i + 1);
+            }
         }
     }
 
@@ -361,6 +367,7 @@ public class CreateFormController implements ICreateFormController, Serializable
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
         boolean zeroPage = true;
+        int page = 1;
         for (List<Question> lst : questions) {
             if (zeroPage) {
                 zeroPage = false;
@@ -369,6 +376,7 @@ public class CreateFormController implements ICreateFormController, Serializable
             int number = 1;
             for (Question q : lst) {
                 q.setQuestionNumber(number);
+                q.setPage(page);
                 number++;
                 isZeroQuestions = false;
 
@@ -412,6 +420,7 @@ public class CreateFormController implements ICreateFormController, Serializable
             }
 
             survey.getQuestionList().addAll(lst);
+            page++;
         }
 
         return true;
