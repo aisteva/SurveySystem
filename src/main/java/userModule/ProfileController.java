@@ -55,7 +55,7 @@ public class ProfileController implements Serializable, ProfileInterface
         try
         {
             personDAO.updateAndFlush(signInPerson.getLoggedInPerson());
-            message.redirectToSuccessPage("Profilis sėkmingai pakeistas");
+            message.redirectToSuccessPage("Paskyros redagavimas sėkmingas");
         }
         catch(OptimisticLockException ole)
         {
