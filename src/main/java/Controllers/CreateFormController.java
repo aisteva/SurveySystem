@@ -224,7 +224,7 @@ public class CreateFormController implements ICreateFormController, Serializable
     }
 
     public void movePageDown(final int currentPage) {
-        if (currentPage < questions.size()) {
+        if (currentPage < questions.size()-1) {
             Collections.swap(questions, currentPage, currentPage + 1);
         }
     }
