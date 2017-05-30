@@ -54,7 +54,7 @@
                                     <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
                                         <h:inputText id="text"
                                                      value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                     required="#{question.isRequired() and not empty param.nextPage}"
+                                                     required="#{question.isRequired() or not empty param.nextPage}"
                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
                                                      a:placeholder="Atsakymas">
@@ -102,7 +102,7 @@
                                                     </h:panelGroup>
                                                     <p:spinner id="scale"
                                                                value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                               required="#{question.isRequired() and not empty param.nextPage}"
+                                                               required="#{question.isRequired() or not empty param.nextPage}"
                                                                requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                                min="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
                                                                max="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}">
@@ -146,7 +146,7 @@
                                                  styleClass="btn btn-primary btn-lg text-center"
                                                  action="#{saveAnswersController.checkIfAnsweredCorrectlly(true)}"
                                                  ajax="false">
-                                <!--ištryniau ajax su render ir execute-->
+                                    <p:ajax render="@form" execute="@form"/>
                                 </h:commandButton>
                             </h:panelGroup>
                         </div>
