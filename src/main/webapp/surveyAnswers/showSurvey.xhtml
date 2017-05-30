@@ -100,13 +100,12 @@
                                                         #{saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                         #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                     </h:panelGroup>
-                                                    <p:spinner id="scale"
-                                                               value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                               required="#{question.isRequired() or not empty param.nextPage}"
-                                                               requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
-                                                               min="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
-                                                               max="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}">
-                                                    </p:spinner>
+                                                    <p:inputText id="scale"
+                                                                 value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
+                                                                 required="#{question.isRequired() and not empty param.nextPage}"
+                                                                 styleClass="onlyBottomBorder">
+                                                        <p:ajax update="@form"/>
+                                                    </p:inputText>
                                                 </h:panelGrid>
                                             </div>
                                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
