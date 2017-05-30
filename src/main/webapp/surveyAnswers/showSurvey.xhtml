@@ -104,7 +104,6 @@
                                                                value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
                                                                required="#{question.isRequired() and not empty param.nextPage}"
                                                                requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
-                                                               styleClass="onlyBottomBorder"
                                                                min="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
                                                                max="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}">
                                                     </p:spinner>
