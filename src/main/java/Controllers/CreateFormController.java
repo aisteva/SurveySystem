@@ -409,6 +409,18 @@ public class CreateFormController implements ICreateFormController, Serializable
                     {
                         offeredAnswer = new OfferedAnswer();
                     }
+                    if (q.getOfferedAnswerList().get(0).getText() == null || q.getOfferedAnswerList().get(0).getText().isEmpty() ||
+                            q.getOfferedAnswerList().get(1).getText() == null || q.getOfferedAnswerList().get(1).getText().isEmpty()) {
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, q.getPage()+"."+q.getQuestionNumber()+" "+q.getQuestionText() + "scale klausimo rėžiai nenurodyti");
+                        return false;
+                    }
+                    int min, max;
+                    min = Integer.parseInt(q.getOfferedAnswerList().get(0).getText());
+                    max = Integer.parseInt(q.getOfferedAnswerList().get(1).getText());
+                    if (min > max){
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, q.getPage()+"."+q.getQuestionNumber()+" "+q.getQuestionText() +" Scale klausimo rėžiai netinkami");
+                        return false;
+                    }
                     offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
                     offeredAnswer.setQuestionID(q);
                     q.getOfferedAnswerList().clear();
