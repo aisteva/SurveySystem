@@ -38,6 +38,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 30px;">
                         <span class="required">* - Privaloma</span>
+                        <p:messages id="show-survey-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                     </div>
                     <ui:repeat  value="#{saveAnswersController.questions.get(saveAnswersController.page)}" var="question" varStatus="questionStatus">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
@@ -53,7 +54,7 @@
                                     <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
                                         <h:inputText id="text"
                                                      value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                     required="#{question.required} and not empty param.nextPage}"
+                                                     required="#{question.isRequired() and not empty param.nextPage}"
                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
                                                      a:placeholder="Atsakymas">
@@ -67,7 +68,9 @@
                                         <label class="checkbox">
                                             <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                    value="#{saveAnswersController.selections.get(offered)}"
-                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}">
+                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}"
+                                                                   required="#{question.isRequired() and not empty param.nextPage}"
+                                                                   requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
                                                 <p:ajax update="@form" />
                                             </p:selectBooleanButton>
                                         </label>
@@ -79,9 +82,9 @@
                                         <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                value="#{saveAnswersController.selections.get(offered)}"
                                                                valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}"
-                                                               required="#{question.required} and not empty param.nextPage}"
+                                                               required="#{question.isRequired() and not empty param.nextPage}"
                                                                requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
-                                            <p:ajax update="@form"/>
+
                                         </p:selectBooleanButton>
                                     </label>
                                 </ui:repeat>
@@ -97,20 +100,14 @@
                                                         #{saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                         #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                     </h:panelGroup>
-                                                    <p:inputText id="scale"
-                                                                 value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                                 required="#{question.isRequired() and not empty param.nextPage}"
-                                                                 converter="javax.faces.Integer"
-                                                                 converterMessage="Klausime nr. #{question.questionNumber} įveskite tik skaičius!"
-                                                                 validatorMessage="Klausime nr. #{question.questionNumber} skaičius turi būti tarp #{saveAnswersController.processLine(question.getOfferedAnswerList()).min} ir #{saveAnswersController.processLine(question.getOfferedAnswerList()).max}"
-                                                                 requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
-                                                                 styleClass="onlyBottomBorder">
-                                                        <p:ajax update="@form"/>
-                                                        <!--SVARBU sitoj vietoj pakeiciau f:validateLongRange i o validator!!!!!!-->
-                                                        <o:validator validatorId="javax.faces.LongRange"
-                                                                     minimum="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
-                                                                     maximum="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}"/>
-                                                    </p:inputText>
+                                                    <p:spinner id="scale"
+                                                               value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
+                                                               required="#{question.isRequired() and not empty param.nextPage}"
+                                                               requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
+                                                               styleClass="onlyBottomBorder"
+                                                               min="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
+                                                               max="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}">
+                                                    </p:spinner>
                                                 </h:panelGrid>
                                             </div>
                                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
@@ -123,7 +120,6 @@
                         </div>
                     </ui:repeat>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
-                        <p:messages id="show-survey-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left" style="padding-top: 7px; padding-bottom: 10px">
                             <h:panelGroup rendered="#{saveAnswersController.page > 1}">
                                 <p:commandButton value="Praeitas puslapis"
@@ -147,10 +143,11 @@
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
                             <h:panelGroup rendered="#{!saveAnswersController.questions.containsKey(Integer(saveAnswersController.page+1))}">
                                 <h:commandButton value="Siųsti atsakymą"
+                                                 update="@form"
                                                  styleClass="btn btn-primary btn-lg text-center"
                                                  action="#{saveAnswersController.checkIfAnsweredCorrectlly(true)}"
                                                  ajax="false">
-                                    <p:ajax execute="@form" render="@form"/>
+                                <!--ištryniau ajax su render ir execute-->
                                 </h:commandButton>
                             </h:panelGroup>
                         </div>
