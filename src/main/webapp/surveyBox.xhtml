@@ -41,7 +41,7 @@
                         </div>
                     </h:panelGroup>
                 </div>
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center disabled#{indexController.isSurveyEnded(survey.endDate)}">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center disabled#{indexController.isSurveyEnded(survey.endDate) or not indexController.isSurveyStarted(survey.startDate)}">
 
                         <h:link value="Atsakinėti"
                                 styleClass="btn btn-primary btn-lg"
