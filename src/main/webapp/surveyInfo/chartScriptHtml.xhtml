@@ -1,0 +1,72 @@
+<ui:composition
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:f="http://xmlns.jcp.org/jsf/core"
+        xmlns:h="http://xmlns.jcp.org/jsf/html"
+        xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:outputScript>
+    window.onload = function () {
+        CanvasJS.addColorSet("colorSet",
+        [
+        "#0083bb",
+        "#28bf93",
+        "#12543c",
+        "#29bf89",
+        "#0e98a9",
+        "#004766"
+        ]);
+        <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
+            if (#{question.type == 'TEXT'}){
+                var words#{question.questionID} = [
+                    <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
+                               var="answerCounter" varStatus="loop">
+                        {text: "#{answerCounter.answerText}", weight:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
+                    </ui:repeat>
+                ];
+                $('#chartContainer#{question.questionID}').jQCloud(words#{question.questionID});
+            }
+            else {
+                var finals#{question.questionID} = [
+                    <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
+                               var="answerCounter" varStatus="loop">
+                        {label: "#{answerCounter.answerText}", y:#{answerCounter.countAnswers}, name:"#{answerCounter.percentage}%"}#{loop.last ? '' : ','}
+                    </ui:repeat>
+                ];
+                var chartType#{question.questionID};
+                var toolTip#{question.questionID};
+                var title#{question.questionID};
+                if (#{question.type == 'CHECKBOX'}) {
+                    chartType#{question.questionID} = "column";
+                    toolTip#{question.questionID} = "{label}: {y} ({name})";
+                    title#{question.questionID} = "";
+                }
+                else if (#{question.type == 'MULTIPLECHOICE'}) {
+                    chartType#{question.questionID} = "pie";
+                    toolTip#{question.questionID} = "{label}: {y} (#percent%)";
+                    title#{question.questionID} = "";
+                }
+                else if (#{question.type == 'SCALE'}) {
+                    chartType#{question.questionID} = "column";
+                    toolTip#{question.questionID} = "Skaičius {label}: {y} ({name})";
+                    title#{question.questionID} = "Reikšmės nuo x iki y";
+                }
+                var chart#{question.questionID} = new CanvasJS.Chart("chartContainer#{question.questionID}", {
+                    colorSet: "colorSet",
+                    backgroundColor: "transparent",
+                    title:{
+                        text: title#{question.questionID},
+                        fontWeight: "lighter",
+                    },
+                    data: [{
+                        type: chartType#{question.questionID},
+                        toolTipContent: toolTip#{question.questionID},
+                        dataPoints: finals#{question.questionID}
+                    }]
+                });
+                chart#{question.questionID}.render();
+            }
+        </ui:repeat>
+        }
+    </h:outputScript>
+</ui:composition>
