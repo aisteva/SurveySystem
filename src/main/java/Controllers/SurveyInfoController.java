@@ -67,16 +67,20 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
     private MessageGenerator mesg;
 
     public class QuestionStats {
-        public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa) {
+        public QuestionStats(float avg, float mediana, List<Integer> modaLst, int maxModa, int minValue, int maxValue) {
             this.avg = avg;
             this.mediana = mediana;
             this.modaLst = modaLst;
             this.modaRepeated = maxModa;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
         }
         @Getter private float avg = 0;
         @Getter private float mediana = 0;
         @Getter private List<Integer> modaLst;
         @Getter private int modaRepeated;
+        @Getter private int minValue;
+        @Getter private int maxValue;
     }
 
     public class AnswerCounter {
@@ -93,7 +97,7 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
         }
     }
 
-    private void addOnlyUnique(List<Answer> lst, List<AnswerCounter> rez) {
+    private void addOnlyUnique(List<Answer> lst, List<AnswerCounter> rez, boolean isText) {
         Set<String> texts = new HashSet<>();
         for (Answer a : lst) {
             if (!a.isFinished()) {
@@ -101,6 +105,9 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
             }
             if (a.getText() == null || a.getText().isEmpty()) {
                 mesg.redirectToErrorPage("Apklausos atidaryti neįmanoma");
+            }
+            if (isText && a.getText().length() < 4){
+                continue;
             }
             if (texts.contains(a.getText())) {
                 rez.stream().filter(x -> x.getAnswerText().equals(a.getText())).findFirst().get().addToCountAnswers();
@@ -111,7 +118,7 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
         }
     }
 
-    private void calculateStats(Long questionId, List<AnswerCounter> answerCounterList) {
+    private void calculateStats(Question question, List<AnswerCounter> answerCounterList) {
         float mediana;
         if (answerCounterList.size() == 0) return;
         if (answerCounterList.size() % 2 == 0) {
@@ -137,7 +144,16 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
                 maxModa = ac.countAnswers;
             }
         }
-        questionStatsMap.put(questionId, new QuestionStats(sum / n, mediana, modaLst, maxModa));
+        String aLine = question.getOfferedAnswerList().get(0).getText();
+        Scanner scanner = new Scanner(aLine);
+        scanner.useDelimiter(";");
+        int min = 0;
+        int max = 0;
+        if (scanner.hasNext()) {
+            min = Integer.parseInt(scanner.next());
+            max = Integer.parseInt(scanner.next());
+        }
+        questionStatsMap.put(question.getQuestionID(), new QuestionStats(sum / n, mediana, modaLst, maxModa, min, max));
     }
 
     private void addToAnswerCounterMap(Question question) {
@@ -146,9 +162,9 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
         List<AnswerCounter> answerCounterList = new ArrayList<>();
         for (OfferedAnswer o : offeredAnswers) {
             if (question.getType().equals(Question.QUESTION_TYPE.TEXT.toString())) { // Only for text
-                addOnlyUnique(o.getAnswerList(), answerCounterList);
+                addOnlyUnique(o.getAnswerList(), answerCounterList, true);
             } else if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) { // Only for scale
-                addOnlyUnique(o.getAnswerList(), answerCounterList);
+                addOnlyUnique(o.getAnswerList(), answerCounterList, false);
             } else { // Checkbox or multiple
                 int i = 0;
                 // Add only finished
@@ -164,7 +180,7 @@ public class SurveyInfoController implements ISurveyInfoController, Serializable
         // Only for scale
         if (question.getType().equals(Question.QUESTION_TYPE.SCALE.toString())) {
             Collections.sort(answerCounterList, (x, y) -> Integer.compare(Integer.parseInt(x.answerText), Integer.parseInt(y.answerText)));
-            calculateStats(question.getQuestionID(), answerCounterList);
+            calculateStats(question, answerCounterList);
         }
         answerCounterMap.get(question.getQuestionID()).addAll(answerCounterList);
     }
