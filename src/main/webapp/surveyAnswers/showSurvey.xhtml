@@ -53,8 +53,6 @@
                                     <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
                                         <h:inputText id="text"
                                                      value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                     required="#{question.isRequired() or not empty param.nextPage}"
-                                                     requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
                                                      a:placeholder="Atsakymas">
                                         <p:ajax update="@form"/>
@@ -67,9 +65,7 @@
                                         <label class="checkbox">
                                             <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                    value="#{saveAnswersController.selections.get(offered)}"
-                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}"
-                                                                   required="#{question.isRequired() and not empty param.nextPage}"
-                                                                   requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}">
                                                 <p:ajax update="@form" />
                                             </p:selectBooleanButton>
                                         </label>
@@ -80,9 +76,7 @@
                                     <label class="radio">
                                         <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                value="#{saveAnswersController.selections.get(offered)}"
-                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}"
-                                                               required="#{question.isRequired() and not empty param.nextPage}"
-                                                               requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}">
                                             <p:ajax update="@form" />
                                         </p:selectBooleanButton>
                                     </label>
@@ -101,7 +95,6 @@
                                                     </h:panelGroup>
                                                     <p:inputText id="scale"
                                                                  value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                                 required="#{question.isRequired() and not empty param.nextPage}"
                                                                  styleClass="onlyBottomBorder">
                                                         <p:ajax update="@form"/>
                                                     </p:inputText>
