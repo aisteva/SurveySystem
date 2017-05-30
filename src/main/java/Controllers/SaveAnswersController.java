@@ -373,6 +373,34 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
         }
     }
 
+    //metodas, kuris tikrina, ar atsakytą į privalomus klausimus
+    public String checkIfAnsweredCorrectlly(boolean isFinished){
+
+
+        for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); )
+        {
+            Map.Entry<Long, Answer> entry = it.next();
+            OfferedAnswer of = entry.getValue().getOfferedAnswerID();
+            Question q = of.getQuestionID();
+            if(q.isRequired() && entry.getValue().getText() == null){
+                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privolomą klausimą");
+                return null;
+            }
+        }
+
+
+        for(Question q: survey.getQuestionList())
+        {
+            if(q.isRequired() && (q.getType().equals("MULTIPLECHOICE") || q.getType().equals("CHECKBOX")) && checkboxAndMultipleAnswersList.containsKey(q.getQuestionID())== false) {
+                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privalomą klausimą");
+                return null;
+            }
+        }
+
+        saveAnswer(isFinished);
+        return null;
+    }
+
 
     @Transactional
     public void saveAnswerTransaction(boolean isFinished)

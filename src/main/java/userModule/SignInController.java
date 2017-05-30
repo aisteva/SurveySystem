@@ -94,11 +94,15 @@ public class SignInController implements Serializable, SignInInterface
         try
         {
             String hashedPasswordAndSalt = signInPerson.getLoggedInPerson().getPassword();
-            if(hashedPasswordAndSalt == null)
+            if(hashedPasswordAndSalt == null || hashedPasswordAndSalt.isEmpty())
             {
                 return false;
             }
             byteHashedPasswordAndSalt = ph.base64Decode(signInPerson.getLoggedInPerson().getPassword());
+            if(byteHashedPasswordAndSalt.length < 32)
+            {
+                return false;
+            }
         } catch (IOException e)
         {
             e.printStackTrace();

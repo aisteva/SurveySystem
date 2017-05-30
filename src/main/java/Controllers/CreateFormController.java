@@ -23,10 +23,12 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import java.awt.*;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -95,6 +97,12 @@ public class CreateFormController implements ICreateFormController, Serializable
 
     public void removePage(final int currentPage) {
         if (currentPage > 1) {
+            questions.remove(currentPage);
+            pages.remove(pages.size() - 1);
+            for (int i = 0; i < pages.size(); i++) {
+                pages.set(i, i + 1);
+            }
+        } else if (currentPage == 1 && pages.size() > 1){ // Because pages first is zero.
             questions.remove(currentPage);
             pages.remove(pages.size() - 1);
             for (int i = 0; i < pages.size(); i++) {
@@ -218,7 +226,7 @@ public class CreateFormController implements ICreateFormController, Serializable
     }
 
     public void movePageDown(final int currentPage) {
-        if (currentPage < questions.size()) {
+        if (currentPage < questions.size()-1) {
             Collections.swap(questions, currentPage, currentPage + 1);
         }
     }
@@ -355,12 +363,21 @@ public class CreateFormController implements ICreateFormController, Serializable
             System.out.println(dateFormat.format(date));
             survey.setStartDate(date);
         }
+        System.out.println(survey.getStartDate());
+        System.out.println(survey.getEndDate());
+        if(survey.getStartDate().after(survey.getEndDate())){
+            msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Pabaigos data yra ankstesnė nei pradžios");
+            return false;
+        }
         if (survey.getTitle().equals("")) {
             survey.setTitle("Be pavadinimo");
         }
+
+
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
         boolean zeroPage = true;
+        int page = 1;
         for (List<Question> lst : questions) {
             if (zeroPage) {
                 zeroPage = false;
@@ -369,6 +386,7 @@ public class CreateFormController implements ICreateFormController, Serializable
             int number = 1;
             for (Question q : lst) {
                 q.setQuestionNumber(number);
+                q.setPage(page);
                 number++;
                 isZeroQuestions = false;
 
@@ -391,6 +409,18 @@ public class CreateFormController implements ICreateFormController, Serializable
                     {
                         offeredAnswer = new OfferedAnswer();
                     }
+                    if (q.getOfferedAnswerList().get(0).getText() == null || q.getOfferedAnswerList().get(0).getText().isEmpty() ||
+                            q.getOfferedAnswerList().get(1).getText() == null || q.getOfferedAnswerList().get(1).getText().isEmpty()) {
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, q.getPage()+"."+q.getQuestionNumber()+" "+q.getQuestionText() + "scale klausimo rėžiai nenurodyti");
+                        return false;
+                    }
+                    int min, max;
+                    min = Integer.parseInt(q.getOfferedAnswerList().get(0).getText());
+                    max = Integer.parseInt(q.getOfferedAnswerList().get(1).getText());
+                    if (min > max){
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, q.getPage()+"."+q.getQuestionNumber()+" "+q.getQuestionText() +" Scale klausimo rėžiai netinkami");
+                        return false;
+                    }
                     offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
                     offeredAnswer.setQuestionID(q);
                     q.getOfferedAnswerList().clear();
@@ -412,6 +442,7 @@ public class CreateFormController implements ICreateFormController, Serializable
             }
 
             survey.getQuestionList().addAll(lst);
+            page++;
         }
 
         return true;
