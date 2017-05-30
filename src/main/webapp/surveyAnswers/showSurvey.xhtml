@@ -54,7 +54,7 @@
                                     <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
                                         <h:inputText id="text"
                                                      value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                     required="#{question.isRequired() and not empty param.nextPage}"
+                                                     required="#{question.isRequired() or not empty param.nextPage}"
                                                      requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
                                                      a:placeholder="Atsakymas">
@@ -100,14 +100,12 @@
                                                         #{saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                         #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                     </h:panelGroup>
-                                                    <p:spinner id="scale"
-                                                               value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                               required="#{question.isRequired() and not empty param.nextPage}"
-                                                               requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
-                                                               styleClass="onlyBottomBorder"
-                                                               min="#{saveAnswersController.processLine(question.getOfferedAnswerList()).min}"
-                                                               max="#{saveAnswersController.processLine(question.getOfferedAnswerList()).max}">
-                                                    </p:spinner>
+                                                    <p:inputText id="scale"
+                                                                 value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
+                                                                 required="#{question.isRequired() and not empty param.nextPage}"
+                                                                 styleClass="onlyBottomBorder">
+                                                        <p:ajax update="@form"/>
+                                                    </p:inputText>
                                                 </h:panelGrid>
                                             </div>
                                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
@@ -147,7 +145,7 @@
                                                  styleClass="btn btn-primary btn-lg text-center"
                                                  action="#{saveAnswersController.checkIfAnsweredCorrectlly(true)}"
                                                  ajax="false">
-                                <!--ištryniau ajax su render ir execute-->
+                                    <p:ajax render="@form" execute="@form"/>
                                 </h:commandButton>
                             </h:panelGroup>
                         </div>

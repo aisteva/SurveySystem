@@ -32,7 +32,7 @@
     overflow: hidden;
 }
 
-.onlyBottomBorder, .ui-inputnumber > input, .ui-calendar > input {
+.onlyBottomBorder, .ui-inputnumber > input, .ui-calendar > input, .ui-spinner > input {
     background: none;
     width: 100%;
     border: none;
@@ -41,7 +41,7 @@
     border-radius: 0;
 }
 
-.onlyBottomBorder:focus, .ui-inputnumber > input:focus, .ui-calendar > input:focus {
+.onlyBottomBorder:focus, .ui-inputnumber > input:focus, .ui-calendar > input:focus, .ui-spinner > input:focus {
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
@@ -215,4 +215,10 @@ body {
 .disabledtrue > span {
     opacity: 0.3;
     cursor: not-allowed;
+}
+
+.ui-spinner-down, .ui-spinner-up {
+    display: none;
+    visibility: hidden;
+    opacity: 0;
 }
