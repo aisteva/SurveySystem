@@ -252,7 +252,11 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).add(answer);
             for (Question childQuestion : o.getChildQuestions())
             {
-                questions.get(childQuestion.getPage()).add(childQuestion.getQuestionNumber()-1, childQuestion);
+                if (childQuestion.getQuestionNumber()-1 > questions.get(childQuestion.getPage()).size()){
+                    questions.get(childQuestion.getPage()).add(childQuestion);
+                } else {
+                    questions.get(childQuestion.getPage()).add(childQuestion.getQuestionNumber() - 1, childQuestion);
+                }
                 for (OfferedAnswer oo : childQuestion.getOfferedAnswerList())
                 {
                     selections.put(oo, false);
@@ -304,7 +308,11 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                 {
                     selections.put(oo, false);
                 }
-                questions.get(childQuestion.getPage()).add(childQuestion.getQuestionNumber()-1, childQuestion);
+                if (childQuestion.getQuestionNumber() - 1 > questions.get(childQuestion.getPage()).size()){
+                    questions.get(childQuestion.getPage()).add(childQuestion);
+                } else {
+                    questions.get(childQuestion.getPage()).add(childQuestion.getQuestionNumber() - 1, childQuestion);
+                }
                 addToTextAndScaleAnswerList(childQuestion);
             }
         }
