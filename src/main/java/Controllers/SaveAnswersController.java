@@ -523,6 +523,12 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                 if (survey.getEndDate().before(date))
                     mesg.redirectToErrorPage("Apklausa nebegalioja");
             }
+            //tikrinam ar apklausa dar galioja
+            if (survey.getStartDate() != null)
+            {
+                if (survey.getStartDate().after(date))
+                    mesg.redirectToErrorPage("Apklausa dar negalioja");
+            }
             if (survey == null)
             {
                 mesg.redirectToErrorPage("Tokios apklausos nėra");

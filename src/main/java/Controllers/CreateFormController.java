@@ -182,12 +182,25 @@ public class CreateFormController implements ICreateFormController, Serializable
         questions.get(page).get(questionIndex).getOfferedAnswerList().clear();
     }
 
+    private int findQuestionIndexById(Question findQuestion){
+        for (int page : pages){
+            int i = 0;
+            for (Question q : questions.get(page)){
+                if (q == findQuestion){
+                    return i;
+                }
+                i++;
+            }
+        }
+        return -1;
+    }
+
     public void moveQuestionUp(final int questionIndex, final int page) {
         if (questionIndex != 0) {
             Question currentQuestion = questions.get(page).get(questionIndex);
             if (currentQuestion.getParentOfferedAnswers().size() > 0) { // Can't be higher than offeredAnswer.
                 for (OfferedAnswer o : currentQuestion.getParentOfferedAnswers()) {
-                    if (o.getQuestionID().getQuestionNumber() + 1 >= currentQuestion.getQuestionNumber()) {
+                    if (findQuestionIndexById(o.getQuestionID())+1 >= questionIndex) {
                         return;
                     }
                 }
@@ -206,7 +219,7 @@ public class CreateFormController implements ICreateFormController, Serializable
                 for (OfferedAnswer oa : currentQuestion.getOfferedAnswerList()) {
                     if (oa.getChildQuestions().size() > 0) {
                         for (Question lowerQuestion : oa.getChildQuestions()) {
-                            if (currentQuestion.getQuestionNumber() + 1 <= lowerQuestion.getQuestionNumber()) {
+                            if (questionIndex+1 >= findQuestionIndexById(lowerQuestion)) {
                                 return;
                             }
                         }
@@ -365,7 +378,7 @@ public class CreateFormController implements ICreateFormController, Serializable
         }
         System.out.println(survey.getStartDate());
         System.out.println(survey.getEndDate());
-        if(survey.getStartDate().after(survey.getEndDate())){
+        if(survey.getEndDate() != null && survey.getStartDate().after(survey.getEndDate())){
             msg.sendMessage(FacesMessage.SEVERITY_ERROR, "Pabaigos data yra ankstesnė nei pradžios");
             return false;
         }
@@ -408,6 +421,18 @@ public class CreateFormController implements ICreateFormController, Serializable
                     else
                     {
                         offeredAnswer = new OfferedAnswer();
+                    }
+                    if (q.getOfferedAnswerList().get(0).getText() == null || q.getOfferedAnswerList().get(0).getText().isEmpty() ||
+                            q.getOfferedAnswerList().get(1).getText() == null || q.getOfferedAnswerList().get(1).getText().isEmpty()) {
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, q.getPage()+"."+q.getQuestionNumber()+" "+q.getQuestionText() + "scale klausimo rėžiai nenurodyti");
+                        return false;
+                    }
+                    int min, max;
+                    min = Integer.parseInt(q.getOfferedAnswerList().get(0).getText());
+                    max = Integer.parseInt(q.getOfferedAnswerList().get(1).getText());
+                    if (min > max){
+                        msg.sendMessage(FacesMessage.SEVERITY_ERROR, q.getPage()+"."+q.getQuestionNumber()+" "+q.getQuestionText() +" Scale klausimo rėžiai netinkami");
+                        return false;
                     }
                     offeredAnswer.setText(q.getOfferedAnswerList().get(0).getText() + ";" + q.getOfferedAnswerList().get(1).getText());
                     offeredAnswer.setQuestionID(q);

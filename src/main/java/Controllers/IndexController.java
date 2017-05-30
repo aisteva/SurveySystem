@@ -59,21 +59,30 @@ public class IndexController implements IIndexController, Serializable {
         {
             personSurveys = signInPerson.getLoggedInPerson().getSurveyList();
             publicSurveys = surveyDAO.getAllSurveysByPrivate(false);
-            publicSurveys = publicSurveys.stream().filter(p -> !personSurveys.contains(p)).collect(Collectors.toList());
+            publicSurveys = publicSurveys.stream().filter(p -> (!personSurveys.contains(p)  && isSurveyStarted(p.getStartDate()))).collect(Collectors.toList());
             if (signInController.isAdmin()) {
                 privateSurveys = surveyDAO.getAllSurveysByPrivate(true);
-                privateSurveys = privateSurveys.stream().filter(p -> !personSurveys.contains(p)).collect(Collectors.toList());
+                privateSurveys = privateSurveys.stream().filter(p -> (!personSurveys.contains(p) && isSurveyStarted(p.getStartDate()))).collect(Collectors.toList());
             }
         }
 
+    }
+
+    public boolean isSurveyStarted(final Date startDate) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        //tikrinam ar apklausa dar galioja
+        if(startDate != null) {
+            return startDate.before(date);
+        }
+        return true;
     }
     public boolean isSurveyEnded(final Date endDate) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
         //tikrinam ar apklausa dar galioja
         if(endDate != null) {
-            if(endDate.before(date))
-                return true;
+            return endDate.before(date);
         }
         return false;
     }

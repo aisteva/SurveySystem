@@ -10,4 +10,5 @@ public interface IIndexController {
     void load();
 
     boolean isSurveyEnded(final Date endDate);
+    boolean isSurveyStarted(final Date endDate);
 }
