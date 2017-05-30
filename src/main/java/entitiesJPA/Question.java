@@ -52,7 +52,7 @@ public class Question implements Serializable {
     @Basic(optional = false)
     @Column(name = "isRequired")
     private boolean isRequired;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionID", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<OfferedAnswer> offeredAnswerList = new ArrayList<>();
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "childQuestions")
     private List<OfferedAnswer> parentOfferedAnswers = new ArrayList<>();
@@ -65,7 +65,6 @@ public class Question implements Serializable {
         CHECKBOX,
         MULTIPLECHOICE,
         SCALE
-
     };
 
     public Map<QUESTION_TYPE, String> getQuestionTypesWithLabels() {

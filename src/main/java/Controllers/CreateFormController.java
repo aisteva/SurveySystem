@@ -100,6 +100,12 @@ public class CreateFormController implements ICreateFormController, Serializable
             for (int i = 0; i < pages.size(); i++) {
                 pages.set(i, i + 1);
             }
+        } else if (currentPage == 1 && pages.size() > 1){ // Because pages first is zero.
+            questions.remove(currentPage);
+            pages.remove(pages.size() - 1);
+            for (int i = 0; i < pages.size(); i++) {
+                pages.set(i, i + 1);
+            }
         }
     }
 
@@ -218,7 +224,7 @@ public class CreateFormController implements ICreateFormController, Serializable
     }
 
     public void movePageDown(final int currentPage) {
-        if (currentPage < questions.size()) {
+        if (currentPage < questions.size()-1) {
             Collections.swap(questions, currentPage, currentPage + 1);
         }
     }
@@ -285,6 +291,10 @@ public class CreateFormController implements ICreateFormController, Serializable
                 q.setNewType(q.getType()); //kadangi transient laukas, reikia nustatyti mapinant
                 if (questions.size() - 1 < q.getPage()) {
                     questions.add(q.getPage(), new ArrayList<>());
+                    pages.add(pages.size() + 1);
+                    for (int i = 0; i < pages.size(); i++) {
+                        pages.set(i, i + 1);
+                    }
                 }
                 questions.get(q.getPage()).add(q.getQuestionNumber() - 1, q);
 
@@ -357,6 +367,7 @@ public class CreateFormController implements ICreateFormController, Serializable
         boolean isZeroQuestions = true;
         survey.getQuestionList().clear();
         boolean zeroPage = true;
+        int page = 1;
         for (List<Question> lst : questions) {
             if (zeroPage) {
                 zeroPage = false;
@@ -365,6 +376,7 @@ public class CreateFormController implements ICreateFormController, Serializable
             int number = 1;
             for (Question q : lst) {
                 q.setQuestionNumber(number);
+                q.setPage(page);
                 number++;
                 isZeroQuestions = false;
 
@@ -379,6 +391,9 @@ public class CreateFormController implements ICreateFormController, Serializable
                     if(isEditMode || (isImported && survey.getSubmits()>0))
                     {
                         offeredAnswer = q.getPreviousScaleOfferedAnswer();
+                        if (offeredAnswer == null) {
+                            offeredAnswer = new OfferedAnswer();
+                        }
                     }
                     else
                     {
@@ -405,6 +420,7 @@ public class CreateFormController implements ICreateFormController, Serializable
             }
 
             survey.getQuestionList().addAll(lst);
+            page++;
         }
 
         return true;

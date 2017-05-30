@@ -136,6 +136,10 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             {
                 for (OfferedAnswer o : q.getOfferedAnswerList())
                 {
+                    Set<Question> hs = new HashSet<>();
+                    hs.addAll(o.getChildQuestions());
+                    o.getChildQuestions().clear();
+                    o.getChildQuestions().addAll(hs);
                     boolean matched = false;
                     for(Answer answer: sessionAnswerList)
                     {
@@ -248,7 +252,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).add(answer);
             for (Question childQuestion : o.getChildQuestions())
             {
-                questions.get(childQuestion.getPage()).add(childQuestion);
+                questions.get(childQuestion.getPage()).add(childQuestion.getQuestionNumber()-1, childQuestion);
                 for (OfferedAnswer oo : childQuestion.getOfferedAnswerList())
                 {
                     selections.put(oo, false);
@@ -300,7 +304,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                 {
                     selections.put(oo, false);
                 }
-                questions.get(childQuestion.getPage()).add(childQuestion);
+                questions.get(childQuestion.getPage()).add(childQuestion.getQuestionNumber()-1, childQuestion);
                 addToTextAndScaleAnswerList(childQuestion);
             }
         }

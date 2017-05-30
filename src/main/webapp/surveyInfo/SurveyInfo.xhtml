@@ -35,7 +35,7 @@
                                      actionListener="#{surveyInfoController.exportSurvey()}"
                                      styleClass="text text-info glyphicon glyphicon-download-alt" >
                         </h:commandLink>
-                        <h:panelGroup rendered="#{signInPerson.loggedInPerson.userType == 'ADMIN' or survey.personID.personID == signInPerson.loggedInPerson.personID}">
+                        <h:panelGroup rendered="#{signInPerson.loggedInPerson.userType == 'ADMIN' or surveyInfoController.survey.personID.personID == signInPerson.loggedInPerson.personID}">
                             <h:commandLink value=""
                                            style="text-decoration: none; padding-left: 20px;"
                                            action="#{surveyInfoController.deleteSurvey()}"
@@ -52,65 +52,10 @@
             <h4 class="text-center">Apklausos autorius: #{surveyInfoController.survey.personID.firstName} #{surveyInfoController.survey.personID.lastName}</h4>
             <h4 class="text-center">Klausimų skaičius: #{surveyInfoController.survey.questionList.size()}</h4>
             <h4 class="text-center">Apklausos atsakymų sk.: #{surveyInfoController.survey.submits}</h4>
-            <h:outputScript>
-                window.onload = function () {
-                    CanvasJS.addColorSet("colorSet",
-                        [
-                        "#0083bb",
-                        "#28bf93",
-                        "#12543c",
-                        "#29bf89",
-                        "#0e98a9",
-                        "#004766"
-                        ]);
-                    <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
-                        if (#{question.type == 'TEXT'}){
-                            var words#{question.questionID} = [
-                                <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
-                                           var="answerCounter" varStatus="loop">
-                                    {text: "#{answerCounter.answerText}", weight:#{answerCounter.countAnswers}}#{loop.last ? '' : ','}
-                                </ui:repeat>
-                            ];
-                            $('#chartContainer#{question.questionID}').jQCloud(words#{question.questionID});
-                        }
-                        else {
-                            var finals#{question.questionID} = [
-                                <ui:repeat value="#{surveyInfoController.answerCounterMap.get(question.questionID)}"
-                                           var="answerCounter" varStatus="loop">
-                                    {label: "#{answerCounter.answerText}", y:#{answerCounter.countAnswers}, name:"#{answerCounter.percentage}%"}#{loop.last ? '' : ','}
-                                </ui:repeat>
-                            ];
-                            var chartType#{question.questionID};
-                            var toolTip#{question.questionID};
-                            if (#{question.type == 'CHECKBOX'}) {
-                                chartType#{question.questionID} = "column";
-                                toolTip#{question.questionID} = "{label}: {y} ({name})";
-                            }
-                            else if (#{question.type == 'MULTIPLECHOICE'}) {
-                                chartType#{question.questionID} = "pie";
-                                toolTip#{question.questionID} = "{label}: {y} (#percent%)";
-                            }
-                            else if (#{question.type == 'SCALE'}) {
-                                chartType#{question.questionID} = "column";
-                                toolTip#{question.questionID} = "Skaičius {label}: {y} ({name})";
-                            }
-                            var chart#{question.questionID} = new CanvasJS.Chart("chartContainer#{question.questionID}", {
-                                colorSet: "colorSet",
-                                backgroundColor: "transparent",
-                                data: [{
-                                    type: chartType#{question.questionID},
-                                    toolTipContent: toolTip#{question.questionID},
-                                    dataPoints: finals#{question.questionID}
-                                }]
-                            });
-                            chart#{question.questionID}.render();
-                        }
-                    </ui:repeat>
-                }
-            </h:outputScript>
+            <ui:include src="chartScriptHtml.xhtml"/>
             <ui:repeat  value="#{surveyInfoController.survey.questionList}" var="question">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 one-question">
-                    <h3>#{question.questionNumber}. #{question.questionText}</h3>
+                    <h3>#{question.page}.#{question.questionNumber}. #{question.questionText}</h3>
                     <h:panelGroup rendered="#{not question.type.equals('SCALE')}">
                         <div id="chartContainer#{question.questionID}" class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="height: 300px"></div>
                     </h:panelGroup>
