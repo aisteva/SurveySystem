@@ -168,7 +168,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
         }
     }
 
-    public void nextPage() throws IOException {
+    public void nextPage() {
 
         page++;
     }
