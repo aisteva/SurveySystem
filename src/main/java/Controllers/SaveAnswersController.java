@@ -168,13 +168,22 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
         }
     }
 
-    public void nextPage()
-    {
+    public void nextPage() throws IOException {
+        try {
+            checkIfAnsweredCorrectlly(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         page++;
     }
 
     public void prevPage()
     {
+        try {
+            checkIfAnsweredCorrectlly(false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         page--;
         prevPage = true;
     }
@@ -356,24 +365,24 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     //patikrina, ar yra atsakytą nors į vieną klausimą
     public void saveAnswer(boolean isFinished)
     {
+        int number=0;
+
+        System.out.println(textAndScaleAnswersList.size());
 
         //iteruoja per mapą ir ištrina, jei atsakymas yra tuščias, kadangi prieš tai visiems atsakymas liste buvo užsetintas id
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); )
         {
             Map.Entry<Long, Answer> entry = it.next();
-            if (entry.getValue().getText() == null)
+            if (entry.getValue().getText() == null || entry.getValue().getText() == "")
             {
-                OfferedAnswer of = entry.getValue().getOfferedAnswerID();
-                of.getAnswerList().remove(entry.getValue());
-                it.remove();
+               number++;
             }
-
 
         }
 
         //conversation.end();
         //jei neatsakyta nei i viena klausima metama zinute
-        if ((textAndScaleAnswersList.isEmpty()) && (checkboxAndMultipleAnswersList.isEmpty()))
+        if ((textAndScaleAnswersList.size() == number) && (checkboxAndMultipleAnswersList.isEmpty()))
         {
             if(isFinished == true)
                 mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakyta nei į vieną klausimą, todėl atsakymas neišsaugotas ");
@@ -392,18 +401,19 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     public void checkIfAnsweredCorrectlly(boolean isFinished) throws IOException {
 
 
+
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); )
         {
             Map.Entry<Long, Answer> entry = it.next();
             OfferedAnswer of = entry.getValue().getOfferedAnswerID();
             Question q = of.getQuestionID();
-            if(q.isRequired() && entry.getValue().getText() == null){
+            if(q.isRequired() && (entry.getValue().getText() == null|| entry.getValue().getText() =="")){
                 mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privalomą klausimą");
                 return;
             }
 
             //tikrina scale reikšmę
-            if(q.getType().equals("SCALE") && entry.getValue().getText() != null && (Integer.parseInt(entry.getValue().getText())<processLine(q.getOfferedAnswerList()).getMin() || Integer.parseInt(entry.getValue().getText())>processLine(q.getOfferedAnswerList()).getMax())){
+            if(q.getType().equals("SCALE") && entry.getValue().getText() != null && entry.getValue().getText() !="" && (Integer.parseInt(entry.getValue().getText())<processLine(q.getOfferedAnswerList()).getMin() || Integer.parseInt(entry.getValue().getText())>processLine(q.getOfferedAnswerList()).getMax())){
                 mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Įvesta bloga scale reiškmė");
                 return;
             }
@@ -417,7 +427,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
                 return;
             }
         }
-
+    if(isFinished==true)
         saveAnswer(isFinished);
     }
 

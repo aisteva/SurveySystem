@@ -16,7 +16,7 @@ public interface ISaveAnswersController {
 
     void init();
 
-    void nextPage();
+    void nextPage() throws IOException;
 
     void prevPage();
 
