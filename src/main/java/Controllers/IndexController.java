@@ -70,7 +70,6 @@ public class IndexController implements IIndexController, Serializable {
     public boolean isSurveyEnded(final Date endDate) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
-        System.out.println(dateFormat.format(date));
         //tikrinam ar apklausa dar galioja
         if(endDate != null) {
             if(endDate.before(date))
