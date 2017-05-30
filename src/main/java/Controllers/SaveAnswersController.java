@@ -388,7 +388,7 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
     }
 
     //metodas, kuris tikrina, ar atsakytą į privalomus klausimus
-    public void checkIfAnsweredCorrectlly(boolean isFinished){
+    public void checkIfAnsweredCorrectlly(boolean isFinished) throws IOException {
 
 
         for (Iterator<Map.Entry<Long, Answer>> it = textAndScaleAnswersList.entrySet().iterator(); it.hasNext(); )
@@ -397,7 +397,13 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             OfferedAnswer of = entry.getValue().getOfferedAnswerID();
             Question q = of.getQuestionID();
             if(q.isRequired() && entry.getValue().getText() == null){
-                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privolomą klausimą");
+                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Neatsakėte į privalomą klausimą");
+                return;
+            }
+
+            //tikrina scale reikšmę
+            if(q.getType().equals("SCALE") && (Integer.parseInt(entry.getValue().getText())<processLine(q.getOfferedAnswerList()).getMin() || Integer.parseInt(entry.getValue().getText())>processLine(q.getOfferedAnswerList()).getMax())){
+                mesg.sendMessage(FacesMessage.SEVERITY_ERROR, "Įvesta bloga scale reiškmė");
                 return;
             }
         }

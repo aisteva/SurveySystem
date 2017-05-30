@@ -100,12 +100,13 @@
                                                         #{saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                         #{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text = saveAnswersController.processLine(question.getOfferedAnswerList()).min}
                                                     </h:panelGroup>
-                                                    <p:inputText id="scale"
+                                                    <p:inputNumber id="scale"
                                                                  value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
                                                                  required="#{question.isRequired() and not empty param.nextPage}"
-                                                                 styleClass="onlyBottomBorder">
+                                                                 styleClass="onlyBottomBorder"
+                                                                   decimalPlaces="0">
                                                         <p:ajax update="@form"/>
-                                                    </p:inputText>
+                                                    </p:inputNumber>
                                                 </h:panelGrid>
                                             </div>
                                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 onBottom">
