@@ -84,7 +84,7 @@ public class ExcelSurveyExport implements IExcelSurveyExport, Serializable
         }
 
         //kadangi boolean reikia įrašyti kaip "YES" arba "NO", konvertuojama savo sukurta funkcija
-        headerSheet.getRow(3).createCell(1).setCellValue(requiredBooleanToFormattedString(survey.isSurveyPrivate()));
+        headerSheet.getRow(3).createCell(1).setCellValue(requiredBooleanToFormattedString(!survey.isSurveyPrivate()));
 
         headerSheet.autoSizeColumn(0);
         headerSheet.autoSizeColumn(1);
