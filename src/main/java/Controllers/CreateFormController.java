@@ -182,12 +182,25 @@ public class CreateFormController implements ICreateFormController, Serializable
         questions.get(page).get(questionIndex).getOfferedAnswerList().clear();
     }
 
+    private int findQuestionIndexById(Question findQuestion){
+        for (int page : pages){
+            int i = 0;
+            for (Question q : questions.get(page)){
+                if (q == findQuestion){
+                    return i;
+                }
+                i++;
+            }
+        }
+        return -1;
+    }
+
     public void moveQuestionUp(final int questionIndex, final int page) {
         if (questionIndex != 0) {
             Question currentQuestion = questions.get(page).get(questionIndex);
             if (currentQuestion.getParentOfferedAnswers().size() > 0) { // Can't be higher than offeredAnswer.
                 for (OfferedAnswer o : currentQuestion.getParentOfferedAnswers()) {
-                    if (o.getQuestionID().getQuestionNumber() + 1 >= currentQuestion.getQuestionNumber()) {
+                    if (findQuestionIndexById(o.getQuestionID())+1 >= questionIndex) {
                         return;
                     }
                 }
@@ -206,7 +219,7 @@ public class CreateFormController implements ICreateFormController, Serializable
                 for (OfferedAnswer oa : currentQuestion.getOfferedAnswerList()) {
                     if (oa.getChildQuestions().size() > 0) {
                         for (Question lowerQuestion : oa.getChildQuestions()) {
-                            if (currentQuestion.getQuestionNumber() + 1 <= lowerQuestion.getQuestionNumber()) {
+                            if (questionIndex+1 >= findQuestionIndexById(lowerQuestion)) {
                                 return;
                             }
                         }
