@@ -38,7 +38,6 @@
                 <div class="row">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="padding-top: 30px;">
                         <span class="required">* - Privaloma</span>
-                        <p:messages id="show-survey-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                     </div>
                     <ui:repeat  value="#{saveAnswersController.questions.get(saveAnswersController.page)}" var="question" varStatus="questionStatus">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title">
@@ -54,8 +53,6 @@
                                     <div class="col-lg-5 col-md-6 col-sm-8 col-xs-12">
                                         <h:inputText id="text"
                                                      value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                     required="#{question.isRequired() or not empty param.nextPage}"
-                                                     requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!"
                                                      styleClass="onlyBottomBorder"
                                                      a:placeholder="Atsakymas">
                                         <p:ajax update="@form"/>
@@ -68,9 +65,7 @@
                                         <label class="checkbox">
                                             <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                    value="#{saveAnswersController.selections.get(offered)}"
-                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}"
-                                                                   required="#{question.isRequired() and not empty param.nextPage}"
-                                                                   requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                                                   valueChangeListener="#{saveAnswersController.changeCheckBoxValue(question, offered)}">
                                                 <p:ajax update="@form" />
                                             </p:selectBooleanButton>
                                         </label>
@@ -81,9 +76,7 @@
                                     <label class="radio">
                                         <p:selectBooleanButton onLabel="#{offered.text}" offLabel="#{offered.text}"
                                                                value="#{saveAnswersController.selections.get(offered)}"
-                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}"
-                                                               required="#{question.isRequired() and not empty param.nextPage}"
-                                                               requiredMessage="Klausimas nr. #{question.questionNumber} yra privalomas!">
+                                                               valueChangeListener="#{saveAnswersController.changeMultipleValue(question, offered)}">
                                             <p:ajax update="@form" />
                                         </p:selectBooleanButton>
                                     </label>
@@ -102,7 +95,6 @@
                                                     </h:panelGroup>
                                                     <p:inputNumber id="scale"
                                                                  value="#{saveAnswersController.textAndScaleAnswersList.get(question.questionID).text}"
-                                                                 required="#{question.isRequired() and not empty param.nextPage}"
                                                                  styleClass="onlyBottomBorder"
                                                                    decimalPlaces="0">
                                                         <p:ajax update="@form"/>
@@ -119,6 +111,7 @@
                         </div>
                     </ui:repeat>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 title text-center">
+                        <p:messages id="show-survey-message" errorClass="error-message" infoClass="confirm-message" autoUpdate="true"/>
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 text-left" style="padding-top: 7px; padding-bottom: 10px">
                             <h:panelGroup rendered="#{saveAnswersController.page > 1}">
                                 <p:commandButton value="Praeitas puslapis"
