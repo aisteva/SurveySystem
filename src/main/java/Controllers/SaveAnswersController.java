@@ -208,16 +208,26 @@ public class SaveAnswersController implements ISaveAnswersController, Serializab
             // Remove old choice
             if (checkboxAndMultipleAnswersList.containsKey(q.getQuestionID()))
             {
+                Answer removeAnswer = null;
+                checkboxAndMultipleAnswersList.get(o.getQuestionID().getQuestionID()).remove(removeAnswer);
                 for(Iterator<Map.Entry<Long, List<Answer>>> iterator = checkboxAndMultipleAnswersList.entrySet().iterator(); iterator.hasNext(); )
                 {
+                    int indRemove = 0;
                     Map.Entry<Long, List<Answer>> entry  = iterator.next();
                     for(Answer a: entry.getValue())
                     {
                         if(a.getOfferedAnswerID().getOfferedAnswerID().equals(o.getOfferedAnswerID()))
                         {
                             a.setSessionID(null);
-                            iterator.remove();
+                            removeAnswer = a;
+                            break;
                         }
+                        indRemove++;
+                    }
+                    if (removeAnswer != null){
+                        removeAnswer.getOfferedAnswerID().getAnswerList().remove(removeAnswer);
+                        entry.getValue().remove(indRemove);
+                        break;
                     }
                 }
             }
