@@ -86,7 +86,7 @@ public class ExcelSurveyImport implements IExcelSurveyImport, Serializable
             survey.setEndDate(getImportedDateFormat(headerSheet.getRow(2).getCell(1)));
         }
         //kadangi formate parametrizuota "YES" arba "NO", tikrinama su tam skirta funkcija
-        survey.setSurveyPrivate(parseYesNoParameters(headerSheet.getRow(3).getCell(1)));
+        survey.setSurveyPrivate(!parseYesNoParameters(headerSheet.getRow(3).getCell(1)));
 
 
 
