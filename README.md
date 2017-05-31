@@ -8,3 +8,7 @@ Naudojama MySql duomenų bazė, laikoma išoriniame serveryje.
 
 Pirmo sistemos vartotojo prisijungimo duomenys: El. paštas: admin, Slaptažodis: Admin1.
 
+Duomenų bazės schema
+
+![Duomenų bazės schema](https://github.com/deivid321/SurveySystem/blob/origin/src/test/resources/schema/schema.png)
+
