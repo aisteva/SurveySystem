@@ -10,5 +10,5 @@ Pirmo sistemos vartotojo prisijungimo duomenys: El. paštas: admin, Slaptažodis
 
 Duomenų bazės schema
 
-![Duomenų bazės schema](https://github.com/deivid321/SurveySystem/blob/origin/src/test/resources/schema/schema.png)
+![Duomenų bazės schema](https://github.com/deivid321/SurveySystem/blob/origin/src/test/resources/schema.png)
 
